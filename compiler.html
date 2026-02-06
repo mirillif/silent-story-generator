@@ -7,473 +7,283 @@
   <style>
     :root { --r:14px; }
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#0b0d12;color:#eef2ff;line-height:1.35}
-    header{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.22), transparent 60%),
-                  radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,0.18), transparent 55%);
+    header{
+      padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.22), transparent 60%),
+        radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,0.18), transparent 55%);
     }
-    header h1{margin:0 0 6px;font-size:22px}
-    header p{margin:0;opacity:.85;max-width:980px}
-    a{color:#a5b4fc;text-decoration:none}
-    a:hover{text-decoration:underline}
+    header h1{margin:0 0 6px;font-size:20px}
+    header p{margin:0;opacity:.85;max-width:1100px}
+    a{color:#a5b4fc;text-decoration:none} a:hover{text-decoration:underline}
+
     main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
     .grid{display:grid;gap:16px;grid-template-columns:1fr}
-    @media(min-width:980px){.grid{grid-template-columns:520px 1fr}}
+    @media (min-width: 980px){ .grid{grid-template-columns: 1fr 1fr;} }
+
     .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
     .card h2{margin:0 0 10px;font-size:15px;opacity:.95}
     label{font-size:12px;opacity:.85;display:block;margin-bottom:6px}
-    textarea, input{
-      width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
+    textarea{
+      width:100%;min-height:420px;resize:vertical;white-space:pre-wrap;
+      padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.35);color:#eef2ff;outline:none;box-sizing:border-box
     }
-    textarea{min-height:260px;resize:vertical}
-    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
-    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800}
+    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button{
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;
+      padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800
+    }
     button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
     button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
     button:hover{filter:brightness(1.08)}
-    .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:12px;opacity:.9}
-    .muted{opacity:.78}
-    .small{font-size:12px;opacity:.8}
-    .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
-    .out{white-space:pre-wrap;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;font-size:13px}
-    .stack{display:flex;flex-direction:column;gap:12px}
-    .sceneCard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px}
-    .sceneTop{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .sceneTop b{font-size:13px}
-    .sceneTop .mini{display:flex;gap:8px;align-items:center}
-    .k{color:#a5b4fc}
-    .warn{color:#fbbf24}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:12px}
+    .pill b{font-weight:900}
+    .muted{opacity:.78;font-size:12px}
+    .err{border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.12);padding:10px;border-radius:12px;margin-bottom:10px}
+    .ok{border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.10);padding:10px;border-radius:12px;margin-bottom:10px}
+
+    .cards{display:grid;gap:12px}
+    .sceneCard{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px}
+    .sceneCard header{padding:0;border:none;background:none}
+    .sceneCard h3{margin:0 0 8px;font-size:13px}
+    pre{margin:0;white-space:pre-wrap;font-size:13px}
+    .k{color:#a5b4fc;font-weight:800}
   </style>
 </head>
 
 <body>
 <header>
-  <h1>Prompt Compiler — Continuity Lock (v2)</h1>
+  <h1>Prompt Compiler — Continuity Lock</h1>
   <p>
-    Paste output from <span class="k">Story Generator</span> (STORY TITLE / STORY SETTINGS / SCENES)
-    <span class="muted">or</span> canonical format (STORY CORE / STORY TRAM). This tool injects Master Style + exact DNA into every scene.
-    <br><a href="./index.html">← Back to Story Generator</a>
+    Paste a Story Frame from the generator (<span class="k">STORY TITLE / STORY SETTINGS / SCENES</span>) or the old format
+    (<span class="k">STORY CORE / STORY TRAM</span>).
+    This compiler injects Master Style + DNA into every single scene prompt.
+    <br><br>
+    <a href="./index.html">← Back to Story Generator</a>
   </p>
 </header>
 
 <main class="grid">
-
   <section class="card">
     <h2>1) Input — Story Frame</h2>
-    <label>Paste Story Generator output or canonical Story Frame</label>
-    <textarea id="input" placeholder="Paste here..."></textarea>
+    <label>Paste Story Frame</label>
+    <textarea id="input"></textarea>
 
     <div class="btnbar">
       <button class="primary" id="compileBtn">Compile Prompts</button>
-      <button id="loadExampleBtn">Load Example</button>
-      <button id="copyAllBtn">Copy All</button>
-      <span class="pill" id="statusPill">Ready</span>
+      <button class="good" id="copyAllBtn">Copy All Prompts</button>
+      <span class="pill" id="statusPill"><b>Status:</b> Ready</span>
     </div>
 
-    <div class="hr"></div>
-
-    <div class="small muted">
-      <b>Accepted formats:</b>
-      <br>• Story Generator: <span class="k">STORY TITLE</span>, <span class="k">STORY SETTINGS</span>, <span class="k">SCENES (15/20/25)</span>, <span class="k">SOP CHECK</span>
-      <br>• Canonical: <span class="k">STORY CORE</span>, <span class="k">STORY TRAM</span>
+    <div class="muted" style="margin-top:10px;">
+      Tip: Each card below is a single final prompt. Copy per scene or copy all.
     </div>
   </section>
 
   <section class="card">
     <h2>2) Output — Compiled Scene Prompts</h2>
-    <div class="small muted" id="storyTitleLine" style="margin:0 0 10px;"></div>
-    <div class="stack" id="outputStack"></div>
-    <div class="small muted" style="margin-top:10px;">
-      Tip: Each card is a single “final prompt” for a video generator. Copy per scene or copy all.
-    </div>
+    <div id="msg"></div>
+    <div class="cards" id="cards"></div>
   </section>
-
 </main>
 
 <script>
-/* =========================
-   INJECTION CONSTANTS
-========================= */
-const MASTER_STYLE_HEADER =
+const MASTER_STYLE =
 `10-second cinematic scene. Soft, natural realism with gentle warmth. No dialogue, no text, no subtitles, no logos. Simple, readable action with lively, purposeful movement. Camera: Static or very slow tracking shot. Photorealistic animal anatomy. Natural fur texture and sunlight. NO 3D animation style. NO "Disney" eyes. Physical interactions grounded in physics (objects have weight). NO human limbs.`;
 
-/* DNA Library — verbatim anchors */
 const DNA = {
-  WILLY: `WILLY: (Baby Golden Retriever puppy, light-golden velvet-soft fluffy fur, short legs, small floppy ears. Simple RED COLLAR. SIGNATURE: A tiny pink "blep" tip of tongue always peeking out of his mouth).`,
-  PANBY: `PANBY: (Baby Giant Panda, chubby and round, jet-black fur on limbs/eyes, snow-white fur on head/belly. Small bright YELLOW fabric bowtie).`,
-  QUOK: `QUOK: (Baby Quokka, short brown-grey fur, small rounded ears, permanent "smiling" expression).`
+  WILLY: `WILLY: (Baby Golden Retriever puppy. Light-golden velvet-soft fluffy fur, short legs, small floppy ears. Simple RED COLLAR. SIGNATURE: A tiny pink "blep" tip of tongue always peeking out of his mouth).`,
+  PANBY: `PANBY: (Baby Giant Panda, chubby and round. Jet-black fur on limbs/eyes, snow-white fur on head/belly. Small bright YELLOW fabric bowtie).`,
+  QUOK: `QUOK: (Baby Quokka. Short brown-grey fur, small rounded ears, permanent gentle "smiling" expression).`
 };
 
 const CHARACTER_KEYWORDS = [
   { key: "Willy", code: "WILLY" },
-  { key: "WILLY", code: "WILLY" },
   { key: "Panby", code: "PANBY" },
-  { key: "PANBY", code: "PANBY" },
-  { key: "Quok", code: "QUOK" },
-  { key: "QUOK", code: "QUOK" },
+  { key: "Quok",  code: "QUOK" }
 ];
 
-const el = (id) => document.getElementById(id);
-function setStatus(t){ el("statusPill").textContent = t; }
-
+function el(id){ return document.getElementById(id); }
+function setStatus(t){ el("statusPill").innerHTML = "<b>Status:</b> " + t; }
 function normalizeLines(text){
-  return (text||"")
-    .replace(/\r\n/g,"\n")
-    .replace(/\r/g,"\n")
-    .split("\n");
+  return (text||"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");
 }
 
-function isStoryGeneratorFormat(lines){
-  const hasSettings = lines.some(l => l.trim().toUpperCase() === "STORY SETTINGS");
-  const hasScenes = lines.some(l => l.trim().toUpperCase().startsWith("SCENES"));
-  return hasSettings && hasScenes;
-}
-
-function getStoryTitle(lines){
-  // If Story Generator format: title is the first non-empty line after "STORY TITLE"
-  const idx = lines.findIndex(l => l.trim().toUpperCase() === "STORY TITLE");
-  if (idx === -1) return "";
-  for (let i=idx+1;i<lines.length;i++){
-    const t = lines[i].trim();
-    if (t) return t;
-  }
-  return "";
-}
-
-/* Converts Story Generator format into canonical STORY CORE + STORY TRAM lines */
-function convertGeneratorToCanonical(lines){
-  const out = [];
-  out.push("STORY CORE");
-
-  let mode = "none"; // settings|scenes|none
-  for (let i=0;i<lines.length;i++){
-    const raw = lines[i];
-    const l = raw.trim();
-    const up = l.toUpperCase();
-
-    if (!l) continue;
-
-    if (up === "STORY SETTINGS"){ mode = "settings"; continue; }
-    if (up.startsWith("SCENES")){ mode = "scenes"; out.push(""); out.push("STORY TRAM"); continue; }
-    if (up === "SOP CHECK"){ mode = "none"; continue; }
-    if (up === "STORY TITLE"){ mode = "none"; continue; }
-
-    if (mode === "settings"){
-      // copy "- Key: value" lines as "Key: value"
-      if (l.startsWith("-")){
-        out.push(l.replace(/^-+\s*/,""));
-      }
-      continue;
-    }
-
-    if (mode === "scenes"){
-      // Scene N: text  ->  N) text
-      const m = l.match(/^Scene\s*(\d+)\s*:\s*(.+)$/i);
-      if (m){
-        out.push(`${m[1]}) ${m[2].trim()}`);
-      }
-      continue;
-    }
-  }
-  return out;
-}
-
-/* =========================
-   Canonical Parser
-========================= */
-function findSection(lines, titles){
-  const wanted = (titles || []).map(t => String(t).trim().toUpperCase());
-  const idx = lines.findIndex(l => wanted.includes(l.trim().toUpperCase()));
+function findSection(lines, title){
+  const idx = lines.findIndex(l => l.trim().toUpperCase() === title);
   if (idx === -1) return null;
-
   let end = lines.length;
   for (let i=idx+1;i<lines.length;i++){
     const t = lines[i].trim().toUpperCase();
-    if (t === "STORY CORE" || t === "STORY TRAM") { end = i; break; }
+    if (t === "STORY CORE" || t === "STORY TRAM" || t === "STORY TITLE" || t === "STORY SETTINGS" || t.startsWith("SCENES")) {
+      if (i !== idx) { end = i; break; }
+    }
   }
-  return [idx+1, end];
+  return [idx+1, end]; // content range
 }
 
-function parseCore(lines){
-  const sec = findSection(lines, ["STORY CORE"]);
-  if (!sec) return null;
-  const [a,b] = sec;
-  const coreLines = lines.slice(a,b).map(x=>x.trim()).filter(Boolean);
+function parseOldCoreAndTram(lines){
+  const coreSec = findSection(lines, "STORY CORE");
+  const tramSec = findSection(lines, "STORY TRAM");
+  if (!coreSec || !tramSec) return null;
 
-  const core = {};
-  coreLines.forEach(line=>{
-    const m = line.match(/^-?\s*([^:]+)\s*:\s*(.+)\s*$/);
-    if (m){
-      const k = m[1].trim().toLowerCase();
-      const v = m[2].trim();
-      core[k] = v;
-    }
-  });
-  return core;
+  const core = lines.slice(coreSec[0], coreSec[1]).join("\n").trim();
+  const tramLines = lines.slice(tramSec[0], tramSec[1]).map(x=>x.trim()).filter(Boolean);
+
+  // beats can be "1) ..." or "Scene 1: ..."
+  const beats = tramLines.map((line, idx)=>{
+    const m = line.match(/^(\d+)\)\s*(.*)$/) || line.match(/^Scene\s*(\d+)\s*:\s*(.*)$/i);
+    if (m) return { n: parseInt(m[1],10), text: (m[2]||"").trim() };
+    return { n: idx+1, text: line };
+  }).sort((a,b)=>a.n-b.n);
+
+  return { title:null, settings:null, core, beats };
 }
 
-function parseTram(lines){
-  const sec = findSection(lines, ["STORY TRAM"]);
-  if (!sec) return null;
-  const [a,b] = sec;
-  const tramLines = lines.slice(a,b).map(x=>x.trim()).filter(Boolean);
+function parseNewTitleSettingsScenes(lines){
+  const titleSec = findSection(lines, "STORY TITLE");
+  // settings optional if format differs
+  const settingsSec = findSection(lines, "STORY SETTINGS");
+  const scenesLineIdx = lines.findIndex(l => l.trim().toUpperCase().startsWith("SCENES"));
+  if (!titleSec || scenesLineIdx === -1) return null;
 
+  const title = lines.slice(titleSec[0], titleSec[1]).join("\n").trim();
+
+  let settings = "";
+  if (settingsSec){
+    settings = lines.slice(settingsSec[0], settingsSec[1]).join("\n").trim();
+  }
+
+  const sceneLines = lines.slice(scenesLineIdx+1).map(l=>l.trim()).filter(Boolean);
   const beats = [];
-  tramLines.forEach(line=>{
-    let m = line.match(/^(-\s*)?(scene\s*)?(\d+)\s*[:\)\-]\s*(.+)$/i);
-    if (!m) m = line.match(/^(-\s*)?(\d+)\)\s*(.+)$/i);
+  for (const line of sceneLines){
+    const m = line.match(/^Scene\s*(\d+)\s*:\s*(.*)$/i);
     if (m){
-      const n = parseInt(m[3] || m[2], 10);
-      const text = (m[4] || m[3]).trim();
-      beats.push({ n, text });
+      beats.push({ n: parseInt(m[1],10), text: (m[2]||"").trim() });
+    } else {
+      // stop if SOP CHECK
+      if (line.toUpperCase() === "SOP CHECK") break;
     }
-  });
+  }
+  if (!beats.length) return null;
 
-  beats.sort((x,y)=>x.n-y.n);
-  return beats.length ? beats : null;
+  // Build a "core" block from settings
+  const core = [
+    title ? `STORY TITLE: ${title}` : "",
+    settings ? `STORY SETTINGS:\n${settings}` : ""
+  ].filter(Boolean).join("\n\n").trim();
+
+  return { title, settings, core, beats: beats.sort((a,b)=>a.n-b.n) };
 }
 
 function detectCharacters(text){
   const found = new Set();
   CHARACTER_KEYWORDS.forEach(k=>{
-    if (text.toLowerCase().includes(k.key.toLowerCase())) found.add(k.code);
+    if ((text||"").toLowerCase().includes(k.key.toLowerCase())) found.add(k.code);
   });
   return Array.from(found);
 }
 
-/* =========================
-   PROMPT COMPILER
-========================= */
-function compileScenePrompt(sceneNum, beatText, core){
-  const charsMentioned = detectCharacters(beatText);
+function buildPrompt(sceneN, beatText, coreText){
+  const involved = new Set(detectCharacters(coreText + "\n" + beatText));
+  // Always include Willy DNA if not mentioned? (brand core) — BUT only if beat/core includes Willy.
+  // We keep strict: only inject DNA for mentioned names.
+  const dnaBlocks = Array.from(involved).map(c=>DNA[c]).join("\n");
 
-  // If hero in core but not mentioned in beat, include hero DNA when possible
-  const hero = (core["hero"] || "").toLowerCase();
-  if (hero.includes("willy") && !charsMentioned.includes("WILLY")) charsMentioned.push("WILLY");
-  if (hero.includes("panby") && !charsMentioned.includes("PANBY")) charsMentioned.push("PANBY");
-  if (hero.includes("quok")  && !charsMentioned.includes("QUOK"))  charsMentioned.push("QUOK");
-
-  const charStates = charsMentioned.length
-    ? charsMentioned.map(code => DNA[code]).join("\n")
-    : "(No core character names detected. Add Willy/Panby/Quok in the beat or set Hero in STORY SETTINGS.)";
-
-  const object = core["object of affection"] || core["object"] || "";
-  const problem = core["problem"] || "";
-  const helper = core["helper (animal-only)"] || core["helper"] || "";
-  const role = core["primary helper role"] || core["role"] || "";
-  const location = core["location"] || "";
-  const weather = core["weather/time"] || core["weather"] || "";
-  const type = core["type"] || core["story type"] || "";
-
-  const description =
-`DESCRIPTION (Blind-Viewer Protocol):
-In ${location || "a consistent outdoor setting"}, under ${weather || "soft natural light"}, the camera is static or slowly tracking. ${beatText.trim()}
-Only one clear movement happens in this scene. Everything else stays still or slow for clarity.`;
-
-  const helperLine = (helper || role) ? `
-HELPER CONTINUITY:
-- Helper present (animal-only): ${helper || "(not specified)"}.
-- Helper role: ${role || "(not specified)"}.
-` : "";
-
-  const gaze =
-`GAZE TARGET (Interaction Rule):
-- Characters look at each other or at the object/problem. NEVER look at the camera.`;
-
-  const propsPhysics =
-`PROPS & PHYSICS:
-- All props maintain exact color, scale, and markings from previous scenes. Realistic weight and gravity.
-- If any vehicle/tool appears, it is toy-scale unless explicitly stated otherwise.
-- Object of affection: ${object || "(none specified)"}.
-- Problem reference (if relevant): ${problem || "(none specified)"}.
-- Location continuity: ${location || "(not specified)"}.
-- Weather continuity: ${weather || "(not specified)"}.
-- Story tone/type: ${type || "(not specified)"}.
-- No logos, no readable text on props.`;
-
-  const body =
-`BIOLOGICAL BODY LANGUAGE:
-- Emotions shown via physical cues only (ears, tail, whiskers, posture, paw movement, breathing).
-- No abstract words like “thinks/realizes/decides” in the description.`;
+  // Light auto-rule: ensure “not looking at camera”
+  const gazeRule = "GAZE TARGET: Characters look at each other or the key object/situation, never at the camera.";
+  const propsRule = "PROPS & PHYSICS: All objects maintain exact color/scale between scenes. Objects have realistic weight; gravity and friction are believable.";
+  const bodyRule = "BIOLOGICAL BODY LANGUAGE: Emotions are shown through ears/tail/whiskers/posture, not abstract words.";
 
   return [
-    `SCENE ${sceneNum}`,
-    ``,
-    `MASTER STYLE HEADER:`,
-    MASTER_STYLE_HEADER,
-    ``,
-    description,
-    ``,
-    `CHARACTER STATES (Verbatim Anchor):`,
-    charStates,
-    helperLine.trim() ? helperLine.trimEnd() : "",
-    ``,
-    gaze,
-    ``,
-    propsPhysics,
-    ``,
-    body,
-    ``,
-    `REMEMBER (Continuity Lock):`,
-    `- Repeat the exact same character accessories every scene (Willy RED collar + tiny pink blep; Panby YELLOW bowtie; Quok permanent smile).`,
-    `- Maintain consistent sizes: babies remain baby-sized relative to toy-scale props.`,
-    `- Cause → effect must be visually readable.`,
-  ].filter(Boolean).join("\n");
+    MASTER_STYLE,
+    "",
+    `SCENE ${sceneN} — FINAL PROMPT`,
+    "",
+    "DESCRIPTION (Blind-Viewer Protocol):",
+    beatText,
+    "",
+    "CHARACTER STATES (Verbatim Anchor):",
+    dnaBlocks || "(No brand character detected in this beat — add names like Willy/Panby/Quok to inject DNA automatically.)",
+    "",
+    gazeRule,
+    propsRule,
+    bodyRule,
+    "",
+    "REMEMBER:",
+    "- Repeat exact character DNA and exact prop names/colors every time they appear.",
+    "- One readable action per scene. No dialogue. No text. No logos."
+  ].join("\n");
 }
 
-/* =========================
-   RENDERING
-========================= */
-function clearOutput(){
-  el("outputStack").innerHTML = "";
-  el("storyTitleLine").textContent = "";
-}
-
-function addSceneCard(sceneNum, promptText){
-  const wrap = document.createElement("div");
-  wrap.className = "sceneCard";
-
-  const top = document.createElement("div");
-  top.className = "sceneTop";
-
-  const title = document.createElement("b");
-  title.textContent = `Scene ${sceneNum}`;
-
-  const mini = document.createElement("div");
-  mini.className = "mini";
-
-  const copyBtn = document.createElement("button");
-  copyBtn.textContent = "Copy";
-  copyBtn.className = "good";
-  copyBtn.style.padding = "8px 10px";
-  copyBtn.addEventListener("click", async ()=>{
-    try{
-      await navigator.clipboard.writeText(promptText);
-      setStatus(`Copied Scene ${sceneNum}`);
-    }catch{
-      setStatus("Copy failed");
-    }
-  });
-
-  mini.appendChild(copyBtn);
-  top.appendChild(title);
-  top.appendChild(mini);
-
-  const pre = document.createElement("div");
-  pre.className = "out";
-  pre.textContent = promptText;
-
-  wrap.appendChild(top);
-  wrap.appendChild(pre);
-  el("outputStack").appendChild(wrap);
-}
-
-async function copyAll(){
-  const cards = Array.from(document.querySelectorAll(".sceneCard .out"));
-  if (!cards.length) { setStatus("Nothing to copy"); return; }
-  const all = cards.map((c)=>c.textContent).join("\n\n" + "=".repeat(60) + "\n\n");
-  try{
-    await navigator.clipboard.writeText(all);
-    setStatus("Copied ALL scenes");
-  }catch{
-    setStatus("Copy failed");
-  }
-}
-
-/* =========================
-   MAIN COMPILE
-========================= */
 function compile(){
-  clearOutput();
-  const inputText = el("input").value || "";
-  let lines = normalizeLines(inputText);
+  const raw = el("input").value || "";
+  const lines = normalizeLines(raw);
 
-  // Detect + convert Story Generator format
-  const title = getStoryTitle(lines);
-  if (title){
-    el("storyTitleLine").innerHTML = `<b class="k">Story Title:</b> ${title}`;
+  // Try new format first
+  let parsed = parseNewTitleSettingsScenes(lines);
+  if (!parsed){
+    parsed = parseOldCoreAndTram(lines);
   }
-
-  if (isStoryGeneratorFormat(lines)){
-    lines = convertGeneratorToCanonical(lines);
-  }
-
-  const core = parseCore(lines);
-  const tram = parseTram(lines);
-
-  if (!core){
-    setStatus("Missing core");
-    el("outputStack").innerHTML = `<div class="out"><span class="warn">ERROR:</span> Could not find "STORY CORE" or "STORY SETTINGS". Paste generator output or add STORY CORE.</div>`;
-    return;
-  }
-  if (!tram || !tram.length){
-    setStatus("Missing scenes");
-    el("outputStack").innerHTML = `<div class="out"><span class="warn">ERROR:</span> Could not find "SCENES" or "STORY TRAM". Paste generator output that includes SCENES (15/20/25).</div>`;
+  if (!parsed){
+    el("msg").innerHTML = `<div class="err"><b>ERROR:</b> Could not detect format. Use either:
+      <br>• <span class="k">STORY TITLE / STORY SETTINGS / SCENES</span> (from generator)
+      <br>• or <span class="k">STORY CORE / STORY TRAM</span> (legacy)
+    </div>`;
+    el("cards").innerHTML = "";
+    setStatus("Error");
     return;
   }
 
-  tram.forEach((b, idx)=>{
-    const sceneNum = b.n || (idx+1);
-    const prompt = compileScenePrompt(sceneNum, b.text, core);
-    addSceneCard(sceneNum, prompt);
+  el("msg").innerHTML = `<div class="ok"><b>OK:</b> Parsed ${parsed.beats.length} scenes. DNA injection will occur when names appear in each beat.</div>`;
+
+  const cards = el("cards");
+  cards.innerHTML = "";
+
+  parsed.beats.forEach(b=>{
+    const prompt = buildPrompt(b.n, b.text, parsed.core || "");
+    const div = document.createElement("div");
+    div.className = "sceneCard";
+    div.innerHTML = `<h3>Scene ${b.n}</h3><pre>${escapeHtml(prompt)}</pre>`;
+    cards.appendChild(div);
   });
 
-  setStatus(`Compiled ${tram.length} scenes`);
+  setStatus("Compiled ✅");
 }
 
-/* =========================
-   EXAMPLE
-========================= */
-function loadExample(){
-  el("input").value =
-`STORY TITLE
-Willy and the Heartfelt Object is out of reach on a ledge
-
-STORY SETTINGS
-- Type: Emotional
-- Hero: Willy (Baby Golden Retriever)
-- Friends (optional): Panby
-- Location: Mountain meadow — rocky ground, distant hills, crisp light
-- Weather/Time: Cold winter morning, pale sun
-- Helper (animal-only): duck delivery helper
-- Primary helper role: Ice Cream Maker
-- Problem: Object is out of reach on a ledge
-- Object of affection: little cape
-
-SCENES (15)
-Scene 1: Calm opening in Mountain meadow — rocky ground, distant hills, crisp light. Willy (Baby Golden Retriever) is still, looking around.
-Scene 2: Willy (Baby Golden Retriever) is shown near the cherished focus. The environment matches: Cold winter morning, pale sun.
-Scene 3: Cause begins: Willy (Baby Golden Retriever) interacts with the situation in one clear motion.
-Scene 4: Effect: the problem becomes obvious — Object is out of reach on a ledge.
-Scene 5: Willy (Baby Golden Retriever) sits or stands still, quietly focused on the problem.
-Scene 6: duck delivery helper stays close without fixing anything yet.
-Scene 7: duck delivery helper is framed as the ice cream maker and turns with purpose.
-Scene 8: duck delivery helper prepares a cute, role-fitting tool or vehicle (one action).
-Scene 9: Movement shot: the helper approaches the problem spot; camera stays static/slow.
-Scene 10: Attempt 1: the helper tries a simple solution (one action) — it fails visibly.
-Scene 11: Reaction: the helper pauses, looks, repositions (still/slow).
-Scene 12: Attempt 2: a small adjustment is added (wedge/net/rope/angle).
-Scene 13: Cause→effect: the adjustment changes the outcome but not enough yet.
-Scene 14: Success: the solution works — the problem is resolved safely.
-Scene 15: Willy (Baby Golden Retriever) receives the outcome with visible joy and relief.
-
-SOP CHECK
-- No dialogue, no text, no subtitles, no logos
-- One action per scene (still/slow for detailed interaction)
-- Visible cause → effect in every scene
-- Physics: weight, gravity, scale are believable
-- Animals only (photoreal anatomy, natural fur, no human limbs)
-- Calm closing echo of opening`;
-  setStatus("Example loaded");
+function escapeHtml(s){
+  return (s||"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
 }
 
-/* =========================
-   BIND
-========================= */
 el("compileBtn").addEventListener("click", compile);
-el("loadExampleBtn").addEventListener("click", loadExample);
-el("copyAllBtn").addEventListener("click", copyAll);
-loadExample();
+
+el("copyAllBtn").addEventListener("click", async ()=>{
+  const cards = Array.from(document.querySelectorAll(".sceneCard pre"));
+  if (!cards.length){ setStatus("Nothing to copy"); return; }
+  const txt = cards.map(x=>x.textContent).join("\n\n---\n\n");
+  try{
+    await navigator.clipboard.writeText(txt);
+    setStatus("Copied ✅");
+  } catch {
+    setStatus("Copy failed — select text manually.");
+  }
+});
+
+// Prefill from hash: compiler.html#story=...
+(function prefill(){
+  try{
+    const h = location.hash || "";
+    const m = h.match(/#story=(.*)$/);
+    if (m && m[1]){
+      el("input").value = decodeURIComponent(m[1]);
+      setStatus("Prefilled from generator — click Compile");
+    }
+  } catch {}
+})();
 </script>
 </body>
 </html>
