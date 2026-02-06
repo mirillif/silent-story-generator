@@ -3,32 +3,32 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Prompt Compiler — Continuity Lock (v3)</title>
+  <title>WILLY V2 — Prompt Compiler</title>
   <style>
     :root{--r:14px}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#0b0d12;color:#eef2ff;line-height:1.35}
     header{
-      padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
+      padding:20px 18px;border-bottom:1px solid rgba(255,255,255,.08);
       background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.22), transparent 60%),
-        radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,0.18), transparent 55%);
+        radial-gradient(1200px 600px at 18% 0%, rgba(99,102,241,0.22), transparent 62%),
+        radial-gradient(900px 450px at 82% 0%, rgba(16,185,129,0.18), transparent 55%);
     }
     header h1{margin:0 0 6px;font-size:20px}
     header p{margin:0;opacity:.85;max-width:1100px}
     a{color:#a5b4fc;text-decoration:none} a:hover{text-decoration:underline}
-    main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
+    main{max-width:1250px;margin:0 auto;padding:18px;display:grid;gap:16px}
     .grid{display:grid;gap:16px;grid-template-columns:1fr}
     @media(min-width:980px){.grid{grid-template-columns:1fr 1fr}}
     .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
     .card h2{margin:0 0 10px;font-size:15px;opacity:.95}
     label{font-size:12px;opacity:.85;display:block;margin-bottom:6px}
     textarea{
-      width:100%;min-height:420px;resize:vertical;white-space:pre-wrap;
+      width:100%;min-height:460px;resize:vertical;white-space:pre-wrap;
       padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.35);color:#eef2ff;outline:none;box-sizing:border-box
     }
     .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800}
+    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:900}
     button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
     button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
     button:hover{filter:brightness(1.08)}
@@ -42,22 +42,21 @@
     pre{margin:0;white-space:pre-wrap;font-size:13px}
     .ok{border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.10);padding:10px;border-radius:12px;margin-bottom:10px}
     .err{border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.12);padding:10px;border-radius:12px;margin-bottom:10px}
-    .k{color:#a5b4fc;font-weight:800}
+    .k{color:#a5b4fc;font-weight:900}
   </style>
 </head>
 <body>
 <header>
-  <h1>Prompt Compiler — Continuity Lock (v3)</h1>
+  <h1>WILLY V2 — Prompt Compiler</h1>
   <p>
-    Paste the Story Frame from the generator (<span class="k">STORY SETTINGS + PROP DNA + SCENES</span>) or legacy format.
-    This compiler injects Master Style + Character DNA into every scene prompt.
-    <br><br><a href="./index.html">← Back to Story Generator</a>
+    Paste your generator output (<span class="k">STORY SETTINGS + PROP DNA + SCENES</span>) and compile hyper-detailed prompts with continuity locks.
+    <br><a href="./index.html">← Back to Generator</a>
   </p>
 </header>
 
 <main class="grid">
   <section class="card">
-    <h2>1) Input — Story Frame</h2>
+    <h2>Input — Story Frame</h2>
     <label>Paste here</label>
     <textarea id="input"></textarea>
     <div class="btnbar">
@@ -66,12 +65,12 @@
       <span class="pill" id="status"><b>Status:</b> Ready</span>
     </div>
     <div class="muted" style="margin-top:10px;">
-      Tip: DNA and PROP DNA are repeated in every prompt to prevent “AI amnesia”.
+      The compiler repeats character DNA + prop DNA in every scene prompt to prevent AI amnesia.
     </div>
   </section>
 
   <section class="card">
-    <h2>2) Output — Scene Prompts</h2>
+    <h2>Output — Scene Prompts</h2>
     <div id="msg"></div>
     <div class="cards" id="cards"></div>
   </section>
@@ -91,23 +90,23 @@ function el(id){return document.getElementById(id);}
 function setStatus(t){el("status").innerHTML="<b>Status:</b> "+t;}
 function linesOf(t){return (t||"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");}
 
-function section(lines, header){
+function getSection(lines, header){
   const idx = lines.findIndex(l=>l.trim().toUpperCase()===header);
   if (idx<0) return null;
   let end = lines.length;
   for (let i=idx+1;i<lines.length;i++){
     const u = lines[i].trim().toUpperCase();
-    if (u==="STORY TITLE" || u==="STORY SETTINGS" || u==="PROP DNA (MUST BE REPEATED VERBATIM IN PROMPTS)" || u.startsWith("SCENES") || u==="SOP CHECK" || u==="STORY CORE" || u==="STORY TRAM"){
-      end = i; break;
+    if (u==="STORY TITLE" || u==="STORY SETTINGS" || u==="PROP DNA (MUST BE REPEATED VERBATIM IN PROMPTS)" || u.startsWith("SCENES") || u==="SOP CHECK"){
+      end=i; break;
     }
   }
   return lines.slice(idx+1,end).map(x=>x.trim()).filter(Boolean);
 }
 
-function parseGeneratorFormat(lines){
-  const titleLines = section(lines,"STORY TITLE");
-  const settingsLines = section(lines,"STORY SETTINGS");
-  const propLines = section(lines,"PROP DNA (MUST BE REPEATED VERBATIM IN PROMPTS)");
+function parseGenerator(lines){
+  const titleLines = getSection(lines,"STORY TITLE");
+  const settingsLines = getSection(lines,"STORY SETTINGS");
+  const propLines = getSection(lines,"PROP DNA (MUST BE REPEATED VERBATIM IN PROMPTS)");
   const scenesIdx = lines.findIndex(l=>l.trim().toUpperCase().startsWith("SCENES"));
   if (!titleLines || scenesIdx<0) return null;
 
@@ -115,7 +114,7 @@ function parseGeneratorFormat(lines){
   const settings = (settingsLines||[]).join("\n").trim();
   const propDNA = (propLines||[]).join("\n").trim();
 
-  const beats = [];
+  const beats=[];
   for (let i=scenesIdx+1;i<lines.length;i++){
     const raw = lines[i].trim();
     if (!raw) continue;
@@ -124,34 +123,21 @@ function parseGeneratorFormat(lines){
     if (m) beats.push({n:parseInt(m[1],10), text:m[2].trim()});
   }
   if (!beats.length) return null;
-
   return {title, settings, propDNA, beats};
 }
 
-function parseLegacy(lines){
-  const core = section(lines,"STORY CORE");
-  const tram = section(lines,"STORY TRAM");
-  if (!core || !tram) return null;
-  const beats = tram.map((l,i)=>{
-    const m = l.match(/^(\d+)\)\s*(.*)$/) || l.match(/^Scene\s*(\d+)\s*:\s*(.*)$/i);
-    if (m) return {n:parseInt(m[1],10), text:(m[2]||"").trim()};
-    return {n:i+1, text:l};
-  });
-  return {title:"", settings:core.join("\n"), propDNA:"", beats};
-}
-
 function detectCharacters(text){
-  const s = (text||"").toLowerCase();
-  const found = new Set();
+  const s=(text||"").toLowerCase();
+  const found=new Set();
   if (s.includes("willy")) found.add("WILLY");
   if (s.includes("panby")) found.add("PANBY");
   if (s.includes("quok")) found.add("QUOK");
   return Array.from(found);
 }
 
-function buildPrompt(sceneN, beatText, fullContext){
-  const involved = detectCharacters(fullContext + "\n" + beatText);
-  const dnaBlock = involved.length ? involved.map(k=>DNA[k]).join("\n") : DNA.WILLY; // default to Willy as channel core
+function buildPrompt(sceneN, beatText, ctxText, propDNA){
+  const involved = detectCharacters(ctxText + "\n" + beatText);
+  const dnaBlock = involved.length ? involved.map(k=>DNA[k]).join("\n") : DNA.WILLY;
 
   return [
     MASTER_STYLE,
@@ -171,54 +157,55 @@ function buildPrompt(sceneN, beatText, fullContext){
     "- All objects maintain exact color/scale/markings from previous scenes. Realistic weight, gravity, friction.",
     "",
     "PROP DNA (Persistence Check):",
-    fullContext.propDNA ? fullContext.propDNA : "(none provided)",
+    propDNA ? propDNA : "(none provided)",
     "",
     "BIOLOGICAL BODY LANGUAGE:",
     "- Emotions shown through ears/tail/whiskers/posture/breathing. No abstract emotion words.",
     "",
     "REMEMBER (Continuity Lock):",
-    "- Repeat the exact same character DNA and PROP DNA every time they appear.",
+    "- Repeat the exact same character DNA and exact PROP DNA every time they appear.",
     "- One clear action per scene. Still/slow for detailed tool interaction.",
-    "- No dialogue, no text, no subtitles, no logos."
+    "- No dialogue. No text. No subtitles. No logos."
   ].join("\n");
 }
 
 function compile(){
   const raw = el("input").value || "";
   const lines = linesOf(raw);
-
-  let parsed = parseGeneratorFormat(lines);
-  if (!parsed) parsed = parseLegacy(lines);
+  const parsed = parseGenerator(lines);
 
   if (!parsed){
-    el("msg").innerHTML = `<div class="err"><b>ERROR:</b> Could not parse. Paste generator output with <span class="k">STORY SETTINGS + PROP DNA + SCENES</span>.</div>`;
+    el("msg").innerHTML = `<div class="err"><b>ERROR:</b> Could not parse. Paste generator output that includes <span class="k">STORY TITLE / STORY SETTINGS / PROP DNA / SCENES</span>.</div>`;
     el("cards").innerHTML = "";
     setStatus("Error");
     return;
   }
 
-  const ctx = { settings: parsed.settings, propDNA: parsed.propDNA };
-  const fullContextText = (parsed.title?("TITLE: "+parsed.title+"\n"):"") + (parsed.settings?("SETTINGS:\n"+parsed.settings+"\n"):"") + (parsed.propDNA?("PROP DNA:\n"+parsed.propDNA+"\n"):"");
+  const ctxText =
+    (parsed.title ? `TITLE: ${parsed.title}\n` : "") +
+    (parsed.settings ? `SETTINGS:\n${parsed.settings}\n` : "") +
+    (parsed.propDNA ? `PROP DNA:\n${parsed.propDNA}\n` : "");
 
-  el("msg").innerHTML = `<div class="ok"><b>OK:</b> Parsed ${parsed.beats.length} scenes${parsed.title?(" — <span class="k">"+parsed.title+"</span>"):""}.</div>`;
+  el("msg").innerHTML = `<div class="ok"><b>OK:</b> Parsed ${parsed.beats.length} scenes — <span class="k">${parsed.title}</span></div>`;
   const cards = el("cards");
   cards.innerHTML = "";
 
   parsed.beats.forEach(b=>{
-    const prompt = buildPrompt(b.n, b.text, {propDNA: parsed.propDNA});
-    const wrap = document.createElement("div");
-    wrap.className = "scene";
+    const prompt = buildPrompt(b.n, b.text, ctxText, parsed.propDNA);
 
-    const top = document.createElement("div");
-    top.className = "top";
+    const wrap=document.createElement("div");
+    wrap.className="scene";
 
-    const title = document.createElement("b");
-    title.textContent = `Scene ${b.n}`;
+    const top=document.createElement("div");
+    top.className="top";
 
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "good";
-    copyBtn.textContent = "Copy";
-    copyBtn.style.padding = "8px 10px";
+    const title=document.createElement("b");
+    title.textContent=`Scene ${b.n}`;
+
+    const copyBtn=document.createElement("button");
+    copyBtn.className="good";
+    copyBtn.textContent="Copy";
+    copyBtn.style.padding="8px 10px";
     copyBtn.addEventListener("click", async ()=>{
       try{ await navigator.clipboard.writeText(prompt); setStatus(`Copied Scene ${b.n}`); }
       catch{ setStatus("Copy failed"); }
@@ -227,8 +214,8 @@ function compile(){
     top.appendChild(title);
     top.appendChild(copyBtn);
 
-    const pre = document.createElement("pre");
-    pre.textContent = prompt;
+    const pre=document.createElement("pre");
+    pre.textContent=prompt;
 
     wrap.appendChild(top);
     wrap.appendChild(pre);
@@ -248,11 +235,11 @@ el("copyAll").addEventListener("click", async ()=>{
   catch{ setStatus("Copy failed"); }
 });
 
-// Prefill from generator
+// Prefill from generator via hash
 (function(){
   try{
-    const h = location.hash||"";
-    const m = h.match(/#story=(.*)$/);
+    const h=location.hash||"";
+    const m=h.match(/#story=(.*)$/);
     if (m && m[1]){
       el("input").value = decodeURIComponent(m[1]);
       setStatus("Prefilled — click Compile");
