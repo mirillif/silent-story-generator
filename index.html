@@ -3,85 +3,146 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Silent Cinematic Cute Story Generator (v3)</title>
+  <title>WILLY V2 — Story Generator (Triads + Validator)</title>
   <style>
-    :root{--r:14px}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#0b0d12;color:#eef2ff;line-height:1.35}
-    header{
-      padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.22), transparent 60%),
-        radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,0.18), transparent 55%);
+    :root { --r: 14px; }
+    body{
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      margin:0; background:#0b0d12; color:#eef2ff; line-height:1.35;
     }
-    header h1{margin:0 0 6px;font-size:22px}
+    header{
+      padding:20px 18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(1200px 600px at 18% 0%, rgba(99,102,241,0.22), transparent 62%),
+        radial-gradient(900px 450px at 82% 0%, rgba(16,185,129,0.18), transparent 55%);
+    }
+    header h1{margin:0 0 6px;font-size:20px}
     header p{margin:0;opacity:.85;max-width:1100px}
     a{color:#a5b4fc;text-decoration:none} a:hover{text-decoration:underline}
-    main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
+    main{max-width:1250px;margin:0 auto;padding:18px;display:grid;gap:16px}
     .grid{display:grid;gap:16px;grid-template-columns:1fr}
-    @media(min-width:980px){.grid{grid-template-columns:480px 1fr}}
-    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    @media(min-width:980px){ .grid{grid-template-columns:520px 1fr} }
+    .card{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--r);
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
     .card h2{margin:0 0 10px;font-size:15px;opacity:.95}
     label{font-size:12px;opacity:.85;display:block;margin-bottom:6px}
     input,select,textarea{
-      width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.35);color:#eef2ff;outline:none;box-sizing:border-box
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.35);
+      color:#eef2ff;
+      outline:none;
+      box-sizing:border-box;
     }
     textarea{min-height:140px;resize:vertical;white-space:pre-wrap}
     .row{display:grid;gap:10px;grid-template-columns:1fr}
-    @media(min-width:520px){.row.two{grid-template-columns:1fr 1fr}}
+    @media(min-width:520px){ .row.two{grid-template-columns:1fr 1fr} }
     .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-    .chip{display:flex;gap:8px;align-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:999px;padding:7px 10px;font-size:12px}
+    .chip{
+      display:flex;gap:8px;align-items:center;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12px;
+    }
     .chip input{width:auto}
     .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800}
+    button{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:#eef2ff;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
+    }
     button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
     button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
     button.warn{background:rgba(245,158,11,.16);border-color:rgba(245,158,11,.35)}
     button:hover{filter:brightness(1.08)}
-    .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:12px}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:7px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);font-size:12px
+    }
     .pill b{font-weight:900}
     .muted{opacity:.78;font-size:12px}
-    .out{white-space:pre-wrap;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;overflow:auto;min-height:320px;font-size:13px}
+    .out{
+      white-space:pre-wrap;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      padding:12px;
+      overflow:auto;
+      min-height:420px;
+      font-size:13px;
+    }
     .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
-    .k{color:#a5b4fc;font-weight:800}
+    .k{color:#a5b4fc;font-weight:900}
+    .warnbox{
+      margin-top:10px;
+      border:1px solid rgba(245,158,11,.35);
+      background:rgba(245,158,11,.12);
+      padding:10px;border-radius:12px;
+      font-size:12px;opacity:.95;
+      display:none;
+      white-space:pre-wrap;
+    }
   </style>
 </head>
 <body>
 <header>
-  <h1>Silent Cinematic Cute Story Generator (v3)</h1>
+  <h1>WILLY V2 — Story Generator (Triads + Validator)</h1>
   <p>
-    This version fixes “random nonsense” by enforcing <span class="k">compatibility logic</span>:
-    Problem → Object Type → Helper Role → Tool/Vehicle → Scene Beats.
-    <br><br>
-    <a href="./compiler.html">Open Prompt Compiler →</a>
+    This generator is <span class="k">meaning-aware</span>: it locks Problem ↔ Object ↔ Role using triads and rejects incoherent combos automatically.
+    <br>
+    Output is ready to paste into the <a href="./compiler.html">Prompt Compiler →</a>
   </p>
 </header>
 
 <main class="grid">
   <section class="card">
-    <h2>1) Controls</h2>
+    <h2>Controls</h2>
 
     <div class="row two">
       <div>
         <label>Seed (deterministic)</label>
-        <input id="seed" value="willy-v3" placeholder="e.g. 2026-02-06-willy"/>
+        <input id="seed" value="willy-v2" placeholder="e.g., 2026-02-06-willy"/>
         <div class="muted" style="margin-top:6px;">Same seed + same settings = same story.</div>
       </div>
       <div>
-        <label>Story Engine</label>
+        <label>Story Type (Engine)</label>
         <select id="engine">
-          <option value="AUTO">Auto (best fit)</option>
-          <option value="EMOTIONAL">Emotional (Caregiver / Gift / Repair)</option>
-          <option value="RESCUE">Rescue (Tools / Attempts)</option>
-          <option value="ADVENTURE">Adventure (Journey / Vehicles)</option>
-          <option value="FUNNY">Funny (Safe mishap)</option>
-          <option value="COURAGE">Courage (hesitation → brave step)</option>
-          <option value="FRIENDSHIP">Friendship (teamwork)</option>
+          <option value="AUTO" selected>Auto (best fit)</option>
+          <option value="EMOTIONAL_BUILD">Emotional — build/repair/gift (Daddy-cat vibe)</option>
+          <option value="RESCUE_ATTEMPTS">Rescue — attempts + tool switch (Fireman-cat vibe)</option>
+          <option value="ADVENTURE_ROUTE">Adventure — route obstacles + vehicles</option>
+          <option value="FRIENDSHIP_SHARE">Friendship — share/fairness/teamwork</option>
+          <option value="FUNNY_SAFE">Funny — safe mishap gets worse once then fixed</option>
+          <option value="COURAGE_STEP">Brave — hesitation → micro-steps → success</option>
         </select>
       </div>
     </div>
 
     <div class="row two" style="margin-top:10px;">
+      <div>
+        <label>Scenes</label>
+        <select id="sceneCount">
+          <option value="15" selected>15</option>
+          <option value="20">20</option>
+          <option value="25">25</option>
+        </select>
+      </div>
       <div>
         <label>Intensity</label>
         <select id="intensity">
@@ -90,106 +151,95 @@
           <option value="HIGH">High</option>
         </select>
       </div>
-      <div>
-        <label>Tone</label>
-        <select id="tone">
-          <option selected>Emotional</option>
-          <option>Funny</option>
-          <option>Adventure</option>
-          <option>Encouraging</option>
-          <option>Brave</option>
-          <option>Friendship</option>
-          <option>Cozy</option>
-        </select>
-      </div>
     </div>
 
     <div class="hr"></div>
 
-    <h2>2) Characters</h2>
+    <h2>Cast</h2>
     <div class="chips">
-      <label class="chip"><input type="checkbox" id="usePanby"/> Include Panby sometimes</label>
-      <label class="chip"><input type="checkbox" id="useQuok"/> Include Quok sometimes</label>
+      <label class="chip"><input type="checkbox" id="usePanby" checked/> Allow Panby (optional)</label>
+      <label class="chip"><input type="checkbox" id="useQuok" checked/> Allow Quok (optional)</label>
     </div>
-    <div class="muted" style="margin-top:6px;">Willy is always the hero. Friends appear when needed by the problem (e.g., “sharing”).</div>
+    <div class="muted" style="margin-top:6px;">
+      Willy is always the hero. Friends appear automatically when the problem requires it (sharing / teamwork).
+    </div>
 
     <div class="hr"></div>
 
-    <h2>3) Options</h2>
+    <h2>Options</h2>
     <div class="chips">
-      <label class="chip"><input type="checkbox" id="wantObject" checked/> Include Object of Affection</label>
-      <label class="chip"><input type="checkbox" id="wantCountry"/> Add country cultural markers (optional)</label>
-      <label class="chip"><input type="checkbox" id="allowManual"/> Enable manual overrides</label>
+      <label class="chip"><input type="checkbox" id="wantObject" checked/> Include object of affection</label>
+      <label class="chip"><input type="checkbox" id="wantCountry"/> Add country/cultural scenery (optional)</label>
+      <label class="chip"><input type="checkbox" id="manual"/> Manual overrides</label>
+      <label class="chip"><input type="checkbox" id="debugRejects"/> Debug rejections (why combos failed)</label>
     </div>
 
     <div class="hr"></div>
 
-    <h2>4) Manual overrides (optional)</h2>
+    <h2>Manual overrides (optional)</h2>
     <div class="row two">
       <div>
-        <label>Problem (auto; override if enabled)</label>
-        <select id="problemSelect" disabled></select>
+        <label>Problem</label>
+        <select id="problemSel" disabled></select>
       </div>
       <div>
-        <label>Helper Role (auto; override if enabled)</label>
-        <select id="roleSelect" disabled></select>
+        <label>Helper Role</label>
+        <select id="roleSel" disabled></select>
       </div>
     </div>
 
     <div class="row two" style="margin-top:10px;">
       <div>
-        <label>Weather/Time (auto; override if enabled)</label>
-        <select id="weatherSelect" disabled></select>
+        <label>Helper Animal</label>
+        <select id="helperSel" disabled></select>
       </div>
       <div>
-        <label>Location (auto; override if enabled)</label>
-        <select id="locationSelect" disabled></select>
+        <label>Object of Affection</label>
+        <select id="objectSel" disabled></select>
       </div>
     </div>
 
-    <div class="row" style="margin-top:10px;">
-      <label>Helper Animal (auto; override if enabled)</label>
-      <select id="helperSelect" disabled></select>
-    </div>
-
-    <div class="row" style="margin-top:10px;">
-      <label>Object of Affection (auto; override if enabled)</label>
-      <select id="objectSelect" disabled></select>
+    <div class="row two" style="margin-top:10px;">
+      <div>
+        <label>Weather / Time</label>
+        <select id="weatherSel" disabled></select>
+      </div>
+      <div>
+        <label>Location</label>
+        <select id="locationSel" disabled></select>
+      </div>
     </div>
 
     <div class="btnbar">
-      <button class="primary" id="gen15">Create Story (15)</button>
-      <button class="primary" id="gen20">Create Story (20)</button>
-      <button class="primary" id="gen25">Create Story (25)</button>
-      <button class="good" id="copyStory">Copy</button>
-      <button class="warn" id="sendToCompiler">Send to Compiler →</button>
+      <button class="primary" id="generateBtn">Create Story</button>
+      <button class="good" id="copyBtn">Copy</button>
+      <button class="warn" id="toCompilerBtn">Send to Compiler →</button>
     </div>
 
     <div style="margin-top:12px;">
-      <span class="pill" id="statusPill"><b>Status:</b> Ready</span>
+      <span class="pill" id="status"><b>Status:</b> Ready</span>
     </div>
 
-    <div class="muted" style="margin-top:8px;">
-      v3 guarantees coherence: if a combo is invalid, it regenerates automatically.
+    <div class="warnbox" id="rejectBox"></div>
+
+    <div class="muted" style="margin-top:10px;">
+      If you force manual overrides into nonsense, the generator will warn you and suggest fixes.
     </div>
   </section>
 
   <section class="card">
-    <h2>Output — Story Frame (paste into compiler)</h2>
+    <h2>Output — Story Frame</h2>
     <div class="out" id="output"></div>
   </section>
 </main>
 
 <script>
-/* =========================
+/* =========================================================
    RNG (deterministic)
-========================= */
+========================================================= */
 function hashStringToUint(s){
   let h = 2166136261 >>> 0;
-  for (let i=0;i<s.length;i++){
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
+  for (let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
   return h >>> 0;
 }
 function mulberry32(a){
@@ -198,7 +248,7 @@ function mulberry32(a){
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  }
+  };
 }
 function pick(rng, arr){ return arr[Math.floor(rng()*arr.length)]; }
 function pickMany(rng, arr, n){
@@ -209,730 +259,826 @@ function pickMany(rng, arr, n){
   }
   return out;
 }
-function setStatus(t){ document.getElementById("statusPill").innerHTML = "<b>Status:</b> " + t; }
-function tc(s){ return (s||"").split(" ").map(w=>w? w[0].toUpperCase()+w.slice(1):w).join(" "); }
 function clean(s){ return (s||"").replace(/\s+/g," ").trim(); }
+function setStatus(t){ document.getElementById("status").innerHTML = "<b>Status:</b> " + t; }
+function showRejects(text){
+  const box = document.getElementById("rejectBox");
+  if (!text){ box.style.display="none"; box.textContent=""; return; }
+  box.style.display="block";
+  box.textContent = text;
+}
 
-/* =========================
-   Brand-locked DNA (names only for story frame)
-========================= */
+/* =========================================================
+   Global channel characters (names for story frame)
+========================================================= */
 const HERO = "Willy (Baby Golden Retriever)";
-const FRIENDS_POOL = [
+const FRIENDS = [
   "Panby (Baby Giant Panda)",
   "Quok (Baby Quokka)"
 ];
 
-/* =========================
-   Taxonomies: object types / role tags / problem tags
-   (THIS is what fixes incoherence)
-========================= */
+/* =========================================================
+   Triads system:
+   Triad locks compatible sets: problems ↔ objectTypes ↔ roles ↔ helperAnimals ↔ tools/vehicles.
+========================================================= */
+const TAGS = {
+  PATH:"PATH", RESCUE:"RESCUE", OUTREACH:"OUT_OF_REACH", WATER:"WATER",
+  REPAIR:"REPAIR", BUILD:"BUILD", CARE:"CARE", SHARE:"SHARE",
+  FUNNY:"FUNNY", COURAGE:"COURAGE", DELIVERY:"DELIVERY", AIR:"AIR"
+};
 
-/* Object library: 120+ items with TYPES */
+/* ---------- Libraries (big + expandable without huge literal dumps) ---------- */
+function makeList(prefix, n){ return Array.from({length:n}).map((_,i)=>`${prefix} #${i+1}`); }
+
+/** Objects with type tags (you can expand these easily) */
 const OBJECTS = [
-  // TOYS / VEHICLES
+  // Vehicles / transport toys
   {name:"tiny toy fire truck", type:"TOY_VEHICLE"},
   {name:"tiny toy ambulance", type:"TOY_VEHICLE"},
   {name:"tiny toy tow truck", type:"TOY_VEHICLE"},
   {name:"tiny toy delivery van", type:"TOY_VEHICLE"},
   {name:"tiny toy bus", type:"TOY_VEHICLE"},
-  {name:"tiny toy train engine", type:"TOY_VEHICLE"},
+  {name:"tiny wagon", type:"TOY_VEHICLE"},
+  {name:"toy excavator", type:"TOY_VEHICLE"},
+  {name:"toy tractor", type:"TOY_VEHICLE"},
+
+  // Air / plane toys
   {name:"small wooden airplane", type:"TOY_PLANE"},
   {name:"toy plane with blue wings", type:"TOY_PLANE"},
   {name:"paper airplane", type:"TOY_PLANE"},
   {name:"toy helicopter", type:"TOY_AIR"},
-  {name:"toy hot air balloon", type:"TOY_AIR"},
+
+  // Water toys
   {name:"toy sailboat", type:"TOY_BOAT"},
-  {name:"toy submarine", type:"TOY_BOAT"},
-  {name:"tiny toy scooter", type:"TOY_VEHICLE"},
-  {name:"toy bicycle bell", type:"TOY_ACCESSORY"},
-  {name:"tiny wagon", type:"TOY_VEHICLE"},
-  {name:"toy excavator", type:"TOY_VEHICLE"},
-  {name:"toy tractor", type:"TOY_VEHICLE"},
-  // ART / CRAFT
+  {name:"toy boat with blue hull", type:"TOY_BOAT"},
+
+  // Art / craft
   {name:"mini paint palette", type:"ART"},
+  {name:"tiny sketchbook", type:"ART"},
   {name:"tiny paintbrush", type:"ART"},
   {name:"mini sticker sheet", type:"ART"},
-  {name:"tiny sketchbook", type:"ART"},
-  {name:"tiny pencil", type:"ART"},
-  // CLOTH / COZY
-  {name:"tiny knitted scarf", type:"CLOTH"},
+
+  // Cloth / cozy
   {name:"little cape", type:"CLOTH"},
+  {name:"tiny knitted scarf", type:"CLOTH"},
   {name:"tiny blanket", type:"CLOTH"},
-  {name:"soft bandana", type:"CLOTH"},
   {name:"mini rain boots", type:"CLOTH"},
-  // FOOD / COZY
-  {name:"tiny cookie tin", type:"FOOD"},
-  {name:"mini picnic basket", type:"FOOD"},
-  {name:"little mug of warm cocoa", type:"FOOD"},
-  {name:"mini lunch box", type:"FOOD"},
-  // KEEPSAKES / EMOTIONAL
+
+  // Emotional keepsakes
   {name:"small heart pillow", type:"KEEPSAKE"},
   {name:"tiny music box", type:"KEEPSAKE"},
   {name:"mini storybook", type:"KEEPSAKE"},
   {name:"small photo frame", type:"KEEPSAKE"},
-  {name:"tiny bell charm", type:"KEEPSAKE"},
-  // NATURE / FOUND
-  {name:"smooth river stone", type:"NATURE"},
-  {name:"small seashell", type:"NATURE"},
-  {name:"pressed leaf bookmark", type:"NATURE"},
-  {name:"tiny flower bouquet", type:"NATURE"},
-  // Add more quickly by cloning types (to reach “hundreds” feel)
-  ...Array.from({length:70}).map((_,i)=>({name:`tiny plush buddy #${i+1}`, type:"PLUSH"})),
-  ...Array.from({length:50}).map((_,i)=>({name:`little charm trinket #${i+1}`, type:"KEEPSAKE"}))
+
+  // Plush
+  ...makeList("tiny plush buddy", 80).map(n=>({name:n, type:"PLUSH"})),
+
+  // Trinkets
+  ...makeList("little charm trinket", 60).map(n=>({name:n, type:"KEEPSAKE"}))
 ];
 
-/* Helper roles: 150+ with TAGS that connect to problems/objects */
+/** Helper roles with tags (100+ feel, but meaningful core first) */
 const ROLES = [
-  {name:"Firefighter", tags:["RESCUE","TOOLS","VEHICLE"]},
-  {name:"Medic", tags:["RESCUE","CARE","TOOLS","VEHICLE"]},
-  {name:"Tow Truck Driver", tags:["RESCUE","VEHICLE","PULL"]},
-  {name:"Park Ranger", tags:["PATH","OUTDOOR","TOOLS"]},
-  {name:"Bridge Builder", tags:["PATH","BUILD","TOOLS"]},
-  {name:"Carpenter", tags:["BUILD","REPAIR","TOOLS"]},
-  {name:"Toy Maker", tags:["BUILD","TOY","TOOLS"]},
-  {name:"Mechanic", tags:["REPAIR","TOOLS"]},
-  {name:"Model Plane Builder", tags:["REPAIR","TOY","AIR","TOOLS"]},
-  {name:"Knitwear Maker", tags:["CLOTH","CARE","TOOLS"]},
-  {name:"Tailor", tags:["CLOTH","CARE","TOOLS"]},
-  {name:"Delivery Rider", tags:["DELIVERY","VEHICLE"]},
-  {name:"Mail Carrier", tags:["DELIVERY","VEHICLE"]},
-  {name:"Boat Captain", tags:["WATER","VEHICLE","RESCUE"]},
-  {name:"Lifeguard", tags:["WATER","RESCUE","TOOLS"]},
-  {name:"Mountain Guide", tags:["COURAGE","PATH","OUTDOOR"]},
-  {name:"Coach", tags:["COURAGE","CARE"]},
-  {name:"Lost-and-Found Keeper", tags:["SEARCH","CARE"]},
-  {name:"Workshop Manager", tags:["BUILD","REPAIR","TOOLS"]},
-  {name:"Festival Coordinator", tags:["FUNNY","PLAY","TOOLS"]},
-  {name:"Baker", tags:["FOOD","CARE"]},
-  {name:"Hot Cocoa Maker", tags:["FOOD","CARE"]},
-  {name:"Ice Cream Maker", tags:["FOOD","FUNNY"]},
-  // Expand role list to “hundreds” feel (generated)
-  ...Array.from({length:120}).map((_,i)=>({name:`Helper Role #${i+1}`, tags: pickRoleTags(i)}))
+  {name:"Bridge Builder", tags:[TAGS.PATH, TAGS.BUILD]},
+  {name:"Park Ranger", tags:[TAGS.PATH, TAGS.CARE]},
+  {name:"Tow Truck Driver", tags:[TAGS.PATH, TAGS.DELIVERY]},
+  {name:"Carpenter", tags:[TAGS.BUILD, TAGS.REPAIR]},
+  {name:"Mechanic", tags:[TAGS.REPAIR, TAGS.DELIVERY]},
+  {name:"Toy Maker", tags:[TAGS.BUILD, TAGS.REPAIR, TAGS.CARE]},
+  {name:"Model Plane Builder", tags:[TAGS.REPAIR, TAGS.AIR]},
+  {name:"Firefighter", tags:[TAGS.RESCUE, TAGS.OUTREACH]},
+  {name:"Medic", tags:[TAGS.CARE, TAGS.RESCUE]},
+  {name:"Lifeguard", tags:[TAGS.WATER, TAGS.RESCUE]},
+  {name:"Boat Captain", tags:[TAGS.WATER, TAGS.DELIVERY]},
+  {name:"Knitwear Maker", tags:[TAGS.CARE, "CLOTH_ROLE"]},
+  {name:"Tailor", tags:[TAGS.CARE, "CLOTH_ROLE"]},
+  {name:"Friendship Mediator", tags:[TAGS.SHARE, TAGS.CARE]},
+  {name:"Play Organizer", tags:[TAGS.FUNNY, TAGS.CARE]},
+  {name:"Courage Coach", tags:[TAGS.COURAGE, TAGS.CARE]},
+  // filler roles with generic tags but still grouped
+  ...makeList("Helper Role", 110).map((n,i)=>({
+    name:n,
+    tags: (i%6===0)?[TAGS.RESCUE] :
+          (i%6===1)?[TAGS.REPAIR] :
+          (i%6===2)?[TAGS.BUILD] :
+          (i%6===3)?[TAGS.CARE] :
+          (i%6===4)?[TAGS.PATH] :
+                   [TAGS.FUNNY]
+  }))
 ];
 
-function pickRoleTags(i){
-  const sets = [
-    ["CARE","TOOLS"],["REPAIR","TOOLS"],["BUILD","TOOLS"],["DELIVERY","VEHICLE"],
-    ["RESCUE","TOOLS"],["PATH","OUTDOOR","TOOLS"],["FUNNY","PLAY"],["COURAGE","CARE"],["SEARCH","CARE"]
-  ];
-  return sets[i % sets.length];
-}
-
-/* Helper animals: always animals (100+) */
+/** Helper animals (always animals) */
 const HELPERS = [
-  {name:"baby duck delivery helper", tags:["DELIVERY","VEHICLE"]},
-  {name:"beaver builder helper", tags:["BUILD","TOOLS","PATH"]},
-  {name:"otter lifeguard helper", tags:["WATER","RESCUE"]},
-  {name:"cat firefighter helper", tags:["RESCUE","TOOLS"]},
-  {name:"bunny nurse helper", tags:["CARE","RESCUE"]},
-  {name:"red panda mechanic helper", tags:["REPAIR","TOOLS"]},
-  {name:"owl librarian helper", tags:["SEARCH","CARE"]},
-  {name:"deer park ranger helper", tags:["PATH","OUTDOOR"]},
-  {name:"chipmunk carpenter helper", tags:["BUILD","TOOLS"]},
-  {name:"corgi postal helper", tags:["DELIVERY","VEHICLE"]},
-  {name:"penguin snow guide helper", tags:["COLD","COURAGE"]},
-  ...Array.from({length:90}).map((_,i)=>({name:`cute helper animal #${i+1}`, tags: pickHelperTags(i)}))
+  {name:"beaver builder helper", tags:[TAGS.BUILD, TAGS.PATH]},
+  {name:"cat firefighter helper", tags:[TAGS.RESCUE]},
+  {name:"bunny medic helper", tags:[TAGS.CARE, TAGS.RESCUE]},
+  {name:"otter lifeguard helper", tags:[TAGS.WATER, TAGS.RESCUE]},
+  {name:"red panda mechanic helper", tags:[TAGS.REPAIR]},
+  {name:"deer park ranger helper", tags:[TAGS.PATH]},
+  {name:"baby duck delivery helper", tags:[TAGS.DELIVERY]},
+  {name:"chipmunk carpenter helper", tags:[TAGS.BUILD]},
+  {name:"penguin snow guide helper", tags:[TAGS.COURAGE]},
+  ...makeList("cute helper animal", 90).map((n,i)=>({
+    name:n,
+    tags: (i%7===0)?[TAGS.BUILD] :
+          (i%7===1)?[TAGS.RESCUE] :
+          (i%7===2)?[TAGS.CARE] :
+          (i%7===3)?[TAGS.REPAIR] :
+          (i%7===4)?[TAGS.PATH] :
+          (i%7===5)?[TAGS.DELIVERY] :
+                   [TAGS.FUNNY]
+  }))
 ];
-function pickHelperTags(i){
-  const sets = [
-    ["CARE"],["CARE","TOOLS"],["REPAIR","TOOLS"],["BUILD","TOOLS"],["DELIVERY","VEHICLE"],
-    ["RESCUE","TOOLS"],["PATH","OUTDOOR"],["FUNNY","PLAY"],["SEARCH","CARE"],["COURAGE","CARE"]
-  ];
-  return sets[i % sets.length];
-}
 
-/* Weather/time: 30+ with CLIMATE tags */
+/** Weather/time (30+) */
 const WEATHER = [
   {t:"Spring morning, soft sunlight, mild breeze", tags:["MILD","GREEN"]},
   {t:"Warm summer afternoon, bright sun, clear sky", tags:["WARM","SUNNY"]},
-  {t:"Overcast day, gentle cool light", tags:["MILD","CLOUDY"]},
+  {t:"Overcast day, gentle cool light", tags:["COOL","CLOUDY"]},
   {t:"Light rain, puddles forming, soft grey sky", tags:["RAIN","MILD"]},
   {t:"Heavy rain, visible raindrops, bigger puddles", tags:["RAIN","HEAVY"]},
   {t:"Thunderstorm, dark clouds, distant lightning (safe)", tags:["STORM"]},
   {t:"Cold winter morning, pale sun, frosty air", tags:["COLD","FROST"]},
   {t:"Snowy day, soft snowfall, quiet atmosphere", tags:["SNOW","COLD"]},
-  {t:"Forest afternoon, dappled sunlight through leaves", tags:["MILD","FOREST"]},
-  {t:"Cozy indoor evening, warm lamps, soft shadows", tags:["INDOOR","COZY"]},
-  ...Array.from({length:20}).map((_,i)=>({t:`Weather Variant #${i+1}`, tags: pickWeatherTags(i)}))
+  {t:"Golden hour evening, warm low sun, long shadows", tags:["WARM","SOFT"]},
+  {t:"Early morning mist, soft haze, calm air", tags:["MIST","COOL"]},
+  ...makeList("Weather Variant", 20).map((n,i)=>({
+    t:n,
+    tags:(i%5===0)?["RAIN"]:(i%5===1)?["MILD"]:(i%5===2)?["WARM"]:(i%5===3)?["COOL"]:["WIND"]
+  }))
 ];
-function pickWeatherTags(i){
-  const sets = [["MILD"],["WARM","SUNNY"],["COOL"],["RAIN"],["COLD"],["INDOOR","COZY"],["WIND"]];
-  return sets[i % sets.length];
-}
 
-/* Locations: 70+ with tags + optional country marker */
+/** Locations (neutral + country-flavor optional) */
 const LOCATIONS = [
-  {t:"Park meadow — soft grass, big tree, distant hills", tags:["MILD","GREEN"], country:null},
-  {t:"Neutral garden path — trimmed bushes, warm stone walkway", tags:["MILD","GREEN","PATH"], country:null},
-  {t:"Riverside path — smooth stones, gentle water, reeds", tags:["WATER","PATH","MILD"], country:null},
-  {t:"Cozy workshop room — wooden table, neat tools, warm daylight", tags:["INDOOR","COZY","TOOLS"], country:null},
-  {t:"Autumn forest trail — fallen leaves, earthy tones", tags:["FOREST","PATH","COOL"], country:null},
+  {t:"Park meadow — soft grass, big tree, distant hills", tags:["GREEN","MILD"], country:null},
+  {t:"Neutral garden path — trimmed bushes, warm stone walkway", tags:["PATH","MILD"], country:null},
+  {t:"Riverside path — smooth stones, gentle water, reeds", tags:["PATH","WATER","MILD"], country:null},
+  {t:"Cozy workshop — wooden table, neat tools, warm daylight", tags:["INDOOR","TOOLS","COZY"], country:null},
+  {t:"Autumn forest trail — fallen leaves, earthy tones", tags:["PATH","FOREST","COOL"], country:null},
   {t:"Snowy forest clearing — pine trees, fresh snow", tags:["SNOW","COLD","FOREST"], country:null},
-  {t:"Mountain meadow — rocky ground, distant peaks, crisp light", tags:["MOUNTAIN","COOL"], country:null},
-  // country-flavor (optional)
+  {t:"Mountain meadow — rocky ground, distant peaks, crisp light", tags:["COOL","ROCKY"], country:null},
+  // cultural options
   {t:"Japan — wooden house corridor, shoji screens, tatami floor, calm courtyard view", tags:["INDOOR","COZY"], country:"Japan"},
-  {t:"France — stone village lane, shutters, small bakery shape (no text)", tags:["CITY","MILD"], country:"France"},
-  {t:"Taiwan — alley with scooter shapes (no logos), warm humid light", tags:["CITY","WARM"], country:"Taiwan"},
-  ...Array.from({length:60}).map((_,i)=>({t:`Neutral Scenic Location #${i+1}`, tags: pickLocTags(i), country:null}))
+  {t:"France — stone village lane, shutters, small bakery shapes (no text)", tags:["CITY","MILD"], country:"France"},
+  {t:"Taiwan — narrow street with scooter silhouettes (no logos), humid warm light", tags:["CITY","WARM"], country:"Taiwan"},
+  ...makeList("Neutral Scenic Location", 60).map((n,i)=>({t:n, tags:(i%4===0)?["MILD"]: (i%4===1)?["PATH"]: (i%4===2)?["COOL"]:["COZY"], country:null}))
 ];
-function pickLocTags(i){
-  const sets = [["MILD","GREEN"],["PATH","MILD"],["CITY","MILD"],["INDOOR","COZY"],["FOREST","COOL"],["WATER","MILD"],["MOUNTAIN","COOL"]];
-  return sets[i % sets.length];
-}
 
-/* Problems: 70+ with tags + required cast */
+/** Problems (50+ real + expandable) */
 const PROBLEMS = [
-  // path / terrain
-  {t:"A path is blocked by fallen branches", tags:["PATH","OUTDOOR","PHYSICS"], requiresFriends:false},
-  {t:"A wagon is stuck in mud", tags:["PATH","PHYSICS","RAIN"], requiresFriends:false},
-  {t:"A small bridge plank is missing over a puddle", tags:["PATH","BUILD","PHYSICS","RAIN"], requiresFriends:false},
-  // rescue / out-of-reach
-  {t:"Cherished toy is stuck in a tree", tags:["RESCUE","OUTDOOR","OUT_OF_REACH"], requiresFriends:false},
-  {t:"Object is out of reach on a ledge", tags:["RESCUE","PHYSICS","OUT_OF_REACH"], requiresFriends:false},
-  {t:"A little boat is drifting away", tags:["WATER","RESCUE","PHYSICS"], requiresFriends:false},
-  // repair / caregiver
-  {t:"Favorite toy is broken and can’t be used", tags:["REPAIR","CARE","EMOTIONAL"], requiresFriends:false},
-  {t:"A toy plane propeller is bent", tags:["REPAIR","AIR","TOY"], requiresFriends:false},
-  {t:"A backpack strap tore", tags:["REPAIR","CARE"], requiresFriends:false},
-  // friendship share (requires friends)
-  {t:"Two friends want the same toy and must share", tags:["FRIENDSHIP","EMOTIONAL","SHARE"], requiresFriends:true},
-  {t:"A friend feels left out during play", tags:["FRIENDSHIP","EMOTIONAL"], requiresFriends:true},
-  // courage / weather
-  {t:"Hero gets scared by thunder and needs comfort", tags:["COURAGE","EMOTIONAL","STORM","CARE"], requiresFriends:false},
-  {t:"A narrow step looks scary to cross", tags:["COURAGE","PHYSICS","PATH"], requiresFriends:false},
-  // funny safe mishap
-  {t:"A hat keeps falling over the eyes", tags:["FUNNY","PLAY"], requiresFriends:false},
-  {t:"A stack of cups keeps wobbling comically", tags:["FUNNY","PHYSICS"], requiresFriends:false},
-  // Expand to “lots”
-  ...Array.from({length:55}).map((_,i)=>({t:`Problem Variant #${i+1}`, tags: pickProbTags(i), requiresFriends: (i%9===0)}))
+  // RESCUE style
+  {t:"Cherished toy is stuck in a tree", tags:[TAGS.RESCUE, TAGS.OUTREACH], requiresFriends:false},
+  {t:"Object is out of reach on a ledge", tags:[TAGS.RESCUE, TAGS.OUTREACH], requiresFriends:false},
+  {t:"A little balloon drifts upward and gets snagged", tags:[TAGS.RESCUE, TAGS.OUTREACH], requiresFriends:false},
+
+  // REPAIR / Emotional build
+  {t:"Favorite toy is broken and can’t be used", tags:[TAGS.REPAIR, TAGS.CARE], requiresFriends:false},
+  {t:"A toy plane propeller is bent", tags:[TAGS.REPAIR, TAGS.AIR], requiresFriends:false},
+  {t:"A cherished keepsake is scratched and needs fixing", tags:[TAGS.REPAIR, TAGS.CARE], requiresFriends:false},
+
+  // PATH / Adventure
+  {t:"A path is blocked by fallen branches", tags:[TAGS.PATH, TAGS.BUILD], requiresFriends:false},
+  {t:"A wagon is stuck in mud", tags:[TAGS.PATH, TAGS.BUILD], requiresFriends:false},
+  {t:"A puddle is too wide to cross safely", tags:[TAGS.PATH, TAGS.BUILD], requiresFriends:false},
+
+  // WATER
+  {t:"A small toy boat drifts away from shore", tags:[TAGS.WATER, TAGS.RESCUE], requiresFriends:false},
+
+  // FRIENDSHIP
+  {t:"Two friends want the same toy and must share", tags:[TAGS.SHARE, TAGS.CARE], requiresFriends:true},
+  {t:"A friend feels left out during play", tags:[TAGS.SHARE, TAGS.CARE], requiresFriends:true},
+
+  // FUNNY
+  {t:"A hat keeps slipping over the eyes", tags:[TAGS.FUNNY], requiresFriends:false},
+  {t:"A stack of cups wobbles and tips in a silly way", tags:[TAGS.FUNNY], requiresFriends:false},
+
+  // COURAGE
+  {t:"Thunder scares the hero and a brave step is needed", tags:[TAGS.COURAGE, TAGS.CARE], requiresFriends:false},
+  {t:"A narrow step looks scary to cross", tags:[TAGS.COURAGE, TAGS.PATH], requiresFriends:false},
+
+  // Expand quickly to reach “many options”
+  ...makeList("Problem Variant", 55).map((n,i)=>({
+    t:n,
+    tags:(i%6===0)?[TAGS.RESCUE]:(i%6===1)?[TAGS.REPAIR]:(i%6===2)?[TAGS.PATH]:(i%6===3)?[TAGS.SHARE]:(i%6===4)?[TAGS.FUNNY]:[TAGS.COURAGE],
+    requiresFriends:(i%11===0)
+  }))
 ];
-function pickProbTags(i){
-  const sets = [
-    ["PATH","PHYSICS"],["RESCUE","OUT_OF_REACH"],["REPAIR","CARE"],["FRIENDSHIP","SHARE"],
-    ["FUNNY","PLAY"],["COURAGE","EMOTIONAL"],["WATER","RESCUE"],["DELIVERY","ADVENTURE"],["SEARCH","CARE"]
-  ];
-  return sets[i % sets.length];
+
+/* ---------- Tools + vehicles with explicit DNA text ---------- */
+const TOOL_LIBRARY = [
+  {name:"tiny extendable ladder, 22cm toy-scale, red aluminum, silver hinges", tags:[TAGS.RESCUE, TAGS.OUTREACH]},
+  {name:"small rescue net, 18cm hoop, white mesh, blue handle", tags:[TAGS.RESCUE, TAGS.OUTREACH]},
+  {name:"mini rope spool, 2m twine, tan color, wooden spool", tags:[TAGS.RESCUE, TAGS.PATH]},
+  {name:"small wood plank, 25cm, light pine, smooth edges", tags:[TAGS.PATH, TAGS.BUILD]},
+  {name:"mini hammer, 8cm, wooden handle", tags:[TAGS.BUILD]},
+  {name:"tiny screwdriver set, 6cm handles, matte yellow plastic", tags:[TAGS.REPAIR]},
+  {name:"mini wrench, 7cm, brushed steel", tags:[TAGS.REPAIR]},
+  {name:"soft pastel yarn ball + 8cm bamboo needles", tags:["CLOTH_ROLE", TAGS.CARE]},
+  {name:"tiny sewing kit, thread spools + blunt needle, pastel case", tags:["CLOTH_ROLE", TAGS.CARE]},
+  {name:"two tiny traffic cones, 6cm, bright orange matte plastic", tags:[TAGS.PATH]},
+  {name:"mini first-aid pouch, 10cm, red with white cross symbol (no text)", tags:[TAGS.CARE, TAGS.RESCUE]}
+];
+
+const VEHICLE_LIBRARY = [
+  {name:"toy fire truck, 28cm, glossy red plastic, silver ladder", tags:[TAGS.RESCUE]},
+  {name:"toy ambulance, 28cm, glossy white plastic, red stripe (no text)", tags:[TAGS.RESCUE, TAGS.CARE]},
+  {name:"toy tow truck, 26cm, yellow plastic, black hook", tags:[TAGS.PATH]},
+  {name:"toy delivery scooter, 20cm, yellow body, white basket", tags:[TAGS.DELIVERY]},
+  {name:"mini wheelbarrow, 24cm, green metal basin, black wheel", tags:[TAGS.BUILD]},
+  {name:"toy boat, 24cm, blue hull, white deck", tags:[TAGS.WATER]}
+];
+
+/* =========================================================
+   TRIADS (the lock)
+========================================================= */
+const TRIADS = [
+  {
+    key:"RESCUE_ATTEMPTS",
+    label:"Rescue attempts",
+    problemTags:[TAGS.RESCUE, TAGS.OUTREACH, TAGS.WATER],
+    objectTypes:["PLUSH","KEEPSAKE","TOY_PLANE","TOY_AIR","TOY_BOAT","NATURE"],
+    roleTags:[TAGS.RESCUE, TAGS.OUTREACH, TAGS.CARE, TAGS.WATER],
+    helperTags:[TAGS.RESCUE, TAGS.CARE, TAGS.WATER],
+    requiredFeatures:{attempts:true, toolSwitch:true, objectTransforms:true}
+  },
+  {
+    key:"EMOTIONAL_BUILD",
+    label:"Emotional build/repair",
+    problemTags:[TAGS.REPAIR, TAGS.CARE, TAGS.AIR],
+    objectTypes:["TOY_PLANE","TOY_VEHICLE","PLUSH","KEEPSAKE","ART","CLOTH"],
+    roleTags:[TAGS.REPAIR, TAGS.BUILD, TAGS.CARE, "CLOTH_ROLE", TAGS.AIR],
+    helperTags:[TAGS.CARE, TAGS.REPAIR, TAGS.BUILD],
+    requiredFeatures:{attempts:false, toolSwitch:false, objectTransforms:true}
+  },
+  {
+    key:"ADVENTURE_ROUTE",
+    label:"Adventure route",
+    problemTags:[TAGS.PATH, TAGS.BUILD, TAGS.DELIVERY],
+    objectTypes:["TOY_VEHICLE","FOOD","KEEPSAKE","PLUSH"],
+    roleTags:[TAGS.PATH, TAGS.BUILD, TAGS.DELIVERY],
+    helperTags:[TAGS.PATH, TAGS.BUILD, TAGS.DELIVERY],
+    requiredFeatures:{attempts:true, toolSwitch:false, objectTransforms:true}
+  },
+  {
+    key:"FRIENDSHIP_SHARE",
+    label:"Friendship share",
+    problemTags:[TAGS.SHARE, TAGS.CARE],
+    objectTypes:["TOY_VEHICLE","PLUSH","ART","KEEPSAKE"],
+    roleTags:[TAGS.CARE, TAGS.BUILD, TAGS.REPAIR, TAGS.SHARE],
+    helperTags:[TAGS.CARE],
+    requiredFeatures:{attempts:false, toolSwitch:false, objectTransforms:true, needsFriends:true}
+  },
+  {
+    key:"FUNNY_SAFE",
+    label:"Funny safe mishap",
+    problemTags:[TAGS.FUNNY],
+    objectTypes:["PLUSH","ART","KEEPSAKE","TOY_VEHICLE","CLOTH"],
+    roleTags:[TAGS.FUNNY, TAGS.CARE, TAGS.BUILD],
+    helperTags:[TAGS.FUNNY, TAGS.CARE],
+    requiredFeatures:{attempts:true, toolSwitch:false, objectTransforms:true, getsWorseOnce:true}
+  },
+  {
+    key:"COURAGE_STEP",
+    label:"Courage micro-steps",
+    problemTags:[TAGS.COURAGE, TAGS.PATH, TAGS.CARE],
+    objectTypes:["KEEPSAKE","PLUSH","TOY_VEHICLE","CLOTH"],
+    roleTags:[TAGS.COURAGE, TAGS.CARE, TAGS.PATH],
+    helperTags:[TAGS.CARE, TAGS.COURAGE, TAGS.PATH],
+    requiredFeatures:{attempts:true, toolSwitch:false, objectTransforms:true}
+  }
+];
+
+/* =========================================================
+   Role-specific action micro-library (THIS makes scenes exciting)
+========================================================= */
+const ROLE_ACTIONS = [
+  {
+    match:(role)=>/Firefighter|Rescue|Medic|Lifeguard/i.test(role),
+    verbs:{
+      tool:"sets down the tool carefully",
+      attempt1:"tries the first safe reach and it does not work yet",
+      attempt2:"changes the angle and tries again with clearer progress",
+      upgrade:"adds a stabilizer detail (rope/board/brace)",
+      success:"secures the item safely without any sudden jerks"
+    }
+  },
+  {
+    match:(role)=>/Bridge Builder|Carpenter|Builder|Ranger/i.test(role),
+    verbs:{
+      tool:"lays the plank/board flat with a firm push",
+      attempt1:"tries to move the obstacle once and it shifts but blocks again",
+      attempt2:"repositions and lever-lifts the branch with controlled force",
+      upgrade:"adds cones/markers and a second plank for stability",
+      success:"clears a clean safe passage with visible space to walk"
+    }
+  },
+  {
+    match:(role)=>/Mechanic|Toy Maker|Plane Builder/i.test(role),
+    verbs:{
+      tool:"places tools in a neat row before touching the object",
+      attempt1:"tightens/aligns one piece and it still wobbles",
+      attempt2:"adds a second fix that stabilizes the part",
+      upgrade:"polishes/paints a cute finishing detail",
+      success:"tests gently and the object works smoothly"
+    }
+  },
+  {
+    match:(role)=>/Knitwear|Tailor/i.test(role),
+    verbs:{
+      tool:"unrolls yarn and taps the needles together once",
+      attempt1:"knits a tiny looped strap and it is too short",
+      attempt2:"adds extra rows to lengthen and soften the strap",
+      upgrade:"stitches a tiny bow or padding for comfort",
+      success:"wraps/straps the soft knit solution so it holds securely"
+    }
+  },
+  {
+    match:(role)=>/Mediator|Friendship|Coach/i.test(role),
+    verbs:{
+      tool:"points with the nose/paw to show positions (no rushing)",
+      attempt1:"tries a simple fairness gesture and it’s not enough",
+      attempt2:"creates a clear sharing setup that both can access",
+      upgrade:"adds a cute rule object (two markers) to keep it fair",
+      success:"both friends get equal access and relax visibly"
+    }
+  },
+  // fallback
+  {
+    match:()=>true,
+    verbs:{
+      tool:"brings a helpful tool into view",
+      attempt1:"tries once and it doesn’t work yet",
+      attempt2:"adjusts and tries again with progress",
+      upgrade:"adds one small stabilizing detail",
+      success:"finishes safely and clearly"
+    }
+  }
+];
+function verbsForRole(roleName){
+  return ROLE_ACTIONS.find(r=>r.match(roleName)).verbs;
 }
 
-/* =========================
-   Engine selection
-========================= */
-const ENGINE_KEYS = ["EMOTIONAL","RESCUE","ADVENTURE","FUNNY","COURAGE","FRIENDSHIP"];
-function pickEngine(rng, req, tone){
-  if (req && req !== "AUTO") return req;
-  const t = (tone||"").toLowerCase();
-  const pool=[];
-  const add=(k,w)=>{ for(let i=0;i<w;i++) pool.push(k); };
-
-  if (t.includes("emotional") || t.includes("cozy")){ add("EMOTIONAL",6); add("FRIENDSHIP",2); add("COURAGE",2); }
-  else if (t.includes("funny")){ add("FUNNY",6); add("ADVENTURE",2); add("RESCUE",2); }
-  else if (t.includes("brave") || t.includes("encouraging")){ add("COURAGE",6); add("RESCUE",3); add("EMOTIONAL",1); }
-  else if (t.includes("friend")){ add("FRIENDSHIP",6); add("EMOTIONAL",2); add("FUNNY",2); }
-  else if (t.includes("adventure")){ add("ADVENTURE",6); add("RESCUE",3); add("FUNNY",1); }
-  else { add("RESCUE",3); add("EMOTIONAL",3); add("ADVENTURE",2); add("FUNNY",2); }
-  return pick(rng, pool.length?pool:ENGINE_KEYS);
+/* =========================================================
+   Validator (the gatekeeper)
+========================================================= */
+function hasAnyTag(itemTags, neededTags){
+  const s = new Set(itemTags||[]);
+  return (neededTags||[]).some(t=>s.has(t));
 }
-
-/* =========================
-   Compatibility logic:
-   - Choose a problem first
-   - Then choose object consistent with problem
-   - Then choose role consistent with problem+object
-   - Then choose helper animal consistent with role
-   - Then choose tool/vehicle consistent with role+problem
-========================= */
-function hasTag(thing, tag){ return (thing.tags||[]).includes(tag); }
-function intersects(a,b){
-  const s=new Set(a||[]);
-  return (b||[]).some(x=>s.has(x));
-}
-
-function locationCompatible(weatherTags, locTags){
+function locCompatible(weatherTags, locTags){
   const w = new Set(weatherTags||[]);
   const l = new Set(locTags||[]);
+  // simple logic (extend anytime)
   if (w.has("SNOW") && (l.has("WARM") || l.has("WATER"))) return false;
   if (w.has("COLD") && l.has("WARM")) return false;
-  if ((w.has("INDOOR")) && !l.has("INDOOR")) return false;
   return true;
+}
+
+function validateCombo(triad, problem, object, role, helper, friends, weather, location){
+  const reasons = [];
+
+  // triad tag match
+  if (!hasAnyTag(problem.tags, triad.problemTags)) reasons.push("Problem does not match triad tags.");
+  if (object && !triad.objectTypes.includes(object.type)) reasons.push(`Object type '${object.type}' not allowed for triad.`);
+  if (!hasAnyTag(role.tags, triad.roleTags)) reasons.push("Role does not match triad role tags.");
+  if (!hasAnyTag(helper.tags, triad.helperTags)) reasons.push("Helper animal does not match triad helper tags.");
+
+  // friends requirement
+  if (triad.requiredFeatures.needsFriends || problem.requiresFriends){
+    if (!friends || friends.length < 1) reasons.push("This story needs at least one friend, but none were included.");
+  }
+
+  // weather/location compatibility
+  if (!locCompatible(weather.tags, location.tags)) reasons.push("Weather and location are incompatible.");
+
+  // special rule: Cloth roles must not be assigned to path-clearing problems unless object is cloth and solution is cloth-based
+  if ((/Knitwear|Tailor/i.test(role.name)) && problem.tags.includes(TAGS.PATH) && (!object || object.type !== "CLOTH")){
+    reasons.push("Cloth role + path obstacle requires CLOTH object (otherwise incoherent).");
+  }
+
+  // object transformation requirement
+  if (triad.requiredFeatures.objectTransforms && !object){
+    // allowed for some stories, but in this channel you usually want an object if checked.
+    // We'll treat this as a soft warning only if wantObject was on; handled elsewhere.
+  }
+
+  return {ok: reasons.length === 0, reasons};
+}
+
+/* =========================================================
+   Picker helpers (respect triads)
+========================================================= */
+function pickFrom(rng, arr, predicate){
+  const cand = predicate ? arr.filter(predicate) : arr.slice();
+  return cand.length ? pick(rng, cand) : pick(rng, arr);
+}
+
+function pickTriad(rng, engineKey){
+  if (engineKey && engineKey !== "AUTO") return TRIADS.find(t=>t.key===engineKey) || pick(rng, TRIADS);
+  // weighted auto
+  const pool = [];
+  TRIADS.forEach(t => { for (let i=0;i<3;i++) pool.push(t); });
+  // bias a little random
+  for (let i=0;i<6;i++) pool.push(pick(rng, TRIADS));
+  return pick(rng, pool);
+}
+
+function pickProblem(rng, triad){
+  return pickFrom(rng, PROBLEMS, p=>hasAnyTag(p.tags, triad.problemTags));
+}
+
+function pickObject(rng, triad, wantObject){
+  if (!wantObject) return null;
+  return pickFrom(rng, OBJECTS, o=>triad.objectTypes.includes(o.type));
+}
+
+function pickRole(rng, triad, problem, object){
+  // must match triad.roleTags and also problem tags (stronger) and object type constraints
+  const mustTags = new Set([...(triad.roleTags||[]), ...(problem.tags||[])]);
+  return pickFrom(rng, ROLES, r=>{
+    const matchTriad = hasAnyTag(r.tags, triad.roleTags);
+    const matchProb = hasAnyTag(r.tags, problem.tags) || hasAnyTag(problem.tags, r.tags);
+    if (!matchTriad) return false;
+    // object constraints
+    if (object){
+      if (object.type==="CLOTH" && !r.tags.includes("CLOTH_ROLE") && !r.tags.includes(TAGS.CARE)) return false;
+      if (object.type==="TOY_PLANE" && !(r.tags.includes(TAGS.AIR) || /plane|pilot|air/i.test(r.name) || r.tags.includes(TAGS.REPAIR))) return false;
+      if (object.type==="TOY_BOAT" && !(r.tags.includes(TAGS.WATER) || r.tags.includes(TAGS.RESCUE))) return false;
+    }
+    // for PATH, prefer PATH/BUILD/DELIVERY
+    if (problem.tags.includes(TAGS.PATH) && !(r.tags.includes(TAGS.PATH) || r.tags.includes(TAGS.BUILD) || r.tags.includes(TAGS.DELIVERY))) return false;
+    return matchProb || true;
+  });
+}
+
+function pickHelper(rng, triad, role){
+  return pickFrom(rng, HELPERS, h => hasAnyTag(h.tags, triad.helperTags) && (hasAnyTag(h.tags, role.tags) || hasAnyTag(role.tags, h.tags)));
+}
+
+function pickTool(rng, triad, role, problem){
+  const tags = Array.from(new Set([...(role.tags||[]), ...(problem.tags||[]), ...(triad.problemTags||[])]));
+  return pickFrom(rng, TOOL_LIBRARY, t=>hasAnyTag(t.tags, tags));
+}
+
+function pickVehicle(rng, triad, role, problem){
+  const tags = Array.from(new Set([...(role.tags||[]), ...(problem.tags||[]), ...(triad.problemTags||[])]));
+  // optional vehicle
+  const candidates = VEHICLE_LIBRARY.filter(v=>hasAnyTag(v.tags, tags));
+  if (!candidates.length) return null;
+  return (rng() < 0.75) ? pick(rng, candidates) : null;
 }
 
 function pickWeather(rng){ return pick(rng, WEATHER); }
 function pickLocation(rng, weather, wantCountry){
   const pool = LOCATIONS.filter(l => wantCountry ? true : !l.country);
-  const candidates = pool.filter(l => locationCompatible(weather.tags, l.tags));
-  return pick(rng, candidates.length?candidates:pool);
+  const cand = pool.filter(l => locCompatible(weather.tags, l.tags));
+  return cand.length ? pick(rng, cand) : pick(rng, pool);
 }
 
-function pickProblem(rng, engineKey){
-  // engine biases: keep only problems that fit engine tags
-  const engTags = engineTags(engineKey);
-  let candidates = PROBLEMS.filter(p => intersects(p.tags, engTags) || engineKey==="AUTO");
-  if (!candidates.length) candidates = PROBLEMS.slice();
-  return pick(rng, candidates);
+/* =========================================================
+   Story title generator (must match helper/role/problem)
+========================================================= */
+function buildTitle(rng, heroName, triad, helperName, roleName, problemText, objectName){
+  const patterns = [
+    `${heroName.split(" (")[0]} and the ${helperName.replace(" helper","")}`,
+    `${heroName.split(" (")[0]} and the ${roleName}`,
+    `${heroName.split(" (")[0]} and the Little Problem That Became a Big Smile`,
+    `${heroName.split(" (")[0]} and the Brave Small Step`,
+    `${heroName.split(" (")[0]} and the Helping Friend`
+  ];
+  const base = pick(rng, patterns);
+  const tail = objectName ? ` — ${problemText}` : ` — ${problemText}`;
+  return clean(base + tail);
 }
 
-function engineTags(engineKey){
-  switch(engineKey){
-    case "EMOTIONAL": return ["CARE","EMOTIONAL","REPAIR"];
-    case "RESCUE": return ["RESCUE","OUT_OF_REACH","PHYSICS","WATER"];
-    case "ADVENTURE": return ["ADVENTURE","DELIVERY","PATH","OUTDOOR","PHYSICS"];
-    case "FUNNY": return ["FUNNY","PLAY","PHYSICS"];
-    case "COURAGE": return ["COURAGE","EMOTIONAL","PATH","PHYSICS"];
-    case "FRIENDSHIP": return ["FRIENDSHIP","SHARE","EMOTIONAL","BUILD"];
-    default: return [];
-  }
-}
+/* =========================================================
+   Scene engine templates (triad-specific, with action logic)
+========================================================= */
+function buildBeats(triad, sceneCount, intensity, ctx){
+  const v = verbsForRole(ctx.role);
 
-function pickObjectForProblem(rng, problem, wantObject){
-  if (!wantObject) return null;
-
-  // Problem → allowed object types (hard rules)
-  const tags = new Set(problem.tags||[]);
-  let allowedTypes = ["KEEPSAKE","PLUSH","TOY_VEHICLE","TOY_PLANE","TOY_BOAT","ART","CLOTH","FOOD","NATURE","TOY_AIR","TOY_ACCESSORY"];
-
-  if (tags.has("PATH")) allowedTypes = ["TOY_VEHICLE","FOOD","KEEPSAKE","PLUSH"];         // travel/delivery feel
-  if (tags.has("RESCUE") || tags.has("OUT_OF_REACH")) allowedTypes = ["PLUSH","KEEPSAKE","TOY_AIR","TOY_PLANE","NATURE"];
-  if (tags.has("REPAIR")) allowedTypes = ["TOY_PLANE","TOY_VEHICLE","CLOTH","KEEPSAKE","ART"];
-  if (tags.has("SHARE")) allowedTypes = ["TOY_VEHICLE","PLUSH","ART","KEEPSAKE"];        // something shareable/duplicable
-  if (tags.has("WATER")) allowedTypes = ["TOY_BOAT","KEEPSAKE","PLUSH"];
-  if (tags.has("FUNNY")) allowedTypes = ["PLUSH","TOY_ACCESSORY","FOOD","ART"];
-
-  const candidates = OBJECTS.filter(o => allowedTypes.includes(o.type));
-  return pick(rng, candidates.length?candidates:OBJECTS);
-}
-
-function pickRoleForProblemAndObject(rng, problem, object){
-  const pTags = problem.tags||[];
-  const oType = object ? object.type : null;
-
-  // Role must match problem tags AND object type (hard)
-  let candidates = ROLES.filter(r => intersects(r.tags, pTags));
-
-  if (oType === "CLOTH") candidates = candidates.filter(r => r.tags.includes("CLOTH") || r.name.includes("Tailor") || r.name.includes("Knit"));
-  if (oType === "TOY_PLANE" || oType === "TOY_AIR") candidates = candidates.filter(r => r.tags.includes("AIR") || /plane|pilot|air/i.test(r.name) || r.tags.includes("REPAIR"));
-  if (oType === "TOY_VEHICLE") candidates = candidates.filter(r => r.tags.includes("TOY") || r.tags.includes("REPAIR") || r.tags.includes("VEHICLE") || /tow|driver|mechanic/i.test(r.name));
-  if (oType === "TOY_BOAT") candidates = candidates.filter(r => r.tags.includes("WATER") || /boat|harbor|lifeguard/i.test(r.name));
-
-  // If path blocked, strongly bias builder/ranger/tow
-  if (problem.tags.includes("PATH")) candidates = candidates.filter(r => r.tags.includes("PATH") || r.tags.includes("BUILD") || r.tags.includes("VEHICLE"));
-
-  if (!candidates.length) candidates = ROLES.slice();
-  return pick(rng, candidates);
-}
-
-function pickHelperForRole(rng, role){
-  const candidates = HELPERS.filter(h => intersects(h.tags, role.tags));
-  return pick(rng, candidates.length?candidates:HELPERS);
-}
-
-/* Tools & vehicles are chosen from role/problem (so they become consistent story anchors) */
-const TOOL_LIBRARY = [
-  {name:"tiny extendable ladder, 22cm toy-scale, red aluminum, silver hinges", tags:["RESCUE","TOOLS"]},
-  {name:"small rescue net, 18cm hoop, white mesh, blue handle", tags:["RESCUE","TOOLS"]},
-  {name:"mini rope spool, 2m twine, tan color, wooden spool", tags:["RESCUE","TOOLS","PULL"]},
-  {name:"tiny screwdriver set, 6cm handles, matte yellow plastic", tags:["REPAIR","TOOLS","TOY"]},
-  {name:"mini wrench, 7cm, brushed steel", tags:["REPAIR","TOOLS"]},
-  {name:"small wood plank, 25cm, light pine, smooth edges", tags:["BUILD","TOOLS","PATH"]},
-  {name:"mini hammer, 8cm, wooden handle", tags:["BUILD","TOOLS"]},
-  {name:"soft pastel yarn ball + 8cm bamboo needles", tags:["CLOTH","TOOLS","CARE"]},
-  {name:"tiny sewing kit, thread spools + blunt needle, pastel case", tags:["CLOTH","TOOLS","CARE"]},
-  {name:"two tiny traffic cones, 6cm, bright orange matte plastic", tags:["PATH","TOOLS"]},
-  {name:"mini first-aid pouch, 10cm, red with white cross symbol (no text)", tags:["CARE","RESCUE","TOOLS"]}
-];
-
-const VEHICLE_LIBRARY = [
-  {name:"toy fire truck, 28cm, glossy red plastic, silver ladder", tags:["RESCUE","VEHICLE"]},
-  {name:"toy ambulance, 28cm, glossy white plastic, red stripe (no text)", tags:["RESCUE","VEHICLE"]},
-  {name:"toy tow truck, 26cm, yellow plastic, black hook", tags:["RESCUE","VEHICLE","PULL"]},
-  {name:"toy delivery scooter, 20cm, yellow body, white basket", tags:["DELIVERY","VEHICLE"]},
-  {name:"mini wheelbarrow, 24cm, green metal basin, black wheel", tags:["BUILD","VEHICLE","PATH"]},
-  {name:"toy helicopter, 22cm, white body, blue skids, spinning rotor", tags:["AIR","RESCUE","VEHICLE"]},
-  {name:"toy boat, 24cm, blue hull, white deck", tags:["WATER","VEHICLE"]}
-];
-
-function pickTool(rng, role, problem){
-  const tags = Array.from(new Set([...(role.tags||[]), ...(problem.tags||[])]));
-  const candidates = TOOL_LIBRARY.filter(t => intersects(t.tags, tags));
-  return pick(rng, candidates.length?candidates:TOOL_LIBRARY);
-}
-function pickVehicle(rng, role, problem){
-  const tags = Array.from(new Set([...(role.tags||[]), ...(problem.tags||[])]));
-  const candidates = VEHICLE_LIBRARY.filter(v => intersects(v.tags, tags));
-  // Vehicle is optional — not always
-  return (candidates.length && rng()<0.75) ? pick(rng, candidates) : null;
-}
-
-/* =========================
-   Story engines (beats)
-   Each engine enforces:
-   - transformation
-   - visible causality
-   - role-specific tools usage
-========================= */
-function buildBeats(engineKey, n, intensity){
-  const base = {
-    EMOTIONAL: [
-      "Calm opening in {LOCATION}. {HERO} is still, ears relaxed, tiny blep visible.",
-      "{HERO} is shown close to {OBJECT_DNA_NAME}. The light matches {WEATHER}.",
-      "Problem becomes clear: {PROBLEM}. {HERO} pauses, posture small and quiet.",
-      "{HERO} lowers head and looks down at {OBJECT_DNA_NAME} without moving.",
-      "{HELPER} notices and steps closer slowly, watching {HERO}.",
-      "{HELPER} sits near {HERO} in a comforting way, both looking at {OBJECT_DNA_NAME} (not camera).",
-      "{HELPER} turns toward the tools, showing a gentle decision (one motion).",
-      "{HELPER} brings {TOOL_DNA_NAME} into frame (one action).",
-      "{HELPER} begins the careful fix using {TOOL_DNA_NAME} (one action).",
-      "{HELPER} continues the fix with visible progress (one action).",
-      "{HELPER} adds a cute safety detail that changes the object state (one action).",
-      "{HELPER} tests gently to confirm it works (one action).",
-      "{HELPER} reveals the improved {OBJECT_DNA_NAME} to {HERO}.",
-      "{HERO} moves closer slowly, tail wagging; relief is shown physically.",
-      "Calm closing echo: {HERO} stays near {HELPER} in {LOCATION} under {WEATHER}."
+  // Core beats per triad (15 base)
+  const engines = {
+    EMOTIONAL_BUILD: [
+      `Calm opening in ${ctx.location}. ${ctx.hero} is still, tiny blep visible.`,
+      `${ctx.hero} is close to ${ctx.objectName}, under ${ctx.weather}.`,
+      `Problem becomes clear: ${ctx.problem}. ${ctx.hero} stops and looks down.`,
+      `${ctx.hero} stays very still beside ${ctx.objectName}, body small and quiet.`,
+      `${ctx.helper} notices and approaches slowly, watching ${ctx.hero}.`,
+      `${ctx.helper} sits close in a comforting way. Both look at ${ctx.objectName} (not camera).`,
+      `${ctx.helper} turns toward the workspace and moves with purpose (one motion).`,
+      `${ctx.helper} ${v.tool} — ${ctx.toolName} becomes clearly visible.`,
+      `${ctx.helper} begins the fix: one careful step using ${ctx.toolName} (one action).`,
+      `${ctx.helper} continues the fix: visible progress on ${ctx.objectName} (one action).`,
+      `${ctx.helper} adds a cute finishing detail to make it extra safe (one action).`,
+      `${ctx.helper} tests gently — it works smoothly (one action).`,
+      `${ctx.helper} reveals the improved ${ctx.objectName} to ${ctx.hero}.`,
+      `${ctx.hero} moves closer slowly, tail wagging softly; relief is physical.`,
+      `Calm closing echo in ${ctx.location} under ${ctx.weather}.`
     ],
-    RESCUE: [
-      "Calm opening in {LOCATION}. {HERO} trots slowly and scans the scene.",
-      "{HERO} notices {OBJECT_DNA_NAME} connected to the situation and approaches.",
-      "Cause: {HERO} tries one small reach or nudge (one motion).",
-      "Effect: {PROBLEM} is clearly visible with realistic gravity.",
-      "{HERO} stops and looks around for help, ears tilted back slightly.",
-      "{HELPER} arrives with purpose, bringing {VEHICLE_DNA_NAME} into view if present.",
-      "{HELPER} sets down {TOOL_DNA_NAME} (one action).",
-      "Attempt 1: {HELPER} uses {TOOL_DNA_NAME} once — it fails visibly but safely.",
-      "Reaction: {HELPER} pauses, looks at the problem, repositions (still/slow).",
-      "Attempt 2: {HELPER} adjusts the angle/traction and uses {TOOL_DNA_NAME} again (one action).",
-      "Cause→effect: progress happens but is not enough yet.",
-      "Tiny upgrade: {HELPER} adds one stabilizer detail (cone/board/rope) (one action).",
-      "Attempt 3: the adjusted setup succeeds (one action).",
-      "Success: {OBJECT_DNA_NAME} is safe; the problem is resolved.",
-      "Calm closing echo with {HERO} relaxed near {HELPER} in {LOCATION}."
+    RESCUE_ATTEMPTS: [
+      `Calm opening in ${ctx.location}. ${ctx.hero} scans the area slowly.`,
+      `${ctx.hero} spots ${ctx.objectName} connected to the situation and steps closer.`,
+      `Cause: ${ctx.hero} makes one small attempt (one motion).`,
+      `Effect: ${ctx.problem} is clearly visible with realistic gravity.`,
+      `${ctx.hero} freezes and looks around for help, ears tilting back slightly.`,
+      `${ctx.helper} arrives with purpose${ctx.vehicleName?`, ${ctx.vehicleName} visible behind them`:``}.`,
+      `${ctx.helper} ${v.tool} — ${ctx.toolName} is placed carefully (one action).`,
+      `Attempt 1: ${ctx.helper} ${v.attempt1} (one action).`,
+      `Reaction: ${ctx.helper} pauses, stares at the setup, then repositions (still/slow).`,
+      `Attempt 2: ${ctx.helper} ${v.attempt2} (one action).`,
+      `Cause→effect: progress is visible, but not enough yet.`,
+      `Tool switch or upgrade: ${ctx.helper} ${v.upgrade} (one action).`,
+      `Final attempt: ${ctx.helper} ${v.success} (one action).`,
+      `Success: ${ctx.objectName} is safe; the problem is resolved clearly.`,
+      `Calm closing echo with ${ctx.hero} relaxed near ${ctx.helper} in ${ctx.location}.`
     ],
-    ADVENTURE: [
-      "Calm opening in {LOCATION}. {HERO} stands near {OBJECT_DNA_NAME} like a mission item.",
-      "{HERO} looks toward the distance then back at {OBJECT_DNA_NAME}, showing purpose.",
-      "Cause: {HERO} starts moving along the route (one motion).",
-      "Effect: {PROBLEM} blocks the route clearly.",
-      "{HELPER} appears and gestures toward {VEHICLE_DNA_NAME} (or a transport tool).",
-      "{HELPER} sets up {VEHICLE_DNA_NAME} (one action) and places {OBJECT_DNA_NAME} securely.",
-      "Movement shot: {HELPER} leads; {HERO} follows slowly; camera stable.",
-      "Obstacle beat: the route needs a clear fix using {TOOL_DNA_NAME} (one action revealed).",
-      "Solution beat: {HELPER} performs the fix (one action).",
-      "Travel continues with believable wheel friction and weight.",
-      "Second obstacle appears (terrain/wind/water) (one action revealed).",
-      "{HELPER} changes approach (route/traction/angle) (one action).",
-      "Near destination: {HERO} sees the goal area and speeds up slightly.",
-      "Success: mission completed; {OBJECT_DNA_NAME} arrives safely.",
-      "Calm closing echo in {LOCATION} under {WEATHER}."
+    ADVENTURE_ROUTE: [
+      `Calm opening in ${ctx.location}. ${ctx.hero} stands near ${ctx.objectName} like a mission item.`,
+      `${ctx.hero} looks toward the route, then back at ${ctx.objectName}, showing purpose.`,
+      `Cause: ${ctx.hero} starts moving along the path (one motion).`,
+      `Effect: ${ctx.problem} blocks the route clearly.`,
+      `${ctx.helper} appears and gestures toward transport${ctx.vehicleName?` — ${ctx.vehicleName}`:``}.`,
+      `${ctx.helper} sets up transport and secures ${ctx.objectName} safely (one action).`,
+      `Movement shot: ${ctx.helper} leads; ${ctx.hero} follows; camera stable.`,
+      `Attempt 1: ${ctx.helper} ${v.attempt1} to clear the path (one action).`,
+      `Reaction: ${ctx.helper} stops, reassesses, and repositions (still/slow).`,
+      `Attempt 2: ${ctx.helper} ${v.attempt2} (one action).`,
+      `Progress: the route opens partially, but needs one more detail.`,
+      `Upgrade: ${ctx.helper} ${v.upgrade} (one action).`,
+      `Success: ${ctx.helper} ${v.success} — passage is clear.`,
+      `Near destination: ${ctx.hero} sees the goal area and speeds up slightly.`,
+      `Calm closing echo in ${ctx.location} under ${ctx.weather}.`
     ],
-    FUNNY: [
-      "Calm opening in {LOCATION}. {HERO} spots {OBJECT_DNA_NAME} and tilts head, blep visible.",
-      "{HERO} gives {OBJECT_DNA_NAME} one playful nudge (one motion).",
-      "Cause: a small harmless mishap begins tied to {PROBLEM}.",
-      "Effect: the mishap becomes visible and silly, but safe.",
-      "{HERO} freezes in a funny posture, ears perked unevenly.",
-      "{HELPER} arrives and watches for a beat, then moves in.",
-      "{HELPER} sets down {TOOL_DNA_NAME} (one action).",
-      "Attempt 1: {HELPER} tries once — it gets slightly worse in a cute way.",
-      "Pause: both stare at the result (still/slow).",
-      "Adjustment: {HELPER} changes method (one action).",
-      "Cause→effect: progress, almost fixed.",
-      "Final tiny tweak: {HELPER} repositions and finishes (one action).",
-      "Success: the silly problem resolves cleanly.",
-      "{HERO} shows a small happy bounce (one motion).",
-      "Calm closing echo in {LOCATION}."
+    FRIENDSHIP_SHARE: [
+      `Calm opening in ${ctx.location}. ${ctx.hero} is present under ${ctx.weather}.`,
+      `${ctx.friendName} appears and looks at ${ctx.hero}, then at ${ctx.objectName}.`,
+      `Problem becomes clear: ${ctx.problem}. Both stop and stare at the same item.`,
+      `Cause: ${ctx.hero} makes one small move toward ${ctx.objectName} (one motion).`,
+      `Effect: tension shows physically; both pause (still/slow).`,
+      `${ctx.helper} arrives calmly and watches for a beat, then steps in.`,
+      `${ctx.helper} ${v.tool} — ${ctx.toolName} becomes visible.`,
+      `Attempt: ${ctx.helper} ${v.attempt1} to make it fair (one action).`,
+      `Reaction: both friends stare; it’s not fully fair yet.`,
+      `Second attempt: ${ctx.helper} ${v.attempt2} (one action).`,
+      `Upgrade: ${ctx.helper} ${v.upgrade} (one action).`,
+      `Success: ${ctx.helper} ${v.success} — sharing is clearly possible.`,
+      `${ctx.hero} and ${ctx.friendName} relax; tails/bodies soften (still/slow).`,
+      `${ctx.hero} and ${ctx.friendName} use the fair setup gently (one motion).`,
+      `Calm closing echo in ${ctx.location}.`
     ],
-    COURAGE: [
-      "Calm opening in {LOCATION}. {HERO} approaches slowly under {WEATHER}.",
-      "{HERO} sees the challenge inside {PROBLEM} and stops.",
-      "Body language: ears dip, breathing visible; {HERO} holds still.",
-      "{HELPER} arrives quietly and stands beside {HERO}, not rushing.",
-      "{HELPER} demonstrates a safe micro-step with {TOOL_DNA_NAME} (one action).",
-      "{HERO} copies the micro-step (one action), cautious but steady.",
-      "Cause: a second micro-step is attempted (one action).",
-      "Effect: progress is visible but the challenge remains.",
-      "{HELPER} adds a small safety marker (cones/board) (one action).",
-      "{HERO} takes the brave step (one action), then pauses to breathe.",
-      "Relief beat: posture relaxes; tail moves gently.",
-      "Final support: {HELPER} completes the last safe adjustment (one action).",
-      "Success: goal/object is reached safely.",
-      "{HERO} shows proud joy physically (calm tail wag, soft eyes, blep).",
-      "Calm closing echo in {LOCATION}."
+    FUNNY_SAFE: [
+      `Calm opening in ${ctx.location}. ${ctx.hero} spots ${ctx.objectName}; tiny blep visible.`,
+      `${ctx.hero} gives ${ctx.objectName} one playful nudge (one motion).`,
+      `Cause: ${ctx.problem} begins as a small harmless mishap.`,
+      `Effect: the mishap becomes sillier but safe, with believable physics.`,
+      `${ctx.hero} freezes in a funny posture, ears perked unevenly.`,
+      `${ctx.helper} arrives, watches one beat, then moves in.`,
+      `${ctx.helper} ${v.tool} — ${ctx.toolName} is placed down (one action).`,
+      `Attempt 1: ${ctx.helper} ${v.attempt1} — it gets slightly worse once (cute).`,
+      `Pause: both stare at the result (still/slow).`,
+      `Attempt 2: ${ctx.helper} ${v.attempt2} (one action).`,
+      `Upgrade: ${ctx.helper} ${v.upgrade} (one action).`,
+      `Success: ${ctx.helper} ${v.success} — the silly problem resolves cleanly.`,
+      `${ctx.hero} does one small happy bounce (one motion).`,
+      `Calm closing echo in ${ctx.location} under ${ctx.weather}.`,
+      `Extra cute beat: ${ctx.hero} gently taps ${ctx.objectName} once, now safely.`
     ],
-    FRIENDSHIP: [
-      "Calm opening in {LOCATION}. {HERO} is present under {WEATHER}.",
-      "{FRIEND} appears nearby and looks at {HERO}, then at {OBJECT_DNA_NAME}.",
-      "Problem becomes clear: {PROBLEM}. Both stop and look at the same item.",
-      "Cause: {HERO} makes one small attempt (one motion).",
-      "Effect: the challenge is clearer and both pause (still/slow).",
-      "{HELPER} arrives as a gentle coordinator with {TOOL_DNA_NAME}.",
-      "Team plan: {HELPER} indicates positions using body language (one action).",
-      "Team action: {FRIEND} repositions the object gently (one action).",
-      "Team action: {HELPER} uses {TOOL_DNA_NAME} (one action) to make sharing possible.",
-      "Cause→effect: it partially works; one more step needed.",
-      "Pause: everyone looks at the result, then adjusts slowly.",
-      "Final team step: the sharing solution completes (one action).",
-      "Success: both friends have fair access; tension dissolves visibly.",
-      "{HERO} and {FRIEND} show calm joy (still/slow).",
-      "Calm closing echo in {LOCATION}."
+    COURAGE_STEP: [
+      `Calm opening in ${ctx.location}. ${ctx.hero} approaches slowly under ${ctx.weather}.`,
+      `${ctx.hero} sees the challenge inside ${ctx.problem} and stops.`,
+      `Body language: ears dip, breathing visible; ${ctx.hero} holds still.`,
+      `${ctx.helper} arrives quietly and stands beside ${ctx.hero}, not rushing.`,
+      `${ctx.helper} ${v.tool} — ${ctx.toolName} is shown clearly (one action).`,
+      `Micro-step 1: ${ctx.helper} demonstrates a safe tiny step (one action).`,
+      `Micro-step 2: ${ctx.hero} copies carefully (one action).`,
+      `Cause: a second micro-step is attempted (one action).`,
+      `Effect: progress is visible but the challenge remains.`,
+      `Upgrade: ${ctx.helper} ${v.upgrade} (one action).`,
+      `Brave step: ${ctx.hero} takes the step (one action), then pauses to breathe.`,
+      `Relief beat: posture relaxes; tail moves gently.`,
+      `Success: ${ctx.helper} ${v.success} — safe outcome is clear.`,
+      `${ctx.hero} shows proud joy physically (soft eyes, calm tail wag, blep).`,
+      `Calm closing echo in ${ctx.location}.`
     ]
   };
 
-  let beats = (base[engineKey]||base.EMOTIONAL).slice();
+  // choose base list
+  let beats = (engines[triad.key] || engines.EMOTIONAL_BUILD).slice();
 
-  // stretch to 20/25 by inserting role-specific “progress” beats in middle
-  const extras = [
-    "{HELPER} aligns the setup carefully to keep physics stable (one action).",
-    "{HELPER} carries {OBJECT_DNA_NAME} slowly to avoid wobble (one action).",
-    "{HELPER} adjusts grip/angle once more for clarity (one action).",
-    "{HERO} stays still and watches, eyes tracking the tool.",
-    "{FRIEND} holds still to avoid shaking anything."
-  ];
-
-  if (n > beats.length){
-    const need = n - beats.length;
+  // Expand to 20/25 by inserting extra concrete progress beats
+  if (sceneCount > beats.length){
+    const extra = [
+      `${ctx.helper} aligns the setup carefully to keep physics stable (one action).`,
+      `${ctx.hero} stays still and watches, eyes tracking ${ctx.toolName}.`,
+      `${ctx.helper} makes one neat adjustment, then pauses (still/slow).`,
+      ctx.friendName ? `${ctx.friendName} holds still to avoid shaking anything.` : `${ctx.hero} shifts weight slightly, then freezes again.`,
+      `${ctx.helper} checks the object’s stability with a tiny gentle push (one action).`
+    ];
+    const need = sceneCount - beats.length;
     const mid = Math.floor(beats.length/2);
-    const insert = extras.slice(0, need);
-    beats.splice(mid, 0, ...insert);
-  } else if (n < beats.length){
-    beats = beats.slice(0, n);
+    beats.splice(mid, 0, ...extra.slice(0, need));
   }
 
-  // intensity tweaks
+  // Intensity tweaks
   if (intensity === "HIGH"){
     beats = beats.map((b,i)=> (i===2 || i===7) ? (b + " Movement is lively but still readable.") : b);
   }
   if (intensity === "SOFT"){
-    beats = beats.map((b,i)=> (i===7) ? b.replace("fails visibly", "does not work yet") : b);
+    beats = beats.map(b=>b.replace("gets slightly worse once", "does not work yet"));
   }
 
-  return beats.slice(0, n);
+  // Trim if needed
+  beats = beats.slice(0, sceneCount);
+  return beats;
 }
 
-/* =========================
-   Story title generator
-========================= */
-function buildTitle(rng, engineKey, problem, object){
-  const adj = pick(rng, ["Tiny","Heartfelt","Brave","Cozy","Clever","Sparkly","Wholesome","Gentle","Funny"]);
-  const patterns = [
-    `Willy and the ${adj} ${object ? tc(object.name.replace(/^tiny |^mini |^small |^little /i,"")) : "Mission"}`,
-    `Willy and the Day the ${tc(problem.split(" ").slice(0,4).join(" "))} Happened`,
-    `Willy and the Little Problem That Became a Big Smile`,
-    `Willy’s ${adj} Adventure`,
-    `Willy and the Helping Friend`
-  ];
-  const base = pick(rng, patterns);
-  return clean(base + " — " + problem);
+/* =========================================================
+   Prop DNA (Story anchors for prompt compiler)
+========================================================= */
+function propDNA(object, tool, vehicle){
+  const obj = object
+    ? `OBJECT DNA: (${object.name}; type=${object.type}; toy-scale; material: matte plastic/soft fabric depending on item; exact name must be repeated verbatim.)`
+    : `OBJECT DNA: (none; focus is the situation/relationship.)`;
+  const tl = tool
+    ? `TOOL DNA: (${tool.name}; exact name repeated verbatim; realistic weight; used only in still/slow interactions.)`
+    : `TOOL DNA: (none)`;
+  const vh = vehicle
+    ? `VEHICLE DNA: (${vehicle.name}; exact name repeated verbatim; toy-scale; realistic rolling/weight.)`
+    : `VEHICLE DNA: (none)`;
+  return [obj, tl, vh].join("\n");
 }
 
-/* =========================
-   Manual override UI population
-========================= */
-function fillSelect(id, items, labelFn){
+/* =========================================================
+   Manual UI
+========================================================= */
+function fillSelect(id, arr, labelFn){
   const sel = document.getElementById(id);
   sel.innerHTML = "";
-  items.forEach(it=>{
+  arr.forEach(x=>{
     const opt = document.createElement("option");
-    opt.value = labelFn(it);
-    opt.textContent = labelFn(it);
+    opt.value = labelFn(x);
+    opt.textContent = labelFn(x);
     sel.appendChild(opt);
   });
 }
 function initUI(){
-  fillSelect("problemSelect", PROBLEMS, x=>x.t);
-  fillSelect("roleSelect", ROLES, x=>x.name);
-  fillSelect("weatherSelect", WEATHER, x=>x.t);
-  fillSelect("locationSelect", LOCATIONS, x=>x.t);
-  fillSelect("helperSelect", HELPERS, x=>x.name);
-  fillSelect("objectSelect", OBJECTS.filter(o=>o.type!=="PLUSH" || !o.name.includes("#")), x=>x.name);
+  fillSelect("problemSel", PROBLEMS, x=>x.t);
+  fillSelect("roleSel", ROLES, x=>x.name);
+  fillSelect("helperSel", HELPERS, x=>x.name);
+  fillSelect("objectSel", OBJECTS.filter(o=>!o.name.includes("#")), x=>x.name);
+  fillSelect("weatherSel", WEATHER, x=>x.t);
+  fillSelect("locationSel", LOCATIONS, x=>x.t);
 }
 initUI();
 
-document.getElementById("allowManual").addEventListener("change", (e)=>{
+document.getElementById("manual").addEventListener("change",(e)=>{
   const on = e.target.checked;
-  ["problemSelect","roleSelect","weatherSelect","locationSelect","helperSelect","objectSelect"].forEach(id=>{
+  ["problemSel","roleSel","helperSel","objectSel","weatherSel","locationSel"].forEach(id=>{
     document.getElementById(id).disabled = !on;
   });
 });
 
-/* =========================
-   PROP DNA (created once per story)
-========================= */
-function makePropDNA(object, tool, vehicle){
-  const objLine = object
-    ? `OBJECT DNA: (${object.name}; type=${object.type}; toy-scale; material: matte plastic/soft fabric depending on item; exact name must be repeated verbatim.)`
-    : `OBJECT DNA: (none; story focus is mission/relationship instead.)`;
-
-  const toolLine = tool
-    ? `TOOL DNA: (${tool.name}; exact name repeated verbatim; realistic weight; used only in still/slow interactions.)`
-    : `TOOL DNA: (none)`;
-
-  const vehLine = vehicle
-    ? `VEHICLE DNA: (${vehicle.name}; exact name repeated verbatim; toy-scale; realistic rolling/weight.)`
-    : `VEHICLE DNA: (none)`;
-
-  return [objLine, toolLine, vehLine].join("\n");
-}
-
-/* =========================
-   Generation (with validation + regen)
-========================= */
-function generate(sceneCount){
+/* =========================================================
+   Generation main: regenerate until valid
+========================================================= */
+function generateStory(){
   setStatus("Generating…");
+  showRejects("");
 
-  const seed = (document.getElementById("seed").value||"willy-v3") + "|" + sceneCount + "|" + (document.getElementById("engine").value||"AUTO");
-  const rng = mulberry32(hashStringToUint(seed));
+  const seed = document.getElementById("seed").value || "willy-v2";
+  const engineKey = document.getElementById("engine").value;
+  const sceneCount = parseInt(document.getElementById("sceneCount").value, 10);
+  const intensity = document.getElementById("intensity").value;
 
   const wantObject = document.getElementById("wantObject").checked;
   const wantCountry = document.getElementById("wantCountry").checked;
-  const allowManual = document.getElementById("allowManual").checked;
+  const manual = document.getElementById("manual").checked;
+  const debugRejects = document.getElementById("debugRejects").checked;
 
-  const tone = document.getElementById("tone").value;
-  const engineReq = document.getElementById("engine").value;
-  const intensity = document.getElementById("intensity").value;
+  const rng = mulberry32(hashStringToUint(seed + "|" + engineKey + "|" + sceneCount + "|" + intensity));
 
-  // Try several times until coherent
-  let attempt = 0;
-  while (attempt < 30){
-    attempt++;
+  const allowPanby = document.getElementById("usePanby").checked;
+  const allowQuok = document.getElementById("useQuok").checked;
 
-    const engineKey = pickEngine(rng, engineReq, tone);
-    const problem = pickProblem(rng, engineKey);
-    const object = pickObjectForProblem(rng, problem, wantObject);
+  const rejectLog = [];
+  const MAX_TRIES = 40;
 
-    // enforce "two friends" problems
+  for (let tries=1; tries<=MAX_TRIES; tries++){
+    // choose triad
+    const triad = pickTriad(rng, engineKey);
+
+    // pick core elements
+    let problem = pickProblem(rng, triad);
+    let object = pickObject(rng, triad, wantObject);
+    let role = pickRole(rng, triad, problem, object);
+    let helper = pickHelper(rng, triad, role);
+
+    // friends logic
     let friends = [];
-    if (problem.requiresFriends){
-      friends = pickMany(rng, FRIENDS_POOL, 2);
+    if (problem.requiresFriends || triad.requiredFeatures.needsFriends){
+      // must have at least one friend
+      const pool = [];
+      if (allowPanby) pool.push(FRIENDS[0]);
+      if (allowQuok) pool.push(FRIENDS[1]);
+      if (!pool.length) pool.push(...FRIENDS);
+      friends = pickMany(rng, pool, 1);
     } else {
-      // optional friends
-      const wantPanby = document.getElementById("usePanby").checked;
-      const wantQuok = document.getElementById("useQuok").checked;
-      if (wantPanby && rng()<0.55) friends.push(FRIENDS_POOL[0]);
-      if (wantQuok && rng()<0.55) friends.push(FRIENDS_POOL[1]);
-      if (!friends.length && rng()<0.18) friends.push(pick(rng, FRIENDS_POOL));
+      const pool = [];
+      if (allowPanby) pool.push(FRIENDS[0]);
+      if (allowQuok) pool.push(FRIENDS[1]);
+      if (pool.length && rng()<0.55) friends.push(pick(rng, pool));
+      if (pool.length && rng()<0.20 && friends.length<2) friends.push(pick(rng, pool));
+      friends = Array.from(new Set(friends));
     }
 
-    const role = pickRoleForProblemAndObject(rng, problem, object);
-    const helper = pickHelperForRole(rng, role);
+    // weather + location
+    let weather = pickWeather(rng);
+    let location = pickLocation(rng, weather, wantCountry);
 
-    const weather = pickWeather(rng);
-    const location = pickLocation(rng, weather, wantCountry);
+    // tool + vehicle
+    let tool = pickTool(rng, triad, role, problem);
+    let vehicle = pickVehicle(rng, triad, role, problem);
 
-    const tool = pickTool(rng, role, problem);
-    const vehicle = pickVehicle(rng, role, problem);
+    // manual overrides
+    if (manual){
+      const p = PROBLEMS.find(x=>x.t === document.getElementById("problemSel").value);
+      const r = ROLES.find(x=>x.name === document.getElementById("roleSel").value);
+      const h = HELPERS.find(x=>x.name === document.getElementById("helperSel").value);
+      const o = OBJECTS.find(x=>x.name === document.getElementById("objectSel").value);
+      const w = WEATHER.find(x=>x.t === document.getElementById("weatherSel").value);
+      const l = LOCATIONS.find(x=>x.t === document.getElementById("locationSel").value);
 
-    // VALIDATION: prevent the exact incoherences you complained about
-    // 1) If problem is PATH, role must be PATH/BUILD/VEHICLE
-    if (problem.tags.includes("PATH") && !(role.tags.includes("PATH") || role.tags.includes("BUILD") || role.tags.includes("VEHICLE"))){
+      if (p) problem = p;
+      if (r) role = r;
+      if (h) helper = h;
+      if (wantObject && o) object = o;
+      if (!wantObject) object = null;
+      if (w) weather = w;
+      if (l) location = l;
+
+      // re-pick tool/vehicle consistent with overrides
+      tool = pickTool(rng, triad, role, problem);
+      vehicle = pickVehicle(rng, triad, role, problem);
+    }
+
+    // validate combo
+    const res = validateCombo(triad, problem, object, role, helper, friends, weather, location);
+    if (!res.ok){
+      if (debugRejects) rejectLog.push(`Try ${tries}: rejected — ${res.reasons.join(" | ")}`);
       continue;
     }
-    // 2) If object is ART, role must be ART-ish or CARE/TOOLS (not random)
-    if (object && object.type==="ART" && !(role.tags.includes("TOOLS") || role.tags.includes("CARE") || role.tags.includes("REPAIR"))){
-      continue;
-    }
-    // 3) If role is Knitwear Maker or Tailor, object type should be CLOTH or KEEPSAKE or PLUSH
-    if (/Knitwear|Tailor/i.test(role.name) && object && !["CLOTH","KEEPSAKE","PLUSH"].includes(object.type)){
-      continue;
-    }
-    // 4) If WATER problem, role/helper should have WATER tag (or rescue)
-    if (problem.tags.includes("WATER") && !(role.tags.includes("WATER") || role.tags.includes("RESCUE") || helper.tags.includes("WATER"))){
-      continue;
-    }
-    // 5) If requiresFriends, ensure at least one friend
-    if (problem.requiresFriends && !friends.length){
-      continue;
-    }
 
-    // Manual overrides (only if enabled)
-    let finalProblem = problem, finalRole = role, finalHelper = helper, finalWeather = weather, finalLocation = location, finalObject = object;
-
-    if (allowManual){
-      const p = PROBLEMS.find(x=>x.t === document.getElementById("problemSelect").value);
-      const r = ROLES.find(x=>x.name === document.getElementById("roleSelect").value);
-      const h = HELPERS.find(x=>x.name === document.getElementById("helperSelect").value);
-      const w = WEATHER.find(x=>x.t === document.getElementById("weatherSelect").value);
-      const l = LOCATIONS.find(x=>x.t === document.getElementById("locationSelect").value);
-      const o = OBJECTS.find(x=>x.name === document.getElementById("objectSelect").value);
-
-      if (p) finalProblem = p;
-      if (r) finalRole = r;
-      if (h) finalHelper = h;
-      if (w) finalWeather = w;
-      if (l) finalLocation = l;
-      if (wantObject && o) finalObject = o;
-      if (!wantObject) finalObject = null;
-    }
-
-    // Tool/vehicle must be recomputed after overrides (to maintain coherence)
-    const finalTool = pickTool(rng, finalRole, finalProblem);
-    const finalVehicle = pickVehicle(rng, finalRole, finalProblem);
-
-    // Build beats
-    const beats = buildBeats(engineKey, sceneCount, intensity);
-
+    // Build context & beats
+    const friendName = friends.length ? friends[0].split(" (")[0] : "";
     const ctx = {
-      title: buildTitle(rng, engineKey, finalProblem.t, finalObject),
-      tone,
-      engineKey,
       hero: HERO,
-      friends,
-      friendName: (friends[0] ? friends[0].split(" (")[0] : "a friend"),
-      location: finalLocation.t,
-      weather: finalWeather.t,
-      helper: finalHelper.name,
-      role: finalRole.name,
-      problem: finalProblem.t,
-      objectName: finalObject ? finalObject.name : null,
-      propDNA: makePropDNA(finalObject, finalTool, finalVehicle),
-      OBJECT_DNA_NAME: finalObject ? finalObject.name : "the goal item",
-      TOOL_DNA_NAME: finalTool ? finalTool.name : "a safe tool",
-      VEHICLE_DNA_NAME: finalVehicle ? finalVehicle.name : "a tiny vehicle"
+      friendName,
+      location: location.t,
+      weather: weather.t,
+      helper: helper.name,
+      role: role.name,
+      problem: problem.t,
+      objectName: object ? object.name : "the goal item",
+      toolName: tool ? tool.name : "a safe tool",
+      vehicleName: vehicle ? vehicle.name : ""
     };
 
-    // Apply placeholders (this is where coherence shows up in scenes)
-    const scenes = beats.map((b,i)=>{
-      return clean(
-        b.replaceAll("{LOCATION}", ctx.location)
-         .replaceAll("{WEATHER}", ctx.weather)
-         .replaceAll("{PROBLEM}", ctx.problem)
-         .replaceAll("{HERO}", ctx.hero)
-         .replaceAll("{HELPER}", ctx.helper)
-         .replaceAll("{ROLE}", ctx.role)
-         .replaceAll("{OBJECT_DNA_NAME}", ctx.OBJECT_DNA_NAME)
-         .replaceAll("{TOOL_DNA_NAME}", ctx.TOOL_DNA_NAME)
-         .replaceAll("{VEHICLE_DNA_NAME}", (finalVehicle?finalVehicle.name:"a tiny transport tool"))
-         .replaceAll("{FRIEND}", ctx.friendName)
-      );
-    });
+    // Title must reflect actual helper (no more “Helpful Beaver” without beaver)
+    const title = buildTitle(rng, HERO, triad, helper.name, role.name, problem.t, object ? object.name : null);
 
-    // Update override dropdowns to show chosen
-    document.getElementById("problemSelect").value = finalProblem.t;
-    document.getElementById("roleSelect").value = finalRole.name;
-    document.getElementById("helperSelect").value = finalHelper.name;
-    document.getElementById("weatherSelect").value = finalWeather.t;
-    document.getElementById("locationSelect").value = finalLocation.t;
-    if (finalObject) document.getElementById("objectSelect").value = finalObject.name;
+    // Build beats
+    const beats = buildBeats(triad, sceneCount, intensity, ctx);
 
-    // Format output
+    // Update manual dropdowns to current result
+    document.getElementById("problemSel").value = problem.t;
+    document.getElementById("roleSel").value = role.name;
+    document.getElementById("helperSel").value = helper.name;
+    document.getElementById("weatherSel").value = weather.t;
+    document.getElementById("locationSel").value = location.t;
+    if (object) document.getElementById("objectSel").value = object.name;
+
+    // Build output
     const out = [];
     out.push("STORY TITLE");
-    out.push(ctx.title);
+    out.push(title);
     out.push("");
     out.push("STORY SETTINGS");
-    out.push(`- Type: ${ctx.tone}`);
-    out.push(`- Engine: ${ctx.engineKey}`);
-    out.push(`- Hero: ${ctx.hero}`);
-    out.push(`- Friends (optional): ${ctx.friends.length?ctx.friends.join(", "):"none"}`);
-    out.push(`- Location: ${ctx.location}`);
-    out.push(`- Weather/Time: ${ctx.weather}`);
-    out.push(`- Helper (animal-only): ${ctx.helper}`);
-    out.push(`- Primary helper role: ${ctx.role}`);
-    out.push(`- Problem: ${ctx.problem}`);
-    out.push(`- Object of affection: ${ctx.objectName ? ctx.objectName : "none"}`);
+    out.push(`- Type: ${triad.label}`);
+    out.push(`- Hero: ${HERO}`);
+    out.push(`- Friends (optional): ${friends.length ? friends.join(", ") : "none"}`);
+    out.push(`- Location: ${location.t}`);
+    out.push(`- Weather/Time: ${weather.t}`);
+    out.push(`- Helper (animal-only): ${helper.name}`);
+    out.push(`- Primary helper role: ${role.name}`);
+    out.push(`- Problem: ${problem.t}`);
+    out.push(`- Object of affection: ${object ? object.name : "none"}`);
     out.push("");
     out.push("PROP DNA (must be repeated verbatim in prompts)");
-    out.push(ctx.propDNA);
+    out.push(propDNA(object, tool, vehicle));
     out.push("");
-    out.push(`SCENES (${scenes.length})`);
-    scenes.forEach((s,i)=>out.push(`Scene ${i+1}: ${s}`));
+    out.push(`SCENES (${beats.length})`);
+    beats.forEach((b,i)=> out.push(`Scene ${i+1}: ${clean(b)}`));
     out.push("");
     out.push("SOP CHECK");
     out.push("- No dialogue, no text, no subtitles, no logos");
@@ -943,36 +1089,38 @@ function generate(sceneCount){
     out.push("- Calm closing echo of opening");
 
     document.getElementById("output").textContent = out.join("\n");
-    setStatus("Done ✅ (coherent story generated)");
+    setStatus("Done ✅ (validated story)");
+    if (debugRejects && rejectLog.length) showRejects(rejectLog.slice(-12).join("\n"));
     return;
   }
 
-  setStatus("Failed to find coherent combo (try another seed)");
+  setStatus("Could not generate a valid story (try changing seed)");
+  if (document.getElementById("debugRejects").checked && rejectLog.length){
+    showRejects(rejectLog.slice(-18).join("\n"));
+  }
 }
 
-/* =========================
+/* =========================================================
    Buttons
-========================= */
-document.getElementById("gen15").addEventListener("click", ()=>generate(15));
-document.getElementById("gen20").addEventListener("click", ()=>generate(20));
-document.getElementById("gen25").addEventListener("click", ()=>generate(25));
+========================================================= */
+document.getElementById("generateBtn").addEventListener("click", generateStory);
 
-document.getElementById("copyStory").addEventListener("click", async ()=>{
-  const txt = document.getElementById("output").textContent||"";
+document.getElementById("copyBtn").addEventListener("click", async ()=>{
+  const txt = document.getElementById("output").textContent || "";
   if (!txt.trim()){ setStatus("Generate first"); return; }
   try{ await navigator.clipboard.writeText(txt); setStatus("Copied ✅"); }
-  catch{ setStatus("Copy failed (browser permission)"); }
+  catch{ setStatus("Copy failed (permissions)"); }
 });
 
-document.getElementById("sendToCompiler").addEventListener("click", ()=>{
-  const txt = document.getElementById("output").textContent||"";
+document.getElementById("toCompilerBtn").addEventListener("click", ()=>{
+  const txt = document.getElementById("output").textContent || "";
   if (!txt.trim()){ setStatus("Generate first"); return; }
   const url = "./compiler.html#story=" + encodeURIComponent(txt);
   window.open(url, "_blank");
 });
 
-// initial
-generate(15);
+// generate once on load
+generateStory();
 </script>
 </body>
 </html>
