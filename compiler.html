@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Prompt Compiler — Continuity Lock</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Prompt Compiler — Continuity Lock (v3)</title>
   <style>
-    :root { --r:14px; }
+    :root{--r:14px}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#0b0d12;color:#eef2ff;line-height:1.35}
     header{
       padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
@@ -16,11 +16,9 @@
     header h1{margin:0 0 6px;font-size:20px}
     header p{margin:0;opacity:.85;max-width:1100px}
     a{color:#a5b4fc;text-decoration:none} a:hover{text-decoration:underline}
-
     main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
     .grid{display:grid;gap:16px;grid-template-columns:1fr}
-    @media (min-width: 980px){ .grid{grid-template-columns: 1fr 1fr;} }
-
+    @media(min-width:980px){.grid{grid-template-columns:1fr 1fr}}
     .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
     .card h2{margin:0 0 10px;font-size:15px;opacity:.95}
     label{font-size:12px;opacity:.85;display:block;margin-bottom:6px}
@@ -30,59 +28,50 @@
       background:rgba(0,0,0,.35);color:#eef2ff;outline:none;box-sizing:border-box
     }
     .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-    button{
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;
-      padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800
-    }
+    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800}
     button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
     button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
     button:hover{filter:brightness(1.08)}
     .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:12px}
     .pill b{font-weight:900}
     .muted{opacity:.78;font-size:12px}
-    .err{border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.12);padding:10px;border-radius:12px;margin-bottom:10px}
-    .ok{border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.10);padding:10px;border-radius:12px;margin-bottom:10px}
-
     .cards{display:grid;gap:12px}
-    .sceneCard{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px}
-    .sceneCard header{padding:0;border:none;background:none}
-    .sceneCard h3{margin:0 0 8px;font-size:13px}
+    .scene{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+    .top b{font-size:13px}
     pre{margin:0;white-space:pre-wrap;font-size:13px}
+    .ok{border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.10);padding:10px;border-radius:12px;margin-bottom:10px}
+    .err{border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.12);padding:10px;border-radius:12px;margin-bottom:10px}
     .k{color:#a5b4fc;font-weight:800}
   </style>
 </head>
-
 <body>
 <header>
-  <h1>Prompt Compiler — Continuity Lock</h1>
+  <h1>Prompt Compiler — Continuity Lock (v3)</h1>
   <p>
-    Paste a Story Frame from the generator (<span class="k">STORY TITLE / STORY SETTINGS / SCENES</span>) or the old format
-    (<span class="k">STORY CORE / STORY TRAM</span>).
-    This compiler injects Master Style + DNA into every single scene prompt.
-    <br><br>
-    <a href="./index.html">← Back to Story Generator</a>
+    Paste the Story Frame from the generator (<span class="k">STORY SETTINGS + PROP DNA + SCENES</span>) or legacy format.
+    This compiler injects Master Style + Character DNA into every scene prompt.
+    <br><br><a href="./index.html">← Back to Story Generator</a>
   </p>
 </header>
 
 <main class="grid">
   <section class="card">
     <h2>1) Input — Story Frame</h2>
-    <label>Paste Story Frame</label>
+    <label>Paste here</label>
     <textarea id="input"></textarea>
-
     <div class="btnbar">
-      <button class="primary" id="compileBtn">Compile Prompts</button>
-      <button class="good" id="copyAllBtn">Copy All Prompts</button>
-      <span class="pill" id="statusPill"><b>Status:</b> Ready</span>
+      <button class="primary" id="compile">Compile</button>
+      <button class="good" id="copyAll">Copy All</button>
+      <span class="pill" id="status"><b>Status:</b> Ready</span>
     </div>
-
     <div class="muted" style="margin-top:10px;">
-      Tip: Each card below is a single final prompt. Copy per scene or copy all.
+      Tip: DNA and PROP DNA are repeated in every prompt to prevent “AI amnesia”.
     </div>
   </section>
 
   <section class="card">
-    <h2>2) Output — Compiled Scene Prompts</h2>
+    <h2>2) Output — Scene Prompts</h2>
     <div id="msg"></div>
     <div class="cards" id="cards"></div>
   </section>
@@ -98,103 +87,71 @@ const DNA = {
   QUOK: `QUOK: (Baby Quokka. Short brown-grey fur, small rounded ears, permanent gentle "smiling" expression).`
 };
 
-const CHARACTER_KEYWORDS = [
-  { key: "Willy", code: "WILLY" },
-  { key: "Panby", code: "PANBY" },
-  { key: "Quok",  code: "QUOK" }
-];
+function el(id){return document.getElementById(id);}
+function setStatus(t){el("status").innerHTML="<b>Status:</b> "+t;}
+function linesOf(t){return (t||"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");}
 
-function el(id){ return document.getElementById(id); }
-function setStatus(t){ el("statusPill").innerHTML = "<b>Status:</b> " + t; }
-function normalizeLines(text){
-  return (text||"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");
-}
-
-function findSection(lines, title){
-  const idx = lines.findIndex(l => l.trim().toUpperCase() === title);
-  if (idx === -1) return null;
+function section(lines, header){
+  const idx = lines.findIndex(l=>l.trim().toUpperCase()===header);
+  if (idx<0) return null;
   let end = lines.length;
   for (let i=idx+1;i<lines.length;i++){
-    const t = lines[i].trim().toUpperCase();
-    if (t === "STORY CORE" || t === "STORY TRAM" || t === "STORY TITLE" || t === "STORY SETTINGS" || t.startsWith("SCENES")) {
-      if (i !== idx) { end = i; break; }
+    const u = lines[i].trim().toUpperCase();
+    if (u==="STORY TITLE" || u==="STORY SETTINGS" || u==="PROP DNA (MUST BE REPEATED VERBATIM IN PROMPTS)" || u.startsWith("SCENES") || u==="SOP CHECK" || u==="STORY CORE" || u==="STORY TRAM"){
+      end = i; break;
     }
   }
-  return [idx+1, end]; // content range
+  return lines.slice(idx+1,end).map(x=>x.trim()).filter(Boolean);
 }
 
-function parseOldCoreAndTram(lines){
-  const coreSec = findSection(lines, "STORY CORE");
-  const tramSec = findSection(lines, "STORY TRAM");
-  if (!coreSec || !tramSec) return null;
+function parseGeneratorFormat(lines){
+  const titleLines = section(lines,"STORY TITLE");
+  const settingsLines = section(lines,"STORY SETTINGS");
+  const propLines = section(lines,"PROP DNA (MUST BE REPEATED VERBATIM IN PROMPTS)");
+  const scenesIdx = lines.findIndex(l=>l.trim().toUpperCase().startsWith("SCENES"));
+  if (!titleLines || scenesIdx<0) return null;
 
-  const core = lines.slice(coreSec[0], coreSec[1]).join("\n").trim();
-  const tramLines = lines.slice(tramSec[0], tramSec[1]).map(x=>x.trim()).filter(Boolean);
+  const title = titleLines.join(" ").trim();
+  const settings = (settingsLines||[]).join("\n").trim();
+  const propDNA = (propLines||[]).join("\n").trim();
 
-  // beats can be "1) ..." or "Scene 1: ..."
-  const beats = tramLines.map((line, idx)=>{
-    const m = line.match(/^(\d+)\)\s*(.*)$/) || line.match(/^Scene\s*(\d+)\s*:\s*(.*)$/i);
-    if (m) return { n: parseInt(m[1],10), text: (m[2]||"").trim() };
-    return { n: idx+1, text: line };
-  }).sort((a,b)=>a.n-b.n);
-
-  return { title:null, settings:null, core, beats };
-}
-
-function parseNewTitleSettingsScenes(lines){
-  const titleSec = findSection(lines, "STORY TITLE");
-  // settings optional if format differs
-  const settingsSec = findSection(lines, "STORY SETTINGS");
-  const scenesLineIdx = lines.findIndex(l => l.trim().toUpperCase().startsWith("SCENES"));
-  if (!titleSec || scenesLineIdx === -1) return null;
-
-  const title = lines.slice(titleSec[0], titleSec[1]).join("\n").trim();
-
-  let settings = "";
-  if (settingsSec){
-    settings = lines.slice(settingsSec[0], settingsSec[1]).join("\n").trim();
-  }
-
-  const sceneLines = lines.slice(scenesLineIdx+1).map(l=>l.trim()).filter(Boolean);
   const beats = [];
-  for (const line of sceneLines){
-    const m = line.match(/^Scene\s*(\d+)\s*:\s*(.*)$/i);
-    if (m){
-      beats.push({ n: parseInt(m[1],10), text: (m[2]||"").trim() });
-    } else {
-      // stop if SOP CHECK
-      if (line.toUpperCase() === "SOP CHECK") break;
-    }
+  for (let i=scenesIdx+1;i<lines.length;i++){
+    const raw = lines[i].trim();
+    if (!raw) continue;
+    if (raw.toUpperCase()==="SOP CHECK") break;
+    const m = raw.match(/^Scene\s*(\d+)\s*:\s*(.+)$/i);
+    if (m) beats.push({n:parseInt(m[1],10), text:m[2].trim()});
   }
   if (!beats.length) return null;
 
-  // Build a "core" block from settings
-  const core = [
-    title ? `STORY TITLE: ${title}` : "",
-    settings ? `STORY SETTINGS:\n${settings}` : ""
-  ].filter(Boolean).join("\n\n").trim();
+  return {title, settings, propDNA, beats};
+}
 
-  return { title, settings, core, beats: beats.sort((a,b)=>a.n-b.n) };
+function parseLegacy(lines){
+  const core = section(lines,"STORY CORE");
+  const tram = section(lines,"STORY TRAM");
+  if (!core || !tram) return null;
+  const beats = tram.map((l,i)=>{
+    const m = l.match(/^(\d+)\)\s*(.*)$/) || l.match(/^Scene\s*(\d+)\s*:\s*(.*)$/i);
+    if (m) return {n:parseInt(m[1],10), text:(m[2]||"").trim()};
+    return {n:i+1, text:l};
+  });
+  return {title:"", settings:core.join("\n"), propDNA:"", beats};
 }
 
 function detectCharacters(text){
+  const s = (text||"").toLowerCase();
   const found = new Set();
-  CHARACTER_KEYWORDS.forEach(k=>{
-    if ((text||"").toLowerCase().includes(k.key.toLowerCase())) found.add(k.code);
-  });
+  if (s.includes("willy")) found.add("WILLY");
+  if (s.includes("panby")) found.add("PANBY");
+  if (s.includes("quok")) found.add("QUOK");
   return Array.from(found);
 }
 
-function buildPrompt(sceneN, beatText, coreText){
-  const involved = new Set(detectCharacters(coreText + "\n" + beatText));
-  // Always include Willy DNA if not mentioned? (brand core) — BUT only if beat/core includes Willy.
-  // We keep strict: only inject DNA for mentioned names.
-  const dnaBlocks = Array.from(involved).map(c=>DNA[c]).join("\n");
-
-  // Light auto-rule: ensure “not looking at camera”
-  const gazeRule = "GAZE TARGET: Characters look at each other or the key object/situation, never at the camera.";
-  const propsRule = "PROPS & PHYSICS: All objects maintain exact color/scale between scenes. Objects have realistic weight; gravity and friction are believable.";
-  const bodyRule = "BIOLOGICAL BODY LANGUAGE: Emotions are shown through ears/tail/whiskers/posture, not abstract words.";
+function buildPrompt(sceneN, beatText, fullContext){
+  const involved = detectCharacters(fullContext + "\n" + beatText);
+  const dnaBlock = involved.length ? involved.map(k=>DNA[k]).join("\n") : DNA.WILLY; // default to Willy as channel core
 
   return [
     MASTER_STYLE,
@@ -205,84 +162,102 @@ function buildPrompt(sceneN, beatText, coreText){
     beatText,
     "",
     "CHARACTER STATES (Verbatim Anchor):",
-    dnaBlocks || "(No brand character detected in this beat — add names like Willy/Panby/Quok to inject DNA automatically.)",
+    dnaBlock,
     "",
-    gazeRule,
-    propsRule,
-    bodyRule,
+    "GAZE TARGET (Interaction Rule):",
+    "- Characters look at each other or the key object/situation. NEVER look at the camera.",
     "",
-    "REMEMBER:",
-    "- Repeat exact character DNA and exact prop names/colors every time they appear.",
-    "- One readable action per scene. No dialogue. No text. No logos."
+    "PROPS & PHYSICS:",
+    "- All objects maintain exact color/scale/markings from previous scenes. Realistic weight, gravity, friction.",
+    "",
+    "PROP DNA (Persistence Check):",
+    fullContext.propDNA ? fullContext.propDNA : "(none provided)",
+    "",
+    "BIOLOGICAL BODY LANGUAGE:",
+    "- Emotions shown through ears/tail/whiskers/posture/breathing. No abstract emotion words.",
+    "",
+    "REMEMBER (Continuity Lock):",
+    "- Repeat the exact same character DNA and PROP DNA every time they appear.",
+    "- One clear action per scene. Still/slow for detailed tool interaction.",
+    "- No dialogue, no text, no subtitles, no logos."
   ].join("\n");
 }
 
 function compile(){
   const raw = el("input").value || "";
-  const lines = normalizeLines(raw);
+  const lines = linesOf(raw);
 
-  // Try new format first
-  let parsed = parseNewTitleSettingsScenes(lines);
+  let parsed = parseGeneratorFormat(lines);
+  if (!parsed) parsed = parseLegacy(lines);
+
   if (!parsed){
-    parsed = parseOldCoreAndTram(lines);
-  }
-  if (!parsed){
-    el("msg").innerHTML = `<div class="err"><b>ERROR:</b> Could not detect format. Use either:
-      <br>• <span class="k">STORY TITLE / STORY SETTINGS / SCENES</span> (from generator)
-      <br>• or <span class="k">STORY CORE / STORY TRAM</span> (legacy)
-    </div>`;
+    el("msg").innerHTML = `<div class="err"><b>ERROR:</b> Could not parse. Paste generator output with <span class="k">STORY SETTINGS + PROP DNA + SCENES</span>.</div>`;
     el("cards").innerHTML = "";
     setStatus("Error");
     return;
   }
 
-  el("msg").innerHTML = `<div class="ok"><b>OK:</b> Parsed ${parsed.beats.length} scenes. DNA injection will occur when names appear in each beat.</div>`;
+  const ctx = { settings: parsed.settings, propDNA: parsed.propDNA };
+  const fullContextText = (parsed.title?("TITLE: "+parsed.title+"\n"):"") + (parsed.settings?("SETTINGS:\n"+parsed.settings+"\n"):"") + (parsed.propDNA?("PROP DNA:\n"+parsed.propDNA+"\n"):"");
 
+  el("msg").innerHTML = `<div class="ok"><b>OK:</b> Parsed ${parsed.beats.length} scenes${parsed.title?(" — <span class="k">"+parsed.title+"</span>"):""}.</div>`;
   const cards = el("cards");
   cards.innerHTML = "";
 
   parsed.beats.forEach(b=>{
-    const prompt = buildPrompt(b.n, b.text, parsed.core || "");
-    const div = document.createElement("div");
-    div.className = "sceneCard";
-    div.innerHTML = `<h3>Scene ${b.n}</h3><pre>${escapeHtml(prompt)}</pre>`;
-    cards.appendChild(div);
+    const prompt = buildPrompt(b.n, b.text, {propDNA: parsed.propDNA});
+    const wrap = document.createElement("div");
+    wrap.className = "scene";
+
+    const top = document.createElement("div");
+    top.className = "top";
+
+    const title = document.createElement("b");
+    title.textContent = `Scene ${b.n}`;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "good";
+    copyBtn.textContent = "Copy";
+    copyBtn.style.padding = "8px 10px";
+    copyBtn.addEventListener("click", async ()=>{
+      try{ await navigator.clipboard.writeText(prompt); setStatus(`Copied Scene ${b.n}`); }
+      catch{ setStatus("Copy failed"); }
+    });
+
+    top.appendChild(title);
+    top.appendChild(copyBtn);
+
+    const pre = document.createElement("pre");
+    pre.textContent = prompt;
+
+    wrap.appendChild(top);
+    wrap.appendChild(pre);
+    cards.appendChild(wrap);
   });
 
   setStatus("Compiled ✅");
 }
 
-function escapeHtml(s){
-  return (s||"")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;");
-}
+el("compile").addEventListener("click", compile);
 
-el("compileBtn").addEventListener("click", compile);
-
-el("copyAllBtn").addEventListener("click", async ()=>{
-  const cards = Array.from(document.querySelectorAll(".sceneCard pre"));
-  if (!cards.length){ setStatus("Nothing to copy"); return; }
-  const txt = cards.map(x=>x.textContent).join("\n\n---\n\n");
-  try{
-    await navigator.clipboard.writeText(txt);
-    setStatus("Copied ✅");
-  } catch {
-    setStatus("Copy failed — select text manually.");
-  }
+el("copyAll").addEventListener("click", async ()=>{
+  const blocks = Array.from(document.querySelectorAll(".scene pre"));
+  if (!blocks.length){ setStatus("Nothing to copy"); return; }
+  const all = blocks.map(b=>b.textContent).join("\n\n" + "=".repeat(60) + "\n\n");
+  try{ await navigator.clipboard.writeText(all); setStatus("Copied ALL ✅"); }
+  catch{ setStatus("Copy failed"); }
 });
 
-// Prefill from hash: compiler.html#story=...
-(function prefill(){
+// Prefill from generator
+(function(){
   try{
-    const h = location.hash || "";
+    const h = location.hash||"";
     const m = h.match(/#story=(.*)$/);
     if (m && m[1]){
       el("input").value = decodeURIComponent(m[1]);
-      setStatus("Prefilled from generator — click Compile");
+      setStatus("Prefilled — click Compile");
     }
-  } catch {}
+  }catch{}
 })();
 </script>
 </body>
