@@ -5,95 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Silent Cinematic Cute Story Generator</title>
   <style>
-    :root { --pad: 14px; --radius: 14px; }
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0; background: #0b0d12; color: #eef2ff;
-      line-height: 1.35;
-    }
-    header {
-      padding: 26px 18px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    :root { --r:14px; }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#0b0d12;color:#eef2ff;line-height:1.35}
+    header{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
       background: radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.22), transparent 60%),
                   radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,0.18), transparent 55%);
     }
-    header h1 { margin: 0 0 8px; font-size: 22px; }
-    header p { margin: 0; opacity: 0.9; max-width: 980px; }
-    main { max-width: 1200px; margin: 0 auto; padding: 18px; display: grid; gap: 16px; }
-    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
-    @media (min-width: 980px) { .grid { grid-template-columns: 460px 1fr; } }
-
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    header h1{margin:0 0 6px;font-size:22px}
+    header p{margin:0;opacity:.85;max-width:980px}
+    main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media(min-width:980px){.grid{grid-template-columns:520px 1fr}}
+    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .card h2{margin:0 0 10px;font-size:15px;opacity:.95}
+    label{font-size:12px;opacity:.85;display:block;margin-bottom:6px}
+    input,select,textarea{
+      width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.35);color:#eef2ff;outline:none;box-sizing:border-box
     }
-    .card h2 { margin: 0 0 10px; font-size: 15px; letter-spacing: 0.2px; opacity: 0.95; }
-
-    .row { display: grid; gap: 10px; grid-template-columns: 1fr; }
-    @media (min-width: 520px) { .row.two { grid-template-columns: 1fr 1fr; } }
-
-    label { font-size: 12px; opacity: 0.85; display: block; margin-bottom: 6px; }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px 11px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.35);
-      color: #eef2ff;
-      outline: none;
-      box-sizing: border-box;
-    }
-    textarea { min-height: 78px; resize: vertical; }
-
-    .btnbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-    button {
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: #eef2ff;
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    button.primary { background: rgba(99,102,241,0.22); border-color: rgba(99,102,241,0.45); }
-    button.good { background: rgba(16,185,129,0.18); border-color: rgba(16,185,129,0.40); }
-    button:hover { filter: brightness(1.08); }
-
-    .out {
-      white-space: pre-wrap;
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 13px;
-      overflow: auto;
-      max-height: 70vh;
-    }
-    .pill {
-      display: inline-flex; gap: 8px; align-items: center;
-      padding: 7px 10px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
-      font-size: 12px; opacity: 0.9;
-    }
-    .muted { opacity: 0.78; }
-    .small { font-size: 12px; opacity: 0.8; }
-    .hr { height: 1px; background: rgba(255,255,255,0.10); margin: 14px 0; }
-    .footer { opacity: 0.7; font-size: 12px; padding: 6px 2px 0; }
-    .k { color: #a5b4fc; }
-
-    .chips { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
-    .chip {
-      display:flex; gap:8px; align-items:center;
-      border:1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
-      border-radius:999px;
-      padding:8px 10px;
-      font-size:12px;
-    }
-    .chip input { width:auto; }
+    textarea{min-height:78px;resize:vertical}
+    .row{display:grid;gap:10px;grid-template-columns:1fr}
+    @media(min-width:520px){.row.two{grid-template-columns:1fr 1fr}}
+    .chips{display:flex;gap:10px;flex-wrap:wrap}
+    .chip{display:flex;gap:8px;align-items:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:999px;padding:8px 10px;font-size:12px}
+    .chip input{width:auto}
+    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:700}
+    button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
+    button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
+    button:hover{filter:brightness(1.08)}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:12px;opacity:.9}
+    .muted{opacity:.78}
+    .small{font-size:12px;opacity:.8}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+    .out{white-space:pre-wrap;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;font-size:13px;overflow:auto;max-height:72vh}
+    .k{color:#a5b4fc}
   </style>
 </head>
 
@@ -101,8 +47,8 @@
 <header>
   <h1>Silent Cinematic Cute Story Generator</h1>
   <p>
-    Generate unlimited silent, cinematic, visually readable cute stories using a structured SOP (Acts I–VI) and a story tram.
-    Includes core characters (Willy / Panby / Quok), 50 problem types, 100 helper roles, and auto-generated English titles.
+    Brand-locked to <span class="k">Willy / Panby / Quok</span>. Auto-selects Problem, Helper Role, Weather, and Location with logic.
+    You can still override manually. Generates <span class="k">15 / 20 / 25</span> scene beats (visual-only).
   </p>
 </header>
 
@@ -115,791 +61,1105 @@
       <div>
         <label>Story Title (auto-generated)</label>
         <input id="title" readonly />
-        <div class="small muted">Title updates every time you generate (English only).</div>
+        <div class="small muted">Updates every time you generate.</div>
       </div>
     </div>
 
     <div class="row two">
       <div>
-        <label>Main Character (Channel core cast)</label>
+        <label>Main Character (core cast)</label>
         <select id="heroSelect"></select>
-        <div class="small muted">Default is Willy. You can remove him by selecting another hero.</div>
       </div>
       <div>
         <label>Friends (optional)</label>
         <div class="chips">
-          <label class="chip"><input type="checkbox" id="includePanby" /> Include Panby (baby panda)</label>
-          <label class="chip"><input type="checkbox" id="includeQuok" /> Include Quok (baby quokka)</label>
+          <label class="chip"><input type="checkbox" id="includePanby" /> Include Panby</label>
+          <label class="chip"><input type="checkbox" id="includeQuok" /> Include Quok</label>
         </div>
-        <div class="small muted">Friends can appear in the story tram, but not necessarily every scene.</div>
+        <div class="small muted">Friends can appear sometimes, not necessarily every scene.</div>
       </div>
     </div>
 
+    <div class="hr"></div>
+
     <div class="row two">
+      <div>
+        <label>Type of story</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" id="autoStoryType" checked /> Auto</label>
+        </div>
+        <select id="storyType"></select>
+      </div>
+
       <div>
         <label>Object of Affection</label>
-        <input id="object" placeholder="e.g., Plush bear / Toy plane / Favorite ball / Tiny toy car" />
+        <div class="chips">
+          <label class="chip"><input type="checkbox" id="useObject" checked /> Include an object</label>
+          <label class="chip"><input type="checkbox" id="autoObject" checked /> Auto object</label>
+        </div>
+        <select id="objectSelect"></select>
       </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="row two">
       <div>
-        <label>Setting (short)</label>
-        <input id="setting" placeholder="e.g., Backyard garden path in soft afternoon sunlight" />
+        <label>Location</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" id="useCountry" /> Use cultural country markers</label>
+          <label class="chip"><input type="checkbox" id="autoLocation" checked /> Auto</label>
+        </div>
+        <select id="locationSelect"></select>
+        <div class="small muted">If country markers are OFF, scenery stays neutral.</div>
+      </div>
+
+      <div>
+        <label>Country (optional)</label>
+        <select id="countrySelect"></select>
       </div>
     </div>
 
     <div class="row two">
       <div>
-        <label>Problem Type (50 options)</label>
+        <label>Weather & Time (auto logic: no snow+beach)</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" id="autoWeather" checked /> Auto</label>
+        </div>
+        <select id="weatherSelect"></select>
+      </div>
+
+      <div>
+        <label>Caregiver/Helper (animal-only, role-fit)</label>
+        <input id="helper" readonly />
+        <div class="small muted">Always an animal. Auto-picked based on helper role.</div>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="row two">
+      <div>
+        <label>Problem Type</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" id="autoProblem" checked /> Auto</label>
+        </div>
         <select id="problemType"></select>
       </div>
-      <div>
-        <label>Primary Helper Role (100 roles)</label>
-        <select id="role"></select>
-      </div>
-    </div>
 
-    <div class="row two">
       <div>
-        <label>Caregiver/Helper (auto-chosen animal to match role)</label>
-        <input id="helper" readonly />
-        <div class="small muted">Always an animal. Picked to be cute + role-appropriate.</div>
-      </div>
-      <div>
-        <label>Key Tool / Vehicle</label>
-        <input id="tool" placeholder="e.g., Toy fire truck + ladder / Toy ambulance / Toolbox / Net" />
+        <label>Primary Helper Role</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" id="autoRole" checked /> Auto</label>
+        </div>
+        <select id="role"></select>
       </div>
     </div>
 
     <div class="row">
       <div>
-        <label>Optional Notes (props, uniforms, extra animals, etc.)</label>
-        <textarea id="notes" placeholder="e.g., Add toy plane cameo, safety cone, tiny net, cute uniform helmet. Keep physics realistic."></textarea>
+        <label>Optional Notes (props, uniforms, vehicles, tools, extra animals)</label>
+        <textarea id="notes" placeholder="e.g., add toy fire truck + ladder, tiny net, safety cone. Keep physics realistic."></textarea>
       </div>
     </div>
 
     <div class="btnbar">
-      <button class="primary" id="generateBtn">Generate Story Tram (24 beats)</button>
-      <button class="good" id="generate19Btn">Generate 19-scene Mode</button>
-      <button id="randomBtn">Randomize Inputs</button>
-      <button id="swapSkinBtn">Swap Story Skin</button>
+      <button class="primary" id="btn15">Create Story (15 scenes)</button>
+      <button class="primary" id="btn20">Create Story (20 scenes)</button>
+      <button class="primary" id="btn25">Create Story (25 scenes)</button>
+      <button id="randomBtn">Randomize (smart)</button>
       <button id="copyBtn">Copy Output</button>
-      <button id="downloadBtn">Download JSON</button>
       <span class="pill" id="statusPill">Ready</span>
     </div>
 
     <div class="hr"></div>
 
-    <div class="small">
-      <div class="muted"><b>Non-negotiables baked in:</b> no dialogue/text, one physical action per scene, visible cause→effect, no villains, realistic physics, calm ending echoing opening.</div>
+    <div class="small muted">
+      <b>SOP baked in:</b> no dialogue/text, one action per scene, visible cause→effect, no villains, realistic physics, calm ending.
     </div>
   </section>
 
   <section class="card">
-    <h2>2) Generated Output</h2>
-    <div class="out" id="output">(Your generated story will appear here.)</div>
-    <div class="footer">Tip: Use this tram as the blueprint before writing Phase 3 scene prompts with your Continuity-Lock template.</div>
+    <h2>2) Generated Story Beats</h2>
+    <div class="out" id="output">(Click a “Create Story” button.)</div>
+    <div class="small muted" style="margin-top:10px;">
+      Tip: These beats are designed to be converted into your Phase 3 Continuity-Lock scene prompts.
+    </div>
   </section>
 
 </main>
 
 <script>
-  // ===============================
-  // CORE CAST (Channel Universe)
-  // ===============================
-  const CORE_CHARACTERS = [
-    { id: "willy", name: "Willy", display: "Willy (Baby Golden Retriever)", blurb: "Baby Golden Retriever puppy, simple red collar, tiny pink blep." },
-    { id: "panby", name: "Panby", display: "Panby (Baby Panda)", blurb: "Baby panda, super cute, calm and supportive vibe." },
-    { id: "quok",  name: "Quok",  display: "Quok (Baby Quokka)", blurb: "Baby quokka, super cute, funny and optimistic vibe." }
-  ];
+/* =========================
+   CORE CAST
+========================= */
+const CORE_CHARACTERS = [
+  { id:"willy", name:"Willy", display:"Willy (Baby Golden Retriever)" },
+  { id:"panby", name:"Panby", display:"Panby (Baby Panda)" },
+  { id:"quok",  name:"Quok",  display:"Quok (Baby Quokka)" },
+];
 
-  // ===============================
-  // 50 PROBLEM TYPES (Visual + Silent)
-  // Funny Slapstick + Adventure oriented
-  // ===============================
-  const PROBLEM_TYPES_50 = [
-    "Plush stuck in a tree",
-    "Toy plane stuck on a roof edge",
-    "Ball rolls under a fence",
-    "Toy car falls into a flower bed",
-    "Kite tangled in branches",
-    "Bridge of sticks collapses",
-    "Toy boat drifts away",
-    "Wheel pops off a toy truck",
-    "Toy ladder is too short",
-    "Toolbox tips and spills",
-    "Map blows away in the wind",
-    "Tiny flag gets stuck in mud",
-    "Picnic basket lid won’t open",
-    "Gate latch is stuck",
-    "Toy wagon tips over on a slope",
-    "Paper airplane stuck in bushes",
-    "Toy helicopter won’t spin",
-    "String snaps during a pull",
-    "Toy crane hook gets tangled",
-    "Toy train derails from the track",
-    "Toy ambulance gets wedged between stones",
-    "Toy fire truck wheel gets stuck in a crack",
-    "Plush slides into a shallow puddle",
-    "Toy submarine disappears behind rocks",
-    "Ball bounces into a planter",
-    "Toy plane nose breaks off (clean, visible break)",
-    "Toy car ramp is too steep and slips",
-    "Toy bridge plank falls out",
-    "Toy tow rope is missing",
-    "Toy door won’t close and blocks the path",
-    "Flashlight won’t turn on (needs a fix)",
-    "Wind knocks over a tiny signpost",
-    "Toy backpack strap gets caught",
-    "Toy scooter handlebar comes loose",
-    "Toy sled slides away downhill",
-    "Toy net has a hole (won’t catch)",
-    "Toy propeller falls off",
-    "Toy wheel is stuck and won’t roll",
-    "Toy plane won’t take off from grass",
-    "Toy boat leaks (small drip)",
-    "Toy cart is too heavy to move",
-    "Path is blocked by fallen branch",
-    "Toy truck bed won’t lift",
-    "Toy crane arm won’t extend",
-    "Toy parachute won’t open",
-    "Toy balloon floats out of reach",
-    "Toy camera falls and stops working",
-    "Toy compass points wrong (needs adjustment)",
-    "Toy rope ladder slips down",
-    "Favorite object is out of reach on a ledge"
-  ];
+/* =========================
+   STORY TYPES
+========================= */
+const STORY_TYPES = [
+  "Adventure",
+  "Funny",
+  "Sad",
+  "Emotional",
+  "Encouraging",
+  "Brave"
+];
 
-  // ===============================
-  // 100 HELPER ROLES (Role + Category)
-  // Category drives helper-animal selection
-  // ===============================
-  const HELPER_ROLES_100 = [
-    // Emergency & Rescue
-    { role:"Firefighter", cat:"emergency" },
-    { role:"Rescue Medic", cat:"medical" },
-    { role:"Mountain Rescuer", cat:"rescue" },
-    { role:"River Rescuer", cat:"rescue" },
-    { role:"Lifeguard", cat:"rescue" },
-    { role:"Search-and-Rescue Leader", cat:"rescue" },
-    { role:"Disaster Response Helper", cat:"emergency" },
-    { role:"Emergency Dispatcher", cat:"emergency" },
-    { role:"Safety Officer", cat:"emergency" },
-    { role:"First Aid Helper", cat:"medical" },
-    { role:"Animal Paramedic", cat:"medical" },
-    { role:"Trail Ranger", cat:"nature" },
-    { role:"Park Ranger", cat:"nature" },
-    { role:"Forest Scout", cat:"nature" },
-    { role:"Storm Watcher", cat:"nature" },
+/* =========================
+   100+ CUTE OBJECTS
+========================= */
+const OBJECTS_100 = [
+  "tiny plush bear with a bowtie","mini plush duck","soft plush bunny","tiny plush fox","plush star pillow",
+  "small plush heart","mini plush panda","mini plush quokka","tiny plush penguin","plush dinosaur",
+  "favorite tennis ball","tiny squeaky ball","striped bouncy ball","soft foam ball","mini soccer ball",
+  "toy airplane (blue)","toy airplane (red)","wooden glider plane","toy helicopter","toy hot-air balloon",
+  "toy rescue boat","toy sailboat","toy submarine","toy tugboat","toy raft",
+  "toy fire truck","toy ambulance","toy police car (no text)","toy tow truck","toy dump truck",
+  "toy crane truck","toy ice cream truck","toy delivery van (no text)","toy bus","toy train engine",
+  "toy train carriage","toy tram","toy scooter","toy skateboard","toy bicycle",
+  "mini backpack","tiny lunchbox","small picnic basket","tiny thermos","little water bottle",
+  "small camera (toy)","mini flashlight","tiny compass","mini map roll","tiny binoculars",
+  "small kite","paper airplane","tiny pinwheel","little flag","mini windsock",
+  "small storybook","tiny notebook","crayon box","little paintbrush","tiny sticker sheet",
+  "music box","tiny drum","mini tambourine","small bell","toy microphone (no logo)",
+  "tiny rubber duck","small bath boat","floating leaf boat","mini lifebuoy","toy fishing rod",
+  "little net","butterfly net","small rope coil","tiny hook tool","mini wrench (toy)",
+  "tiny screwdriver (toy)","small wooden wedge","mini plank","tiny ladder (toy)","mini traffic cone",
+  "tiny safety helmet","mini goggles","soft scarf","little cape","tiny vest (no text)",
+  "mini flower pot","little sunflower","tiny bouquet","acorn charm","pinecone treasure",
+  "small seashell","smooth lucky stone","shiny marble","tiny snow globe","mini lantern",
+  "toy teacup","tiny cookie jar","mini cupcake","small jam jar","toy donut",
+  "little blanket","tiny pillow","mini warm mitten","small umbrella","tiny raincoat (no text)"
+];
 
-    // Builders / Makers
-    { role:"Builder", cat:"build" },
-    { role:"Carpenter", cat:"build" },
-    { role:"Repair Technician", cat:"tech" },
-    { role:"Mechanic", cat:"mechanic" },
-    { role:"Toy Maker", cat:"maker" },
-    { role:"Woodworker", cat:"maker" },
-    { role:"Engineer", cat:"tech" },
-    { role:"Inventor", cat:"tech" },
-    { role:"Craftsman", cat:"maker" },
-    { role:"Rope & Knot Specialist", cat:"build" },
-    { role:"Bridge Fixer", cat:"build" },
-    { role:"Wheel Repairer", cat:"mechanic" },
-    { role:"Toolbox Organizer", cat:"maker" },
-    { role:"Gadget Fixer", cat:"tech" },
-    { role:"Wrench Wizard", cat:"mechanic" },
+/* =========================
+   LOCATIONS + BIOME TAGS
+   biome guides weather selection
+========================= */
+const LOCATIONS = [
+  { id:"neutral-garden", name:"Neutral backyard garden path", biome:"temperate", markers:"weathered stone path, flowers, soft afternoon sunlight" },
+  { id:"neutral-park", name:"Neutral park near a big tree", biome:"temperate", markers:"wide grass, tree trunk, soft daylight" },
+  { id:"forest-trail", name:"Forest-edge trail", biome:"temperate", markers:"dappled sunlight, leaves, soft shadows" },
+  { id:"mountain-meadow", name:"Mountain meadow", biome:"mountain", markers:"rocky ground, distant hills, crisp light" },
+  { id:"snowy-village", name:"Snowy village lane", biome:"snow", markers:"snowy ground, wooden fences, frosty air" },
+  { id:"coastal-beach", name:"Coastal beach path", biome:"beach", markers:"sand, waves, sea breeze" },
+  { id:"desert-oasis", name:"Desert edge near oasis", biome:"desert", markers:"warm sand, sparse plants, bright sun" },
+  { id:"rainy-city-street", name:"Rainy town street", biome:"city", markers:"wet pavement, storefront shapes, reflections" },
+  { id:"lake-shore", name:"Lake shore path", biome:"temperate", markers:"smooth stones, calm water, reeds" },
+  { id:"farm-lane", name:"Countryside farm lane", biome:"temperate", markers:"wooden barn silhouette, fields, soft light" }
+];
 
-    // Transport
-    { role:"Pilot", cat:"air" },
-    { role:"Co-Pilot", cat:"air" },
-    { role:"Airfield Helper", cat:"air" },
-    { role:"Helicopter Crew", cat:"air" },
-    { role:"Balloon Captain", cat:"air" },
-    { role:"Train Conductor", cat:"rail" },
-    { role:"Railway Engineer", cat:"rail" },
-    { role:"Station Master", cat:"rail" },
-    { role:"Bus Driver", cat:"road" },
-    { role:"Tow Truck Operator", cat:"road" },
-    { role:"Delivery Driver", cat:"road" },
-    { role:"Traffic Guide", cat:"road" },
-    { role:"Harbor Captain", cat:"sea" },
-    { role:"Boat Captain", cat:"sea" },
-    { role:"Sailor", cat:"sea" },
-    { role:"Dock Helper", cat:"sea" },
+/* =========================
+   COUNTRIES + VISUAL MARKERS
+   (only used if checkbox ON)
+========================= */
+const COUNTRIES = [
+  { id:"japan", name:"Japan", style:"traditional wooden houses, shoji-like panels, red torii silhouette in distance" , preferred:["temperate","mountain","city"]},
+  { id:"italy", name:"Italy", style:"warm stone walls, terracotta roofs, small piazza feel" , preferred:["temperate","city","beach"]},
+  { id:"france", name:"France", style:"white shutters, cobblestone lane, cafe awning shapes" , preferred:["temperate","city"]},
+  { id:"uk", name:"United Kingdom", style:"brick houses, hedgerows, quaint garden fences" , preferred:["temperate"]},
+  { id:"usa", name:"USA", style:"suburban porch railings, wide lawns, mailbox shape" , preferred:["temperate","city"]},
+  { id:"iceland", name:"Iceland", style:"dark volcanic rocks, turf-roof hints, dramatic sky" , preferred:["snow","mountain"]},
+  { id:"norway", name:"Norway", style:"wood cabins, fjord-like background, pine trees" , preferred:["snow","mountain","temperate"]},
+  { id:"morocco", name:"Morocco", style:"warm clay walls, mosaic tile accents, arched doorway" , preferred:["desert","city"]},
+  { id:"mexico", name:"Mexico", style:"colorful walls, papel-picardo shapes, sunny courtyard vibe" , preferred:["temperate","desert","city"]},
+  { id:"china", name:"China", style:"curved roof silhouettes, courtyard gate feel, lantern shapes (no text)" , preferred:["temperate","city","mountain"]},
+  { id:"taiwan", name:"Taiwan", style:"narrow street, scooters silhouettes, temple roof hint" , preferred:["temperate","city"]},
+  { id:"australia", name:"Australia", style:"bright sun, eucalyptus hint, wide open yard" , preferred:["temperate","beach","desert"]},
+];
 
-    // Nature & Adventure
-    { role:"Explorer", cat:"adventure" },
-    { role:"Pathfinder", cat:"adventure" },
-    { role:"Cartographer", cat:"adventure" },
-    { role:"Compass Expert", cat:"adventure" },
-    { role:"Cave Guide", cat:"adventure" },
-    { role:"Cliff Spotter", cat:"adventure" },
-    { role:"Tree Climber (realistic)", cat:"nature" },
-    { role:"Garden Helper", cat:"nature" },
-    { role:"Wildflower Keeper", cat:"nature" },
-    { role:"Weather Guide", cat:"nature" },
+/* =========================
+   30 WEATHER & TIME OPTIONS
+   each has tags: biomes allowed
+========================= */
+const WEATHER_30 = [
+  { name:"Soft spring morning, mild", allowed:["temperate","city","beach"] },
+  { name:"Sunny midday, warm", allowed:["temperate","city","beach","desert"] },
+  { name:"Golden-hour sunset, calm", allowed:["temperate","city","beach","mountain","desert"] },
+  { name:"Overcast afternoon, mild", allowed:["temperate","city"] },
+  { name:"Light drizzle, cool", allowed:["temperate","city","forest"] },
+  { name:"Steady rain, cozy", allowed:["temperate","city"] },
+  { name:"Heavy rain, puddles everywhere", allowed:["temperate","city"] },
+  { name:"Thunderstorm, dramatic sky", allowed:["temperate","city","mountain"] },
+  { name:"Windy day, gusts", allowed:["temperate","beach","mountain","city"] },
+  { name:"Foggy morning, low visibility", allowed:["temperate","city","mountain"] },
+  { name:"Crisp autumn afternoon, falling leaves", allowed:["temperate","forest","city"] },
+  { name:"Autumn morning, cool and clear", allowed:["temperate","forest","city"] },
+  { name:"Hot summer afternoon, bright sun", allowed:["beach","desert","temperate"] },
+  { name:"Summer evening, warm breeze", allowed:["beach","temperate","city"] },
+  { name:"Cold winter morning, pale sun", allowed:["snow","mountain","city"] },
+  { name:"Snowing gently, quiet", allowed:["snow","mountain"] },
+  { name:"Snowfall + wind, swirling", allowed:["snow","mountain"] },
+  { name:"Icy day, crunchy ground", allowed:["snow","mountain"] },
+  { name:"After-rain sunlight, sparkling droplets", allowed:["temperate","forest","city"] },
+  { name:"Night scene, moonlight and calm", allowed:["temperate","city","beach","mountain","snow","desert"] },
+  { name:"Early dawn, soft blue light", allowed:["temperate","city","beach","mountain","snow","desert"] },
+  { name:"Heat haze noon, very warm", allowed:["desert","beach"] },
+  { name:"Sand breeze afternoon", allowed:["desert"] },
+  { name:"Coastal cloudy, cool sea air", allowed:["beach"] },
+  { name:"Coastal stormy wind", allowed:["beach"] },
+  { name:"Mountain crisp noon, clear sky", allowed:["mountain"] },
+  { name:"Mountain cloudy, light mist", allowed:["mountain"] },
+  { name:"City evening, warm street glow (no text)", allowed:["city"] },
+  { name:"City rainy night, reflections", allowed:["city"] },
+  { name:"Light rain with sun breaks, playful", allowed:["temperate","city"] },
+];
 
-    // Cozy services (still useful for stories)
-    { role:"Baker", cat:"service" },
-    { role:"Ice Cream Maker", cat:"service" },
-    { role:"Coffee Cart Helper", cat:"service" },
-    { role:"Librarian", cat:"cozy" },
-    { role:"Story Time Host", cat:"cozy" },
-    { role:"Lost-and-Found Keeper", cat:"service" },
-    { role:"Town Helper", cat:"service" },
-    { role:"Kind Neighbor", cat:"cozy" },
-    { role:"Playground Monitor", cat:"cozy" },
-    { role:"Festival Helper", cat:"cozy" },
+/* =========================
+   50 PROBLEM TYPES (visual)
+   Each problem has tags: storyTypes, preferredBiomes
+========================= */
+const PROBLEMS_50 = [
+  { name:"Plush stuck in a tree", types:["Adventure","Funny","Emotional","Brave"], biomes:["temperate","forest","city"] },
+  { name:"Toy plane stuck on a roof edge", types:["Adventure","Funny","Brave"], biomes:["city","temperate"] },
+  { name:"Ball rolls under a fence", types:["Funny","Adventure"], biomes:["temperate","city","farm"] },
+  { name:"Toy car falls into a flower bed", types:["Funny","Emotional"], biomes:["temperate"] },
+  { name:"Kite tangled in branches", types:["Adventure","Funny"], biomes:["temperate","forest"] },
+  { name:"Bridge of sticks collapses", types:["Adventure","Brave"], biomes:["forest","temperate","mountain"] },
+  { name:"Toy boat drifts away", types:["Adventure","Brave","Emotional"], biomes:["beach","temperate"] },
+  { name:"Wheel pops off a toy truck", types:["Funny","Encouraging"], biomes:["temperate","city","farm"] },
+  { name:"Toy ladder is too short", types:["Funny","Adventure"], biomes:["temperate","city","forest"] },
+  { name:"Toolbox tips and spills", types:["Funny"], biomes:["city","temperate","farm"] },
+  { name:"Map blows away in the wind", types:["Adventure","Funny"], biomes:["beach","mountain","temperate","city"] },
+  { name:"Gate latch is stuck", types:["Encouraging","Adventure"], biomes:["farm","temperate","city"] },
+  { name:"Toy wagon tips over on a slope", types:["Funny","Adventure"], biomes:["mountain","temperate"] },
+  { name:"Paper airplane stuck in bushes", types:["Funny","Adventure"], biomes:["temperate","forest"] },
+  { name:"Toy helicopter won’t spin", types:["Encouraging","Funny"], biomes:["temperate","city"] },
+  { name:"String snaps during a pull", types:["Funny","Encouraging"], biomes:["temperate","city","farm"] },
+  { name:"Toy crane hook gets tangled", types:["Funny","Adventure"], biomes:["city","temperate"] },
+  { name:"Toy train derails", types:["Funny","Encouraging"], biomes:["city","temperate"] },
+  { name:"Toy vehicle wedged between stones", types:["Funny","Adventure"], biomes:["temperate","city","mountain"] },
+  { name:"Favorite object slides into a shallow puddle", types:["Funny","Emotional"], biomes:["temperate","city"] },
+  { name:"Wind knocks over the tiny setup", types:["Funny","Adventure"], biomes:["beach","mountain","temperate","city"] },
+  { name:"Path blocked by a fallen branch", types:["Adventure","Brave"], biomes:["forest","temperate","mountain"] },
+  { name:"Toy boat stuck on shore", types:["Funny","Adventure"], biomes:["beach","temperate"] },
+  { name:"Toy cart too heavy to move", types:["Encouraging","Brave"], biomes:["farm","temperate","city"] },
+  { name:"Flashlight won’t turn on", types:["Adventure","Encouraging"], biomes:["city","temperate","forest","mountain"] },
+  { name:"Toy propeller falls off", types:["Funny","Encouraging"], biomes:["temperate","city"] },
+  { name:"Toy rope ladder slips down", types:["Adventure","Funny"], biomes:["temperate","forest","city"] },
+  { name:"Balloon floats out of reach", types:["Funny","Emotional"], biomes:["temperate","city","farm"] },
+  { name:"Toy bridge gap too wide", types:["Adventure","Brave"], biomes:["forest","mountain","temperate"] },
+  { name:"Toy ramp too slippery", types:["Funny","Encouraging"], biomes:["temperate","city"] },
+  { name:"Toy net has a hole", types:["Funny","Encouraging"], biomes:["temperate","city","beach"] },
+  { name:"Toy scooter handlebar comes loose", types:["Encouraging","Funny"], biomes:["city","temperate"] },
+  { name:"Toy sled slides away downhill", types:["Funny","Adventure"], biomes:["snow","mountain"] },
+  { name:"Toy parachute won’t open", types:["Adventure","Funny"], biomes:["temperate","city","beach"] },
+  { name:"Toy compass points wrong", types:["Adventure","Encouraging"], biomes:["mountain","forest","temperate"] },
+  { name:"Tiny flag gets stuck in mud", types:["Funny","Encouraging"], biomes:["temperate","farm","city"] },
+  { name:"Toy camera stops working after a bump", types:["Encouraging","Emotional"], biomes:["city","temperate"] },
+  { name:"Umbrella flips inside-out (wind gag)", types:["Funny"], biomes:["city","beach","temperate"] },
+  { name:"Rain makes the path too slippery", types:["Adventure","Brave"], biomes:["city","temperate","mountain"] },
+  { name:"Snow piles block the tiny route", types:["Adventure","Brave"], biomes:["snow","mountain"] },
+  { name:"Sand buries the small object", types:["Adventure","Funny"], biomes:["beach","desert"] },
+  { name:"Boat line comes untied", types:["Adventure","Brave"], biomes:["beach","temperate"] },
+  { name:"Toy engine stalls at the worst moment", types:["Funny","Encouraging"], biomes:["city","temperate"] },
+  { name:"Tiny bridge wobbles dangerously", types:["Brave","Adventure"], biomes:["mountain","forest","temperate"] },
+  { name:"A gust pushes everything off course", types:["Funny","Adventure"], biomes:["beach","mountain","temperate","city"] },
+  { name:"The needed tool goes missing", types:["Adventure","Encouraging"], biomes:["city","temperate","farm"] },
+  { name:"A crate cracks and drops the item", types:["Funny","Adventure"], biomes:["city","temperate","farm"] },
+  { name:"A lever gets stuck halfway", types:["Encouraging","Adventure"], biomes:["city","temperate"] },
+  { name:"Object is out of reach on a ledge", types:["Adventure","Brave","Emotional"], biomes:["city","mountain","temperate"] },
+];
 
-    // Creative roles
-    { role:"Painter", cat:"creative" },
-    { role:"Musician", cat:"creative" },
-    { role:"Photographer", cat:"creative" },
-    { role:"Costume Maker", cat:"creative" },
-    { role:"Banner Designer", cat:"creative" },
-    { role:"Toy Decorator", cat:"creative" },
-    { role:"Model Builder", cat:"maker" },
-    { role:"Kite Builder", cat:"maker" },
-    { role:"Paper Engineer", cat:"maker" },
-    { role:"Stage Builder", cat:"build" },
+/* =========================
+   100 HELPER ROLES
+   with categories for animal selection
+========================= */
+const HELPER_ROLES_100 = [
+  { role:"Firefighter", cat:"emergency", types:["Brave","Adventure","Funny"] },
+  { role:"Rescue Medic", cat:"medical", types:["Emotional","Encouraging","Brave"] },
+  { role:"Search-and-Rescue Leader", cat:"rescue", types:["Brave","Adventure"] },
+  { role:"Mountain Rescuer", cat:"rescue", types:["Brave","Adventure"] },
+  { role:"River Rescuer", cat:"rescue", types:["Brave","Adventure"] },
+  { role:"Lifeguard", cat:"rescue", types:["Brave","Adventure"] },
+  { role:"Safety Officer", cat:"emergency", types:["Encouraging","Brave"] },
+  { role:"First Aid Helper", cat:"medical", types:["Emotional","Encouraging"] },
+  { role:"Animal Paramedic", cat:"medical", types:["Emotional","Encouraging","Brave"] },
+  { role:"Park Ranger", cat:"nature", types:["Adventure","Encouraging"] },
+  { role:"Forest Scout", cat:"adventure", types:["Adventure"] },
+  { role:"Storm Watcher", cat:"nature", types:["Adventure","Brave"] },
 
-    // Tech & precision
-    { role:"Clock Repairer", cat:"precision" },
-    { role:"Lens Cleaner", cat:"precision" },
-    { role:"Battery Helper", cat:"tech" },
-    { role:"Light Technician", cat:"tech" },
-    { role:"Radio Fixer", cat:"tech" },
-    { role:"Workshop Supervisor", cat:"tech" },
-    { role:"Quality Inspector", cat:"precision" },
-    { role:"Safety Tester", cat:"precision" },
+  { role:"Builder", cat:"build", types:["Encouraging","Adventure"] },
+  { role:"Carpenter", cat:"build", types:["Encouraging"] },
+  { role:"Bridge Fixer", cat:"build", types:["Brave","Adventure"] },
+  { role:"Rope & Knot Specialist", cat:"build", types:["Adventure","Brave"] },
+  { role:"Repair Technician", cat:"tech", types:["Encouraging"] },
+  { role:"Engineer", cat:"tech", types:["Adventure","Encouraging"] },
+  { role:"Inventor", cat:"tech", types:["Funny","Adventure"] },
+  { role:"Gadget Fixer", cat:"tech", types:["Encouraging"] },
+  { role:"Quality Inspector", cat:"precision", types:["Encouraging","Funny"] },
+  { role:"Safety Tester", cat:"precision", types:["Encouraging"] },
 
-    // Medical variants
-    { role:"Clinic Nurse", cat:"medical" },
-    { role:"Herbal Helper", cat:"medical" },
-    { role:"Bandage Specialist", cat:"medical" },
-    { role:"Comfort Companion", cat:"medical" },
+  { role:"Mechanic", cat:"mechanic", types:["Encouraging","Funny"] },
+  { role:"Wheel Repairer", cat:"mechanic", types:["Encouraging"] },
+  { role:"Tow Truck Operator", cat:"road", types:["Adventure","Funny"] },
+  { role:"Traffic Guide", cat:"road", types:["Funny","Encouraging"] },
+  { role:"Delivery Driver", cat:"road", types:["Adventure"] },
 
-    // Farm & countryside
-    { role:"Farmer", cat:"farm" },
-    { role:"Shepherd", cat:"farm" },
-    { role:"Stable Helper", cat:"farm" },
-    { role:"Windmill Keeper", cat:"farm" },
-    { role:"Field Mechanic", cat:"mechanic" },
+  { role:"Pilot", cat:"air", types:["Adventure","Brave"] },
+  { role:"Co-Pilot", cat:"air", types:["Adventure"] },
+  { role:"Airfield Helper", cat:"air", types:["Adventure","Encouraging"] },
+  { role:"Helicopter Crew", cat:"air", types:["Brave","Adventure"] },
+  { role:"Balloon Captain", cat:"air", types:["Adventure","Funny"] },
 
-    // More fun rescue/crew roles to reach 100
-    { role:"Fire Truck Crew", cat:"emergency" },
-    { role:"Ambulance Crew", cat:"medical" },
-    { role:"Rescue Boat Crew", cat:"sea" },
-    { role:"Bridge Patrol", cat:"rescue" },
-    { role:"Tunnel Guide", cat:"adventure" },
-    { role:"Roof Spotter", cat:"rescue" },
-    { role:"Net Thrower", cat:"rescue" },
-    { role:"Ladder Handler", cat:"rescue" },
-    { role:"Rope Handler", cat:"rescue" },
-    { role:"Tool Runner", cat:"maker" },
-    { role:"Cleanup Crew", cat:"service" },
-    { role:"Snack Provider", cat:"cozy" },
-    { role:"Calm Coach", cat:"cozy" },
-    { role:"Team Leader", cat:"emergency" },
-    { role:"Final Check Officer", cat:"precision" }
-  ];
+  { role:"Boat Captain", cat:"sea", types:["Adventure","Brave"] },
+  { role:"Harbor Captain", cat:"sea", types:["Adventure"] },
+  { role:"Dock Helper", cat:"sea", types:["Encouraging"] },
+  { role:"Rescue Boat Crew", cat:"sea", types:["Brave","Adventure"] },
 
-  // ===============================
-  // Helper Animals by Category (always animals)
-  // ===============================
-  const HELPER_ANIMALS = {
-    emergency: [
-      "Orange tabby cat in a tiny firefighter helmet",
-      "Border collie dog wearing a small rescue vest (no text)",
-      "Baby bear cub wearing a small safety helmet",
-      "Golden retriever adult wearing a simple rescue harness (no text)"
+  { role:"Train Conductor", cat:"rail", types:["Funny","Adventure"] },
+  { role:"Station Master", cat:"rail", types:["Encouraging"] },
+  { role:"Railway Engineer", cat:"rail", types:["Encouraging","Adventure"] },
+
+  { role:"Explorer", cat:"adventure", types:["Adventure"] },
+  { role:"Pathfinder", cat:"adventure", types:["Adventure","Brave"] },
+  { role:"Cartographer", cat:"adventure", types:["Adventure"] },
+  { role:"Compass Expert", cat:"adventure", types:["Adventure","Encouraging"] },
+  { role:"Cave Guide", cat:"adventure", types:["Adventure","Brave"] },
+
+  { role:"Gardener", cat:"nature", types:["Emotional","Encouraging"] },
+  { role:"Wildflower Keeper", cat:"nature", types:["Emotional"] },
+  { role:"Weather Guide", cat:"nature", types:["Adventure","Encouraging"] },
+
+  { role:"Baker", cat:"service", types:["Emotional","Encouraging"] },
+  { role:"Ice Cream Maker", cat:"service", types:["Funny","Emotional"] },
+  { role:"Lost-and-Found Keeper", cat:"service", types:["Emotional","Encouraging"] },
+  { role:"Kind Neighbor", cat:"cozy", types:["Emotional","Encouraging"] },
+  { role:"Comfort Companion", cat:"cozy", types:["Emotional"] },
+
+  { role:"Toy Maker", cat:"maker", types:["Encouraging","Emotional"] },
+  { role:"Woodworker", cat:"maker", types:["Encouraging"] },
+  { role:"Kite Builder", cat:"maker", types:["Adventure","Funny"] },
+  { role:"Model Builder", cat:"maker", types:["Encouraging"] },
+
+  { role:"Photographer", cat:"creative", types:["Funny","Emotional"] },
+  { role:"Painter", cat:"creative", types:["Emotional"] },
+  { role:"Costume Maker", cat:"creative", types:["Funny","Encouraging"] },
+
+  { role:"Clock Repairer", cat:"precision", types:["Encouraging","Emotional"] },
+  { role:"Lens Cleaner", cat:"precision", types:["Encouraging"] },
+  { role:"Light Technician", cat:"tech", types:["Adventure","Encouraging"] },
+  { role:"Radio Fixer", cat:"tech", types:["Adventure"] },
+
+  { role:"Farmer", cat:"farm", types:["Encouraging","Emotional"] },
+  { role:"Shepherd", cat:"farm", types:["Encouraging"] },
+  { role:"Stable Helper", cat:"farm", types:["Encouraging","Emotional"] },
+  { role:"Windmill Keeper", cat:"farm", types:["Adventure","Encouraging"] },
+
+  // Fill up to 100 with variants that stay useful
+  { role:"Ladder Handler", cat:"rescue", types:["Adventure","Funny","Brave"] },
+  { role:"Rope Handler", cat:"rescue", types:["Adventure","Brave"] },
+  { role:"Net Thrower", cat:"rescue", types:["Funny","Adventure"] },
+  { role:"Tool Runner", cat:"maker", types:["Funny","Encouraging"] },
+  { role:"Cleanup Crew", cat:"service", types:["Encouraging","Funny"] },
+  { role:"Team Leader", cat:"emergency", types:["Brave","Adventure"] },
+  { role:"Final Check Officer", cat:"precision", types:["Encouraging"] },
+  { role:"Workshop Supervisor", cat:"tech", types:["Encouraging"] },
+  { role:"Bridge Patrol", cat:"rescue", types:["Brave","Adventure"] },
+  { role:"Roof Spotter", cat:"rescue", types:["Adventure","Brave"] },
+  { role:"Tunnel Guide", cat:"adventure", types:["Adventure"] },
+  { role:"Snack Provider", cat:"cozy", types:["Emotional","Encouraging"] },
+  { role:"Calm Coach", cat:"cozy", types:["Emotional","Encouraging"] },
+  { role:"Festival Helper", cat:"service", types:["Funny","Emotional"] },
+  { role:"Playground Monitor", cat:"cozy", types:["Encouraging","Funny"] },
+
+  // extra to hit ~100 safely
+  { role:"Battery Helper", cat:"tech", types:["Encouraging"] },
+  { role:"Map Keeper", cat:"adventure", types:["Adventure"] },
+  { role:"Bridge Builder", cat:"build", types:["Adventure","Brave"] },
+  { role:"Ramp Designer", cat:"build", types:["Funny","Encouraging"] },
+  { role:"Boat Line Specialist", cat:"sea", types:["Adventure","Brave"] },
+  { role:"Snow Path Plower", cat:"farm", types:["Brave","Encouraging"] },
+  { role:"Sand Digger", cat:"service", types:["Funny","Adventure"] },
+  { role:"Wind Expert", cat:"nature", types:["Adventure","Funny"] },
+  { role:"Fog Guide", cat:"nature", types:["Adventure","Brave"] },
+  { role:"Trail Marker", cat:"nature", types:["Adventure","Encouraging"] },
+  { role:"Emergency Helper", cat:"emergency", types:["Brave","Encouraging"] },
+  { role:"Clinic Nurse", cat:"medical", types:["Emotional","Encouraging"] },
+  { role:"Bandage Specialist", cat:"medical", types:["Emotional","Encouraging"] },
+  { role:"Herbal Helper", cat:"medical", types:["Emotional"] },
+  { role:"Cart Fixer", cat:"mechanic", types:["Encouraging","Funny"] },
+  { role:"Engine Starter", cat:"mechanic", types:["Adventure","Encouraging"] },
+  { role:"Signal Fixer", cat:"tech", types:["Adventure","Encouraging"] },
+  { role:"Route Planner", cat:"adventure", types:["Adventure"] },
+  { role:"Friendly Guide", cat:"cozy", types:["Encouraging","Emotional"] },
+  { role:"Courage Buddy", cat:"cozy", types:["Brave","Encouraging"] },
+];
+
+/* =========================
+   HELPER ANIMALS BY CATEGORY
+========================= */
+const HELPER_ANIMALS = {
+  emergency: [
+    "orange tabby cat wearing a tiny firefighter helmet (no text)",
+    "border collie dog wearing a small rescue vest (no text)",
+    "baby bear cub wearing a simple safety helmet (no text)",
+    "adult golden retriever wearing a plain rescue harness (no text)"
+  ],
+  rescue: [
+    "brave kitten wearing a yellow toy construction helmet (no text)",
+    "raccoon with a tiny utility belt (no text)",
+    "beaver holding a small rope coil",
+    "squirrel wearing a tiny climbing helmet (no text)"
+  ],
+  medical: [
+    "gentle bunny wearing a small medic cap (no text)",
+    "baby deer with a tiny first-aid pouch (no text)",
+    "panda cub with a simple medical vest (no text)",
+    "calm cat with a small bandage-roll pouch (no text)"
+  ],
+  build: [
+    "beaver carrying a small wooden wedge",
+    "otter with a tiny tool pouch (no text)",
+    "mole wearing a small hard hat (no text)",
+    "goat carrying a small rope bundle"
+  ],
+  mechanic: [
+    "raccoon with a tiny wrench pouch (no text)",
+    "fox with a small toolbox strap (no text)",
+    "cat wearing a little mechanic cap (no text)",
+    "dog with a simple tool belt (no text)"
+  ],
+  maker: [
+    "panda cub wearing a small apron (no text)",
+    "bunny carrying a tiny spool of string",
+    "hedgehog with craft tools in a pouch (no text)",
+    "cat with a roll of tape (no text)"
+  ],
+  tech: [
+    "owl wearing small goggles (no text)",
+    "raccoon with a tiny screwdriver pouch (no text)",
+    "fox holding a small flashlight (no text)",
+    "cat with a compact toolkit (no text)"
+  ],
+  precision: [
+    "owl holding a tiny magnifying glass",
+    "cat wearing small round glasses (no text)",
+    "bunny carrying a soft cleaning cloth",
+    "mouse holding a tiny measuring tape"
+  ],
+  air: [
+    "owl pilot with a small cap (no text)",
+    "seagull with a little scarf (no text)",
+    "cat in a tiny aviator cap (no text)",
+    "fox with a small map pouch (no text)"
+  ],
+  sea: [
+    "otter holding a small life ring",
+    "seal pup wearing a tiny sailor cap (no text)",
+    "cat captain with a simple hat (no text)",
+    "duck carrying a small rope loop"
+  ],
+  rail: [
+    "cat conductor with a small cap (no text)",
+    "dog station helper with a tiny whistle (no text)",
+    "fox railway engineer with a small wrench pouch (no text)",
+    "bunny ticket helper (no text)"
+  ],
+  road: [
+    "corgi holding a tiny traffic cone",
+    "cat carrying a small safety flag (no text)",
+    "raccoon tow helper holding a soft strap",
+    "dog guide wearing a plain reflective vest (no text)"
+  ],
+  nature: [
+    "hedgehog garden helper",
+    "squirrel trail helper",
+    "bunny flower keeper",
+    "deer trail guide"
+  ],
+  adventure: [
+    "fox explorer with a small compass pouch (no text)",
+    "raccoon scout carrying a tiny map roll",
+    "owl guide perched nearby",
+    "cat adventurer with a small satchel (no text)"
+  ],
+  cozy: [
+    "sleepy kitten sitting close",
+    "calm panda cub sitting nearby",
+    "warm bunny companion",
+    "gentle dog friend"
+  ],
+  service: [
+    "baker cat wearing a small apron (no text)",
+    "goat cart helper",
+    "duck delivery helper",
+    "bunny town helper"
+  ],
+  creative: [
+    "cat artist with a tiny brush pouch (no text)",
+    "bunny musician with a small tambourine",
+    "fox photographer with a toy camera (no text)",
+    "panda decorator carrying ribbon (no text)"
+  ],
+  farm: [
+    "goat farm helper",
+    "sheep helper with a tiny scarf (no text)",
+    "cow helper (cute, gentle)",
+    "pony helper (soft and calm)"
+  ]
+};
+
+/* =========================
+   UTILS
+========================= */
+const el = (id) => document.getElementById(id);
+const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const clean = (s) => (s||"").trim();
+
+function setStatus(t){ el("statusPill").textContent = t; }
+
+function byId(list, id){ return list.find(x => x.id === id); }
+
+function getHero(){
+  return byId(CORE_CHARACTERS, el("heroSelect").value) || CORE_CHARACTERS[0];
+}
+
+function getFriends(){
+  const friends = [];
+  if (el("includePanby").checked) friends.push("Panby");
+  if (el("includeQuok").checked) friends.push("Quok");
+  // avoid duplicate if hero is panby/quok
+  const heroName = getHero().name;
+  return friends.filter(f => f !== heroName);
+}
+
+function storyTypeAutoPick(){
+  return rand(STORY_TYPES);
+}
+
+function pickObjectAuto(){
+  return rand(OBJECTS_100);
+}
+
+/* =========================
+   LOCATION LOGIC
+========================= */
+function pickLocationAuto(){
+  return rand(LOCATIONS);
+}
+
+function pickCountryAutoForBiome(biome){
+  // pick a country whose preferred includes that biome (fallback random)
+  const pool = COUNTRIES.filter(c => (c.preferred||[]).includes(biome));
+  return pool.length ? rand(pool) : rand(COUNTRIES);
+}
+
+function pickWeatherAuto(biome){
+  const pool = WEATHER_30.filter(w => (w.allowed||[]).includes(biome) || w.allowed.includes("temperate") && biome==="forest");
+  return pool.length ? rand(pool) : rand(WEATHER_30);
+}
+
+/* =========================
+   PROBLEM + ROLE LOGIC
+   - choose based on story type + biome + weather
+========================= */
+function pickProblemAuto(storyType, biome, weatherName){
+  let pool = PROBLEMS_50.filter(p => p.types.includes(storyType));
+
+  // biome filtering: accept if problem biomes include the location biome, with a small fallback
+  let pool2 = pool.filter(p => p.biomes.includes(biome) || (biome==="forest" && p.biomes.includes("temperate")));
+  if (!pool2.length) pool2 = pool;
+
+  // weather influence (soft logic)
+  const w = weatherName.toLowerCase();
+  if (w.includes("snow")) {
+    const snowPool = pool2.filter(p => p.name.toLowerCase().includes("snow") || p.biomes.includes("snow"));
+    if (snowPool.length) pool2 = snowPool;
+  }
+  if (w.includes("rain")) {
+    const rainPool = pool2.filter(p => p.name.toLowerCase().includes("rain") || p.name.toLowerCase().includes("puddle"));
+    if (rainPool.length) pool2 = rainPool;
+  }
+  if (w.includes("wind") || w.includes("storm")) {
+    const windPool = pool2.filter(p => p.name.toLowerCase().includes("wind") || p.name.toLowerCase().includes("gust") || p.name.toLowerCase().includes("kite"));
+    if (windPool.length) pool2 = windPool;
+  }
+  if (biome==="beach") {
+    const beachPool = pool2.filter(p => p.biomes.includes("beach") || p.name.toLowerCase().includes("boat") || p.name.toLowerCase().includes("sand"));
+    if (beachPool.length) pool2 = beachPool;
+  }
+  if (biome==="desert") {
+    const desertPool = pool2.filter(p => p.name.toLowerCase().includes("sand") || p.biomes.includes("desert"));
+    if (desertPool.length) pool2 = desertPool;
+  }
+
+  return rand(pool2).name;
+}
+
+function pickRoleAuto(storyType, problemName){
+  // Filter roles compatible with the story type
+  let pool = HELPER_ROLES_100.filter(r => r.types.includes(storyType));
+  if (!pool.length) pool = HELPER_ROLES_100;
+
+  // Problem hints -> role category bias
+  const p = problemName.toLowerCase();
+  const preferCats = [];
+  if (p.includes("stuck") || p.includes("ledge") || p.includes("roof") || p.includes("tree")) preferCats.push("rescue","emergency");
+  if (p.includes("wheel") || p.includes("engine") || p.includes("vehicle")) preferCats.push("mechanic","road");
+  if (p.includes("boat") || p.includes("shore") || p.includes("line")) preferCats.push("sea","rescue");
+  if (p.includes("bridge") || p.includes("ramp") || p.includes("plank")) preferCats.push("build");
+  if (p.includes("flashlight") || p.includes("signal") || p.includes("radio")) preferCats.push("tech");
+  if (p.includes("snow")) preferCats.push("farm","rescue");
+  if (p.includes("kite") || p.includes("wind") || p.includes("map")) preferCats.push("adventure","nature");
+  if (p.includes("sad") || p.includes("emotional") || p.includes("plush")) preferCats.push("medical","cozy");
+
+  if (preferCats.length){
+    const biased = pool.filter(r => preferCats.includes(r.cat));
+    if (biased.length) pool = biased;
+  }
+  return rand(pool).role;
+}
+
+function roleToCat(role){
+  const found = HELPER_ROLES_100.find(r => r.role === role);
+  return found ? found.cat : "cozy";
+}
+
+function helperForRole(role){
+  const cat = roleToCat(role);
+  const pool = HELPER_ANIMALS[cat] || HELPER_ANIMALS.cozy;
+  return rand(pool);
+}
+
+/* =========================
+   UI POPULATION
+========================= */
+function populate(){
+  // heroes
+  const hs = el("heroSelect"); hs.innerHTML="";
+  CORE_CHARACTERS.forEach(c=>{
+    const o=document.createElement("option");
+    o.value=c.id; o.textContent=c.display;
+    hs.appendChild(o);
+  });
+  hs.value="willy";
+
+  // story type
+  const st = el("storyType"); st.innerHTML="";
+  STORY_TYPES.forEach(t=>{
+    const o=document.createElement("option");
+    o.value=t; o.textContent=t;
+    st.appendChild(o);
+  });
+
+  // objects
+  const os = el("objectSelect"); os.innerHTML="";
+  OBJECTS_100.forEach(x=>{
+    const o=document.createElement("option");
+    o.value=x; o.textContent=x;
+    os.appendChild(o);
+  });
+
+  // locations
+  const ls = el("locationSelect"); ls.innerHTML="";
+  LOCATIONS.forEach(l=>{
+    const o=document.createElement("option");
+    o.value=l.id; o.textContent=l.name;
+    ls.appendChild(o);
+  });
+
+  // countries
+  const cs = el("countrySelect"); cs.innerHTML="";
+  COUNTRIES.forEach(c=>{
+    const o=document.createElement("option");
+    o.value=c.id; o.textContent=c.name;
+    cs.appendChild(o);
+  });
+
+  // weather
+  const ws = el("weatherSelect"); ws.innerHTML="";
+  WEATHER_30.forEach(w=>{
+    const o=document.createElement("option");
+    o.value=w.name; o.textContent=w.name;
+    ws.appendChild(o);
+  });
+
+  // problems
+  const ps = el("problemType"); ps.innerHTML="";
+  PROBLEMS_50.forEach(p=>{
+    const o=document.createElement("option");
+    o.value=p.name; o.textContent=p.name;
+    ps.appendChild(o);
+  });
+
+  // roles
+  const rs = el("role"); rs.innerHTML="";
+  HELPER_ROLES_100.forEach(r=>{
+    const o=document.createElement("option");
+    o.value=r.role; o.textContent=r.role;
+    rs.appendChild(o);
+  });
+}
+
+/* =========================
+   ENABLE/DISABLE CONTROLS
+========================= */
+function syncControlStates(){
+  // object
+  const useObj = el("useObject").checked;
+  el("objectSelect").disabled = !useObj || el("autoObject").checked;
+  el("autoObject").disabled = !useObj;
+
+  // story type
+  el("storyType").disabled = el("autoStoryType").checked;
+
+  // location
+  el("locationSelect").disabled = el("autoLocation").checked;
+  // country only matters if useCountry checked
+  el("countrySelect").disabled = !el("useCountry").checked;
+
+  // weather
+  el("weatherSelect").disabled = el("autoWeather").checked;
+
+  // problem/role manual override
+  el("problemType").disabled = el("autoProblem").checked;
+  el("role").disabled = el("autoRole").checked;
+}
+
+[
+ "useObject","autoObject","autoStoryType","useCountry","autoLocation","autoWeather","autoProblem","autoRole"
+].forEach(id => el(id).addEventListener("change", syncControlStates));
+
+/* =========================
+   TITLE GENERATION
+========================= */
+function makeTitle(heroName, storyType, problemName, locationName){
+  const heroShort = heroName;
+  const p = problemName.replace(/^Toy\s/i,"").replace(/^A\s/i,"");
+  const templates = {
+    Adventure: [
+      `${heroShort} and the Great ${p}`,
+      `${heroShort}'s Big Adventure: ${p}`,
+      `The ${p} Quest`
     ],
-    rescue: [
-      "Brave kitten wearing a yellow toy construction helmet",
-      "Raccoon with a tiny utility belt (no text)",
-      "Beaver with a small rope coil",
-      "Squirrel wearing a tiny climbing helmet"
+    Funny: [
+      `${heroShort} vs. the ${p}`,
+      `Oops! The ${p}`,
+      `${heroShort} and the Silly ${p}`
     ],
-    medical: [
-      "Gentle bunny wearing a small medic cap (no text)",
-      "Baby deer with a tiny first-aid pouch (no text)",
-      "Panda cub with a simple medical vest (no text)",
-      "Calm cat with a small bandage roll pouch (no text)"
+    Sad: [
+      `${heroShort} and the Lost Moment`,
+      `${heroShort} and the Missing Treasure`,
+      `${heroShort}'s Quiet Day`
     ],
-    build: [
-      "Beaver with a small wooden wedge",
-      "Otter with a tiny tool pouch (no text)",
-      "Mole wearing a small hard hat",
-      "Goat with a small rope bundle"
+    Emotional: [
+      `${heroShort} and the Heartfelt ${p}`,
+      `A Small Problem, A Big Heart`,
+      `${heroShort} Learns to Try Again`
     ],
-    mechanic: [
-      "Raccoon holding a small wrench in a pouch (no text)",
-      "Fox with a tiny toolbox strap (no text)",
-      "Cat wearing a little mechanic cap (no text)",
-      "Dog with a small tool belt (no text)"
+    Encouraging: [
+      `${heroShort} Can Do It`,
+      `${heroShort} and the Never-Give-Up ${p}`,
+      `One More Try`
     ],
-    maker: [
-      "Panda cub with a small apron (no text)",
-      "Bunny carrying a tiny spool of string",
-      "Hedgehog with craft scissors in a pouch (no text)",
-      "Cat with a tiny tape roll"
-    ],
-    tech: [
-      "Owl wearing small goggles (no text)",
-      "Raccoon with a tiny screwdriver pouch (no text)",
-      "Fox with a little flashlight",
-      "Cat with a small toolkit (no text)"
-    ],
-    precision: [
-      "Owl with a tiny magnifying glass",
-      "Cat wearing small round glasses (no text)",
-      "Bunny with a soft cloth for cleaning",
-      "Mouse with a tiny measuring tape"
-    ],
-    air: [
-      "Owl pilot with a small cap (no text)",
-      "Seagull with a little scarf (no text)",
-      "Cat in a tiny aviator cap (no text)",
-      "Fox with a small map pouch (no text)"
-    ],
-    sea: [
-      "Otter with a small life ring",
-      "Seal pup wearing a tiny sailor cap (no text)",
-      "Cat captain with a simple hat (no text)",
-      "Duck with a small rope loop"
-    ],
-    rail: [
-      "Cat conductor with a small cap (no text)",
-      "Dog station helper with a tiny whistle (no text)",
-      "Fox railway engineer with a small wrench pouch (no text)",
-      "Bunny ticket helper (no text)"
-    ],
-    road: [
-      "Corgi with a tiny traffic cone",
-      "Cat with a small safety flag (no text)",
-      "Raccoon tow helper with a soft strap",
-      "Dog guide with a small reflective vest (no text)"
-    ],
-    nature: [
-      "Hedgehog garden helper",
-      "Squirrel park helper",
-      "Bunny flower keeper",
-      "Deer trail guide"
-    ],
-    adventure: [
-      "Fox explorer with a small compass pouch (no text)",
-      "Raccoon scout with a tiny map roll",
-      "Owl guide perched nearby",
-      "Cat adventurer with a small satchel (no text)"
-    ],
-    cozy: [
-      "Sleepy kitten with a tiny blanket",
-      "Calm panda cub sitting close",
-      "Warm bunny companion",
-      "Gentle dog friend"
-    ],
-    service: [
-      "Baker cat with a small apron (no text)",
-      "Goat cart helper",
-      "Duck delivery helper",
-      "Bunny town helper"
-    ],
-    creative: [
-      "Cat painter with a tiny brush pouch (no text)",
-      "Bunny musician with a small tambourine",
-      "Fox photographer with a toy camera (no text)",
-      "Panda decorator with ribbon"
+    Brave: [
+      `${heroShort} and the Brave ${p}`,
+      `The Courage Mission`,
+      `${heroShort}'s Brave Rescue`
     ]
   };
+  let base = rand(templates[storyType] || templates.Adventure);
 
-  // ===============================
-  // Default pools for object, tools, settings (kept)
-  // ===============================
-  const POOLS = {
-    objects: [
-      "Small plush bear with a bowtie",
-      "Toy airplane",
-      "Favorite tennis ball",
-      "Tiny toy car",
-      "Handmade wooden glider plane",
-      "Soft plush duck",
-      "Toy rescue boat",
-      "Toy fire truck",
-      "Toy ambulance",
-      "Toy train"
-    ],
-    tools: [
-      "Toy fire truck with a small ladder",
-      "Toy ambulance with a bold red cross symbol",
-      "Small toolbox with a wooden-handled screwdriver",
-      "Toy dump truck carrying a small wooden wedge",
-      "Toy tow truck with a soft strap",
-      "Lightweight butterfly net",
-      "Small rope coil and a wooden wedge",
-      "Toy crane truck with a hook",
-      "Toy helicopter with a dangling line (toy-scale)",
-      "Toy boat with a small net"
-    ],
-    settings: [
-      "Backyard garden path with weathered stone and soft afternoon sunlight",
-      "Flower-lined patio beside a white porch railing in warm daylight",
-      "Quiet park path near a big tree under gentle sunlight",
-      "Sunny yard with a wooden fence softly out of focus",
-      "Garden path with colorful flowers and a calm, clear sky",
-      "Forest-edge trail with dappled sunlight and soft shadows",
-      "Riverside path with gentle light and smooth stones"
-    ]
+  // Occasionally include location flavor
+  if (Math.random() < 0.25) base = `${base} (${locationName})`;
+  return base;
+}
+
+/* =========================
+   SCENE GENERATION
+   - Produces N beats
+   - Keeps the 6-act tram structure and compresses/expands to N
+========================= */
+function buildScenes(N, ctx){
+  // Acts proportions: Setup 12%, Incident 12%, Low 12%, Mobilize 20%, Attempts 28%, Resolution 16%
+  // Convert to integer counts, then adjust to exactly N.
+  const weights = { setup:.12, incident:.12, low:.12, mobilize:.20, attempts:.28, resolve:.16 };
+  const keys = Object.keys(weights);
+
+  const counts = {};
+  let total = 0;
+  keys.forEach(k=>{
+    counts[k] = Math.max(2, Math.round(N * weights[k])); // min 2 per act for clarity
+    total += counts[k];
+  });
+
+  // Adjust to N
+  while (total > N) {
+    // reduce from largest act first
+    const k = keys.sort((a,b)=>counts[b]-counts[a])[0];
+    if (counts[k] > 2) { counts[k]--; total--; }
+    else break;
+  }
+  while (total < N) {
+    // add to attempts/mobilize first
+    if (counts.attempts < Math.round(N*0.35)) { counts.attempts++; total++; continue; }
+    counts.mobilize++; total++;
+  }
+
+  const beats = [];
+  const hero = ctx.hero;
+  const friends = ctx.friends.length ? ctx.friends.join(" & ") : null;
+
+  // Helper lines
+  const friendNote = friends ? `Friends sometimes visible: ${friends}.` : `No friends in this story.`;
+
+  // Act generators
+  function addSetup(i){
+    const options = [
+      `Calm opening in ${ctx.locationFull}. ${hero} is still, looking around.`,
+      `${hero} is shown near the cherished focus. The environment matches: ${ctx.weather}.`,
+      `${hero} shares a quiet moment with ${ctx.helperAnimal}. ${friendNote}`,
+      `${hero} is close to the main focus and looks proud.`
+    ];
+    beats.push(options[(i-1) % options.length]);
+  }
+
+  function addIncident(i){
+    const options = [
+      `Cause begins: ${hero} interacts with the situation in one clear motion.`,
+      `Effect: the problem becomes obvious — ${ctx.problem}.`,
+      `${hero} freezes; ears and posture show surprise.`,
+      `${hero} takes one slow step back and stares at the problem.`
+    ];
+    beats.push(options[(i-1) % options.length]);
+  }
+
+  function addLow(i){
+    const options = [
+      `${hero} sits or stands still, quietly focused on the problem.`,
+      `${ctx.helperAnimal} stays close without fixing anything yet.`,
+      `${hero} attempts a tiny, gentle try that doesn’t work (still/slow).`,
+      `${hero} looks to ${ctx.helperAnimal} for help through eye contact.`
+    ];
+    beats.push(options[(i-1) % options.length]);
+  }
+
+  function addMobilize(i){
+    const options = [
+      `${ctx.helperAnimal} is framed as the ${ctx.role.toLowerCase()} and turns with purpose.`,
+      `${ctx.helperAnimal} prepares a cute, role-fitting tool or vehicle (one action).`,
+      `Movement shot: the helper approaches the problem spot; camera stays static/slow.`,
+      `Arrival: the helper stops at the exact problem location.`,
+      `The helper positions equipment carefully (slow).`,
+      `${hero} steps aside to give space; eyes locked on the helper’s actions.`
+    ];
+    beats.push(options[(i-1) % options.length]);
+  }
+
+  function addAttempts(i){
+    const options = [
+      `Attempt 1: the helper tries a simple solution (one action) — it fails visibly.`,
+      `Reaction: the helper pauses, looks, repositions (still/slow).`,
+      `Attempt 2: a small adjustment is added (wedge/net/rope/angle).`,
+      `Cause→effect: the adjustment changes the outcome but not enough yet.`,
+      `Attempt 3: the helper changes approach (still), keeping physics believable.`,
+      `Almost! the goal is nearly reached, but something blocks it.`,
+      `Final tweak: a tiny smart move makes the solution possible.`
+    ];
+    beats.push(options[(i-1) % options.length]);
+  }
+
+  function addResolve(i){
+    const options = [
+      `Success: the solution works — the problem is resolved safely.`,
+      `${hero} receives the outcome with visible joy and relief.`,
+      `${ctx.helperAnimal} steps back; calm pride moment.`,
+      `Closing echo: peaceful wide shot in ${ctx.locationFull}, mood lifted.`
+    ];
+    beats.push(options[(i-1) % options.length]);
+  }
+
+  // Fill acts in order
+  for (let i=1;i<=counts.setup;i++) addSetup(i);
+  for (let i=1;i<=counts.incident;i++) addIncident(i);
+  for (let i=1;i<=counts.low;i++) addLow(i);
+  for (let i=1;i<=counts.mobilize;i++) addMobilize(i);
+  for (let i=1;i<=counts.attempts;i++) addAttempts(i);
+  for (let i=1;i<=counts.resolve;i++) addResolve(i);
+
+  // Trim if any overshoot (safety)
+  return beats.slice(0, N);
+}
+
+/* =========================
+   MAIN GENERATION PIPELINE
+========================= */
+function computeContext(){
+  // Story type
+  let storyType = el("autoStoryType").checked ? storyTypeAutoPick() : el("storyType").value;
+
+  // Location
+  let loc = el("autoLocation").checked ? pickLocationAuto() : byId(LOCATIONS, el("locationSelect").value);
+  if (!loc) loc = pickLocationAuto();
+
+  // Country markers optional
+  let country = byId(COUNTRIES, el("countrySelect").value) || COUNTRIES[0];
+  if (el("useCountry").checked && el("autoLocation").checked) {
+    // If location auto, we can also auto country by biome for better harmony
+    country = pickCountryAutoForBiome(loc.biome);
+    el("countrySelect").value = country.id;
+  }
+
+  // Weather
+  let weather = el("autoWeather").checked ? pickWeatherAuto(loc.biome).name : el("weatherSelect").value;
+
+  // Object
+  const useObj = el("useObject").checked;
+  let object = null;
+  if (useObj) {
+    object = el("autoObject").checked ? pickObjectAuto() : el("objectSelect").value;
+  }
+
+  // Problem + role
+  let problem = el("autoProblem").checked ? pickProblemAuto(storyType, loc.biome, weather) : el("problemType").value;
+  let role = el("autoRole").checked ? pickRoleAuto(storyType, problem) : el("role").value;
+
+  // Helper animal based on role
+  const helperAnimal = helperForRole(role);
+
+  // Hero & friends
+  const hero = getHero().display;
+  const heroName = getHero().name;
+  const friends = getFriends();
+
+  // Sync selects when auto picked
+  if (el("autoStoryType").checked) el("storyType").value = storyType;
+  if (el("autoLocation").checked) el("locationSelect").value = loc.id;
+  if (el("autoWeather").checked) el("weatherSelect").value = weather;
+  if (useObj && el("autoObject").checked) el("objectSelect").value = object;
+  if (el("autoProblem").checked) el("problemType").value = problem;
+  if (el("autoRole").checked) el("role").value = role;
+
+  // Build location full description
+  let locationFull = loc.name + " — " + loc.markers;
+  if (el("useCountry").checked) locationFull += `. Country markers: ${country.name} — ${country.style}.`;
+
+  // Title
+  const title = makeTitle(heroName, storyType, problem, loc.name);
+
+  return {
+    title, storyType,
+    hero, heroName, friends,
+    locationFull,
+    weather,
+    object,
+    problem,
+    role,
+    helperAnimal,
+    notes: clean(el("notes").value)
   };
+}
 
-  // ---------- Utility ----------
-  const el = (id) => document.getElementById(id);
-  const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const clean = (s) => (s || "").trim();
+function generate(N){
+  const ctx = computeContext();
 
-  function setStatus(text) { el("statusPill").textContent = text; }
+  // Put helper + title in UI
+  el("helper").value = ctx.helperAnimal;
+  el("title").value = ctx.title;
 
-  // ===============================
-  // Populate dropdowns on load
-  // ===============================
-  function populateUI() {
-    // Hero select
-    const hs = el("heroSelect");
-    hs.innerHTML = "";
-    CORE_CHARACTERS.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c.id;
-      opt.textContent = c.display;
-      hs.appendChild(opt);
-    });
-    hs.value = "willy"; // default
+  // Build scenes
+  const scenes = buildScenes(N, ctx);
 
-    // Problems
-    const ps = el("problemType");
-    ps.innerHTML = "";
-    PROBLEM_TYPES_50.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p;
-      opt.textContent = p;
-      ps.appendChild(opt);
-    });
+  // Build output text (clear + structured)
+  const meta = [
+    `STORY TITLE`,
+    `${ctx.title}`,
+    ``,
+    `STORY SETTINGS`,
+    `- Type: ${ctx.storyType}`,
+    `- Hero: ${ctx.hero}`,
+    `- Friends (optional): ${ctx.friends.length ? ctx.friends.join(", ") : "none"}`,
+    `- Location: ${ctx.locationFull}`,
+    `- Weather/Time: ${ctx.weather}`,
+    `- Helper (animal-only): ${ctx.helperAnimal}`,
+    `- Primary helper role: ${ctx.role}`,
+    `- Problem: ${ctx.problem}`,
+    `- Object of affection: ${ctx.object ? ctx.object : "none (object not used)"}`,
+    ctx.notes ? `- Notes: ${ctx.notes}` : null
+  ].filter(Boolean).join("\n");
 
-    // Roles (100)
-    const rs = el("role");
-    rs.innerHTML = "";
-    HELPER_ROLES_100.forEach(r => {
-      const opt = document.createElement("option");
-      opt.value = r.role;
-      opt.textContent = r.role;
-      rs.appendChild(opt);
-    });
+  const sceneText = scenes.map((s,i)=>`Scene ${i+1}: ${s}`).join("\n");
+
+  const sop = [
+    ``,
+    `SOP CHECK`,
+    `- No dialogue, no text, no subtitles, no logos`,
+    `- One action per scene (still/slow for detailed interaction)`,
+    `- Visible cause → effect in every scene`,
+    `- Physics: weight, gravity, scale are believable`,
+    `- Animals only (photoreal anatomy, natural fur, no human limbs)`,
+    `- Calm closing echo of opening`
+  ].join("\n");
+
+  el("output").textContent = meta + "\n\n" + `SCENES (${N})\n` + sceneText + sop;
+  setStatus(`Generated ${N} scenes`);
+}
+
+function randomizeSmart(){
+  // Smart randomization toggles (keeps auto logic ON)
+  el("autoStoryType").checked = true;
+  el("autoLocation").checked = true;
+  el("autoWeather").checked = true;
+  el("autoProblem").checked = true;
+  el("autoRole").checked = true;
+
+  // object on/off randomness
+  el("useObject").checked = Math.random() < 0.85;
+  el("autoObject").checked = true;
+
+  // country markers occasionally
+  el("useCountry").checked = Math.random() < 0.35;
+
+  // friends sometimes
+  el("includePanby").checked = Math.random() < 0.33;
+  el("includeQuok").checked  = Math.random() < 0.33;
+
+  // hero default Willy but removable
+  el("heroSelect").value = (Math.random() < 0.72) ? "willy" : rand(CORE_CHARACTERS).id;
+
+  syncControlStates();
+  setStatus("Randomized (smart)");
+}
+
+async function copyOutput(){
+  const text = el("output").textContent;
+  if (!text || text.includes("Click a")) { setStatus("Nothing to copy"); return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus("Copied");
+  } catch {
+    setStatus("Copy failed");
   }
+}
 
-  function getHeroById(id) {
-    return CORE_CHARACTERS.find(c => c.id === id) || CORE_CHARACTERS[0];
-  }
+/* =========================
+   INIT + BIND
+========================= */
+function init(){
+  populate();
+  randomizeSmart();
+  syncControlStates();
 
-  function getSelectedFriends() {
-    const friends = [];
-    if (el("includePanby").checked) friends.push(getHeroById("panby").display);
-    if (el("includeQuok").checked) friends.push(getHeroById("quok").display);
-    // ensure we don't duplicate hero if they selected panby/quok as main and checkbox too
-    const heroId = el("heroSelect").value;
-    const heroDisplay = getHeroById(heroId).display;
-    return friends.filter(f => f !== heroDisplay);
-  }
-
-  function roleToCategory(roleName) {
-    const found = HELPER_ROLES_100.find(r => r.role === roleName);
-    return found ? found.cat : "cozy";
-  }
-
-  function generateHelperAnimalForRole(roleName) {
-    const cat = roleToCategory(roleName);
-    const pool = HELPER_ANIMALS[cat] || HELPER_ANIMALS.cozy;
-    return rand(pool);
-  }
-
-  function generateTitle(d) {
-    // English only — Funny + Adventure
-    const heroShort = getHeroById(d.heroId).name; // Willy/Panby/Quok
-    const role = d.role;
-    const problem = d.problemType;
-
-    const friends = d.friends;
-    const hasFriends = friends.length > 0;
-
-    const tA = [
-      `${heroShort} and the ${problem}`,
-      `${heroShort} vs. the ${problem}`,
-      `The ${role} Mission`,
-      `${heroShort}'s ${role} Adventure`,
-      `The Day of the ${problem}`,
-      `${heroShort} and the Wild Rescue`,
-      `${heroShort} and the Runaway Trouble`,
-      `${heroShort} and the Big Fix`
-    ];
-
-    const tB = [
-      `${heroShort} and the Too-Short Ladder`,
-      `${heroShort} and the Runaway Ball`,
-      `${heroShort} and the Stubborn Problem`,
-      `${heroShort} and the Great Rescue Plan`,
-      `${heroShort} and the Emergency Surprise`,
-      `${heroShort} and the Little Adventure`,
-      `${heroShort} and the Rescue Crew`
-    ];
-
-    let base = rand(Math.random() < 0.55 ? tB : tA);
-
-    // Occasionally mention friends (not always)
-    if (hasFriends && Math.random() < 0.35) {
-      const friendNames = friends.map(f => f.split(" ")[0]).join(" & ");
-      base = `${heroShort}, ${friendNames}, and the ${problem}`;
-    }
-
-    return base.replace(/\s+/g, " ").trim();
-  }
-
-  function getInputs() {
-    const heroId = el("heroSelect").value;
-    const friends = getSelectedFriends();
-    const role = el("role").value;
-    const helper = generateHelperAnimalForRole(role);
-
-    return {
-      heroId,
-      hero: getHeroById(heroId).display,
-      friends,
-      helper, // auto animal helper
-      object: clean(el("object").value),
-      problemType: el("problemType").value,
-      role,
-      tool: clean(el("tool").value),
-      setting: clean(el("setting").value),
-      notes: clean(el("notes").value)
-    };
-  }
-
-  function requireFields(data) {
-    const missing = [];
-    ["object","tool","setting"].forEach(k => { if (!data[k]) missing.push(k); });
-    // hero/role/problem always exist via selects
-    return missing;
-  }
-
-  function buildStoryCore(d, title) {
-    const friendsLine = d.friends.length ? `- Friends (optional): ${d.friends.join(", ")}` : `- Friends (optional): none`;
-    const notes = d.notes ? `- Notes: ${d.notes}` : "";
-    return [
-      `STORY TITLE`,
-      `${title}`,
-      ``,
-      `STORY CORE`,
-      `- Main character (hero): ${d.hero}`,
-      friendsLine,
-      `- Caregiver / helper (animal-only): ${d.helper}`,
-      `- Object of affection: ${d.object}`,
-      `- Problem type: ${d.problemType}`,
-      `- Primary helper role: ${d.role}`,
-      `- Key tool/vehicle: ${d.tool}`,
-      `- Setting: ${d.setting}`,
-      notes
-    ].filter(Boolean).join("\n");
-  }
-
-  function buildTram24(d) {
-    const friends = d.friends.length ? d.friends.join(" & ") : "no friends";
-    const friendBeat = d.friends.length
-      ? `Friends appear as background support (not in every scene): ${friends}.`
-      : `Friends do not appear in this story.`;
-
-    const beats = [
-      // ACT I
-      `1) (ACT I) Peaceful intro: ${d.hero} is shown in ${d.setting}.`,
-      `2) (ACT I) Object revealed: ${d.object} is shown as precious and cared for.`,
-      `3) (ACT I) Bond shown: ${d.hero} shares a warm moment with ${d.helper}. ${friendBeat}`,
-
-      // ACT II
-      `4) (ACT II) Use/play: ${d.hero} interacts with ${d.object} in a simple, readable way.`,
-      `5) (ACT II) Incident (visible cause): an accident happens and ${d.object} becomes a problem: ${d.problemType}.`,
-      `6) (ACT II) Reaction: ${d.hero} freezes or shows sadness through posture and gaze.`,
-
-      // ACT III
-      `7) (ACT III) Isolation: ${d.hero} is briefly alone with the problem; no solution yet.`,
-      `8) (ACT III) Quiet low point: ${d.hero} stares at the problem and stays still.`,
-      `9) (ACT III) Comfort: ${d.helper} sits close or gently reassures (no fixing yet).`,
-
-      // ACT IV
-      `10) (ACT IV) Helper role revealed: ${d.helper} is framed as the ${d.role.toLowerCase()} for this situation.`,
-      `11) (ACT IV) Decision moment: ${d.helper} turns and moves with purpose toward the needed resources.`,
-      `12) (ACT IV) Prep: ${d.tool} is brought into view or positioned for use.`,
-      `13) (ACT IV) Journey/mobilize: ${d.tool} moves toward the problem location in a calm, cinematic shot.`,
-      `14) (ACT IV) Arrival: ${d.tool} and characters reach the exact spot of the problem.`,
-
-      // ACT V
-      `15) (ACT V) Attempt 1: ${d.tool} is used for a first try (one action only).`,
-      `16) (ACT V) Visible failure: the attempt doesn’t work; everyone pauses and looks.`,
-      `17) (ACT V) New idea introduced: a small adjustment or alternate tool appears (cute and physical, no magic).`,
-      `18) (ACT V) Handoff/adjustment: the new tool or positioning is set in place.`,
-      `19) (ACT V) Success: the adjustment works; ${d.object} is safely recovered/restored.`,
-
-      // ACT VI
-      `20) (ACT VI) Return: ${d.hero} receives ${d.object} back in frame.`,
-      `21) (ACT VI) Joy/relief: ${d.hero} shows happiness through body language.`,
-      `22) (ACT VI) Social restore: everyone gathers calmly; the mood lifts.`,
-      `23) (ACT VI) Quiet pride: ${d.helper} steps back and watches the result.`,
-      `24) (ACT VI) Closing echo: peaceful shot in ${d.setting}, mirroring beat 1 but happier.`
-    ];
-
-    return "STORY TRAM (24 BEATS)\n" + beats.map(b => "- " + b).join("\n");
-  }
-
-  function buildTram19(d) {
-    const friends = d.friends.length ? d.friends.join(" & ") : "none";
-    const beats = [
-      `1) Peaceful intro: ${d.hero} in ${d.setting}.`,
-      `2) Object revealed: ${d.object} is clearly cherished.`,
-      `3) Bond moment: ${d.hero} with ${d.helper}. Friends (optional): ${friends}.`,
-      `4) Use → Incident: ${d.hero} interacts with ${d.object} and the problem happens: ${d.problemType} (cause clearly shown).`,
-      `5) Reaction: ${d.hero} freezes or shows sadness through posture.`,
-      `6) Low point: ${d.hero} alone, staring at the problem.`,
-      `7) Comfort: ${d.helper} sits close (no fixing yet).`,
-      `8) Role + decision: ${d.helper} is framed as the ${d.role.toLowerCase()} and moves with purpose.`,
-      `9) Prep: ${d.tool} is brought into view / positioned.`,
-      `10) Arrival: ${d.tool} reaches the problem spot.`,
-      `11) Attempt 1: ${d.tool} used (one action).`,
-      `12) Failure: it doesn’t work; pause and look.`,
-      `13) New idea: a small alternate tool/angle appears (cute + physical).`,
-      `14) Adjustment → Success: tool/position is adjusted and ${d.object} is recovered.`,
-      `15) Return: ${d.hero} receives ${d.object}.`,
-      `16) Joy: visible relief and happiness.`,
-      `17) Social restore: group together calmly.`,
-      `18) Quiet pride: ${d.helper} steps back, watches.`,
-      `19) Closing echo: peaceful shot mirroring the opening.`
-    ];
-    return "STORY TRAM (19-SCENE MODE)\n" + beats.map(b => "- " + b).join("\n");
-  }
-
-  function renderOutput(text) {
-    el("output").textContent = text;
-  }
-
-  function generate(mode) {
-    const d = getInputs();
-    const missing = requireFields(d);
-    if (missing.length) {
-      setStatus("Missing: " + missing.join(", "));
-      return;
-    }
-
-    // Update helper field (animal-only)
-    el("helper").value = d.helper;
-
-    // Title
-    const title = generateTitle(d);
-    el("title").value = title;
-
-    const core = buildStoryCore(d, title);
-    const tram = (mode === 19) ? buildTram19(d) : buildTram24(d);
-
-    const sop = [
-      "SOP CHECK (embedded)",
-      "- No dialogue, no text, no subtitles",
-      "- One physical action per scene",
-      "- Visible cause → effect in every beat",
-      "- No villains; accidents only",
-      "- Realistic physics, weight, and scale",
-      "- Calm ending echoing opening",
-      "- Caregiver/helper is ALWAYS an animal"
-    ].join("\n");
-
-    setStatus("Generated");
-    renderOutput([core, "", tram, "", sop].join("\n"));
-  }
-
-  function randomizeInputs() {
-    // Randomize: keep brand but allow variety
-    el("heroSelect").value = rand(CORE_CHARACTERS).id;
-
-    // friends on/off (not always)
-    el("includePanby").checked = Math.random() < 0.35;
-    el("includeQuok").checked  = Math.random() < 0.35;
-
-    el("object").value = rand(POOLS.objects);
-    el("setting").value = rand(POOLS.settings);
-    el("problemType").value = rand(PROBLEM_TYPES_50);
-    el("role").value = rand(HELPER_ROLES_100).role;
-    el("tool").value = rand(POOLS.tools);
-    el("notes").value = "";
-
-    // update helper & title preview
-    el("helper").value = generateHelperAnimalForRole(el("role").value);
-
-    setStatus("Randomized");
-  }
-
-  function swapSkin() {
-    // Same engine/tram, different surface: objects, setting, problem, role, tool
-    // hero stays unless user wants randomness
-    el("object").value = rand(POOLS.objects);
-    el("setting").value = rand(POOLS.settings);
-    el("problemType").value = rand(PROBLEM_TYPES_50);
-    el("role").value = rand(HELPER_ROLES_100).role;
-    el("tool").value = rand(POOLS.tools);
-
-    // friends sometimes change
-    el("includePanby").checked = Math.random() < 0.25;
-    el("includeQuok").checked  = Math.random() < 0.25;
-
-    el("helper").value = generateHelperAnimalForRole(el("role").value);
-    setStatus("Skin swapped");
-  }
-
-  async function copyOutput() {
-    const text = el("output").textContent;
-    if (!text || text.includes("appear here")) { setStatus("Nothing to copy"); return; }
-    try {
-      await navigator.clipboard.writeText(text);
-      setStatus("Copied");
-    } catch {
-      setStatus("Copy failed");
-    }
-  }
-
-  function downloadJSON() {
-    const d = getInputs();
-    const missing = requireFields(d);
-    if (missing.length) { setStatus("Missing: " + missing.join(", ")); return; }
-
-    const title = el("title").value || generateTitle(d);
-
-    const payload = {
-      generated_at: new Date().toISOString(),
-      title,
-      inputs: d,
-      tram24: buildTram24(d),
-      tram19: buildTram19(d)
-    };
-
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "silent-cinematic-story.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
-    setStatus("Downloaded JSON");
-  }
-
-  // Bind
-  el("generateBtn").addEventListener("click", () => generate(24));
-  el("generate19Btn").addEventListener("click", () => generate(19));
-  el("randomBtn").addEventListener("click", () => { randomizeInputs(); generate(24); });
-  el("swapSkinBtn").addEventListener("click", () => { swapSkin(); generate(24); });
+  el("btn15").addEventListener("click", ()=>generate(15));
+  el("btn20").addEventListener("click", ()=>generate(20));
+  el("btn25").addEventListener("click", ()=>generate(25));
+  el("randomBtn").addEventListener("click", ()=>{
+    randomizeSmart();
+    generate(rand([15,20,25]));
+  });
   el("copyBtn").addEventListener("click", copyOutput);
-  el("downloadBtn").addEventListener("click", downloadJSON);
 
-  // init
-  populateUI();
-  randomizeInputs();
-  generate(24);
+  // If user manually changes selects, we keep it but do NOT force auto off automatically.
+  // Auto toggles control that.
+}
+init();
 </script>
 </body>
 </html>
