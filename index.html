@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Silent Cinematic Cute Story Generator</title>
+  <style>
+    :root { --pad: 14px; --radius: 14px; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0; background: #0b0d12; color: #eef2ff;
+      line-height: 1.35;
+    }
+    header {
+      padding: 26px 18px; border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.22), transparent 60%),
+                  radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,0.18), transparent 55%);
+    }
+    header h1 { margin: 0 0 8px; font-size: 22px; }
+    header p { margin: 0; opacity: 0.9; max-width: 980px; }
+    main { max-width: 1200px; margin: 0 auto; padding: 18px; display: grid; gap: 16px; }
+    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 980px) { .grid { grid-template-columns: 440px 1fr; } }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .card h2 { margin: 0 0 10px; font-size: 15px; letter-spacing: 0.2px; opacity: 0.95; }
+    .row { display: grid; gap: 10px; grid-template-columns: 1fr; }
+    @media (min-width: 520px) { .row.two { grid-template-columns: 1fr 1fr; } }
+
+    label { font-size: 12px; opacity: 0.85; display: block; margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.35);
+      color: #eef2ff;
+      outline: none;
+      box-sizing: border-box;
+    }
+    textarea { min-height: 78px; resize: vertical; }
+
+    .btnbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    button {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: #eef2ff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.primary {
+      background: rgba(99,102,241,0.22);
+      border-color: rgba(99,102,241,0.45);
+    }
+    button.good {
+      background: rgba(16,185,129,0.18);
+      border-color: rgba(16,185,129,0.40);
+    }
+    button:hover { filter: brightness(1.08); }
+
+    .out {
+      white-space: pre-wrap;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      overflow: auto;
+      max-height: 70vh;
+    }
+    .pill {
+      display: inline-flex; gap: 8px; align-items: center;
+      padding: 7px 10px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      font-size: 12px; opacity: 0.9;
+    }
+    .muted { opacity: 0.78; }
+    .small { font-size: 12px; opacity: 0.8; }
+    .hr { height: 1px; background: rgba(255,255,255,0.10); margin: 14px 0; }
+    .footer { opacity: 0.7; font-size: 12px; padding: 6px 2px 0; }
+    .k { color: #a5b4fc; }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Silent Cinematic Cute Story Generator</h1>
+  <p>
+    Generate unlimited silent, cinematic, visually readable cute stories using your SOP structure (Acts I–VI) and the fill-in-the-blank system.
+    Output is a <span class="k">Story Core</span> + <span class="k">24-beat Story Tram</span> (or optional 19-scene mode).
+  </p>
+</header>
+
+<main class="grid">
+
+  <section class="card">
+    <h2>1) Fill-in-the-Blank Inputs</h2>
+
+    <div class="row two">
+      <div>
+        <label>Main Character (child/hero)</label>
+        <input id="hero" placeholder="e.g., Baby Golden Retriever puppy (Willy)" />
+      </div>
+      <div>
+        <label>Caregiver / Helper</label>
+        <input id="helper" placeholder="e.g., Orange tabby kitten in a yellow helmet" />
+      </div>
+    </div>
+
+    <div class="row two">
+      <div>
+        <label>Object of Affection</label>
+        <input id="object" placeholder="e.g., Plush bear / Toy plane / Favorite ball" />
+      </div>
+      <div>
+        <label>Secondary Helper (optional)</label>
+        <input id="secondary" placeholder="e.g., Bunny friend / Medic cat / Squirrel" />
+      </div>
+    </div>
+
+    <div class="row two">
+      <div>
+        <label>Problem Type</label>
+        <select id="problemType">
+          <option>Stuck</option>
+          <option>Broken</option>
+          <option>Lost</option>
+          <option>Out of Reach</option>
+          <option>Damaged</option>
+        </select>
+      </div>
+      <div>
+        <label>Primary Helper Role</label>
+        <select id="role">
+          <option>Firefighter</option>
+          <option>Medic</option>
+          <option>Builder</option>
+          <option>Mechanic</option>
+          <eoption></eoption>
+          <option>Pilot</option>
+          <option>Farmer</option>
+          <option>Engineer</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row two">
+      <div>
+        <label>Key Tool / Vehicle</label>
+        <input id="tool" placeholder="e.g., Toy fire truck + ladder / Toolbox / Toy ambulance" />
+      </div>
+      <div>
+        <label>Setting (short)</label>
+        <input id="setting" placeholder="e.g., Backyard garden path in soft afternoon sunlight" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Optional Custom Notes (tone, props, uniforms, extra animals, etc.)</label>
+        <textarea id="notes" placeholder="e.g., Add toy plane cameo, safety cone, tiny net, cute uniform helmet. Keep physics realistic."></textarea>
+      </div>
+    </div>
+
+    <div class="btnbar">
+      <button class="primary" id="generateBtn">Generate Story Tram (24 beats)</button>
+      <button class="good" id="generate19Btn">Generate 19-scene Mode</button>
+      <button id="randomBtn">Randomize Inputs</button>
+      <button id="swapSkinBtn">Swap “Skin” (same tram, new cast)</button>
+      <button id="copyBtn">Copy Output</button>
+      <button id="downloadBtn">Download JSON</button>
+      <span class="pill" id="statusPill">Ready</span>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="small">
+      <div class="muted"><b>Non-negotiables baked in:</b> no dialogue/text, one action per scene, visible cause→effect, no villains, realistic physics, calm ending mirroring opening.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2) Generated Output</h2>
+    <div class="out" id="output">(Your generated story will appear here.)</div>
+    <div class="footer">Tip: Use this tram as the blueprint before writing scene prompts with your Continuity-Lock template.</div>
+  </section>
+
+</main>
+
+<script>
+  // ---------- Random pools (edit freely) ----------
+  const POOLS = {
+    heroes: [
+      "Baby Golden Retriever puppy (Willy)",
+      "Tiny orange tabby kitten",
+      "Fluffy baby bunny",
+      "Small corgi puppy",
+      "Little gray kitten with white chest",
+      "Baby raccoon (very curious)"
+    ],
+    helpers: [
+      "Orange tabby kitten wearing a yellow plastic toy construction helmet",
+      "Calm older golden retriever (parent vibe)",
+      "Serious firefighter cat in a tiny helmet (no human gestures)",
+      "Gentle medic puppy with a small vest (no text/logos)",
+      "Wise older rabbit with a tool pouch (no text/logos)"
+    ],
+    objects: [
+      "Small plush bear with a bowtie",
+      "Toy airplane",
+      "Favorite tennis ball",
+      "Tiny toy car",
+      "Handmade wooden glider plane",
+      "Soft plush duck"
+    ],
+    secondary: [
+      "",
+      "A shy hedgehog observer",
+      "A tiny chick that follows along",
+      "A friendly squirrel on the fence",
+      "A second kitten who watches quietly"
+    ],
+    tools: [
+      "Toy fire truck with a small ladder",
+      "Toy ambulance with a bold red cross symbol",
+      "Small toolbox with a wooden-handled screwdriver",
+      "Toy dump truck carrying a small wooden wedge",
+      "Toy tow truck with a soft strap",
+      "Lightweight butterfly net"
+    ],
+    settings: [
+      "Backyard garden path with weathered stone and soft afternoon sunlight",
+      "Flower-lined patio beside a white porch railing in warm daylight",
+      "Quiet park path near a big tree under gentle sunlight",
+      "Sunny yard with a wooden fence softly out of focus",
+      "Garden path with colorful flowers and a calm, clear sky"
+    ],
+    problemTypes: ["Stuck", "Broken", "Lost", "Out of Reach", "Damaged"],
+    roles: ["Firefighter", "Medic", "Builder", "Mechanic", "Pilot", "Farmer", "Engineer"]
+  };
+
+  // ---------- Utility ----------
+  const el = (id) => document.getElementById(id);
+  const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const clean = (s) => (s || "").trim();
+
+  function setStatus(text) { el("statusPill").textContent = text; }
+
+  function getInputs() {
+    return {
+      hero: clean(el("hero").value),
+      helper: clean(el("helper").value),
+      object: clean(el("object").value),
+      secondary: clean(el("secondary").value),
+      problemType: el("problemType").value,
+      role: el("role").value,
+      tool: clean(el("tool").value),
+      setting: clean(el("setting").value),
+      notes: clean(el("notes").value)
+    };
+  }
+
+  function requireFields(data) {
+    const missing = [];
+    ["hero","helper","object","tool","setting"].forEach(k => { if (!data[k]) missing.push(k); });
+    return missing;
+  }
+
+  // ---------- Core tram text ----------
+  function buildStoryCore(d) {
+    const sec = d.secondary ? ` Secondary helper: ${d.secondary}.` : "";
+    const notes = d.notes ? ` Notes: ${d.notes}` : "";
+    return [
+      "STORY CORE",
+      `- Main character (hero): ${d.hero}`,
+      `- Caregiver / helper: ${d.helper}`,
+      `- Object of affection: ${d.object}`,
+      `- Problem type: ${d.problemType}`,
+      `- Primary helper role: ${d.role}`,
+      `- Key tool/vehicle: ${d.tool}`,
+      `- Setting: ${d.setting}`,
+      `-${sec ? "" : ""}${sec}`.trim(),
+      notes ? `- ${notes}` : ""
+    ].filter(Boolean).join("\n");
+  }
+
+  function buildTram24(d) {
+    const sec = d.secondary ? d.secondary : "Secondary helper (optional)";
+    // Each beat is a narrative function; you will later convert each beat into a 10-second scene prompt
+    const beats = [
+      // ACT I (1–3)
+      `1) (ACT I) Peaceful intro: ${d.hero} is shown in ${d.setting}.`,
+      `2) (ACT I) Object revealed: ${d.object} is shown as important and cared for.`,
+      `3) (ACT I) Bond shown: ${d.hero} and ${d.helper} share a warm moment near ${d.object}.`,
+
+      // ACT II (4–6)
+      `4) (ACT II) Use/play: ${d.hero} interacts with ${d.object} in a simple, readable way.`,
+      `5) (ACT II) Incident (visible cause): an accident happens and ${d.object} becomes ${d.problemType.toLowerCase()}.`,
+      `6) (ACT II) Reaction: ${d.hero} freezes or shows sadness through posture and gaze.`,
+
+      // ACT III (7–9)
+      `7) (ACT III) Isolation: ${d.hero} is briefly alone with the problem; no solution yet.`,
+      `8) (ACT III) Quiet low point: ${d.hero} stares at the ${d.problemType.toLowerCase()} ${d.object}.`,
+      `9) (ACT III) Comfort: ${d.helper} sits close or gently reassures (no fixing yet).`,
+
+      // ACT IV (10–14)
+      `10) (ACT IV) Helper role revealed: ${d.helper} is framed as the ${d.role.toLowerCase()} for this situation.`,
+      `11) (ACT IV) Decision moment: ${d.helper} turns and moves with purpose toward the needed resources.`,
+      `12) (ACT IV) Prep: ${d.tool} is brought into view or positioned for use.`,
+      `13) (ACT IV) Journey/mobilize: ${d.tool} moves toward the problem location in a calm, cinematic shot.`,
+      `14) (ACT IV) Arrival: ${d.tool} and characters reach the exact spot of the problem.`,
+
+      // ACT V (15–19)
+      `15) (ACT V) Attempt 1: ${d.tool} is used for a first try (one action only).`,
+      `16) (ACT V) Visible failure: attempt doesn’t work; characters pause and look.`,
+      `17) (ACT V) New idea introduced: ${sec} appears with a different approach or small tool.`,
+      `18) (ACT V) Handoff/adjustment: the new tool/positioning is passed or set in place.`,
+      `19) (ACT V) Success: the adjustment works; ${d.object} is safely recovered/restored.`,
+
+      // ACT VI (20–24)
+      `20) (ACT VI) Return: ${d.hero} receives ${d.object} back in frame.`,
+      `21) (ACT VI) Joy/relief: ${d.hero} shows happiness through body language.`,
+      `22) (ACT VI) Social restore: everyone gathers calmly; the mood lifts.`,
+      `23) (ACT VI) Quiet pride: ${d.helper} steps back and watches the result.`,
+      `24) (ACT VI) Closing echo: peaceful shot in ${d.setting}, mirroring beat 1 but happier.`
+    ];
+
+    return "STORY TRAM (24 BEATS)\n" + beats.map(b => "- " + b).join("\n");
+  }
+
+  // Compress 24 beats into 19 while preserving structure.
+  // We merge a few adjacent beats (without changing narrative logic).
+  function buildTram19(d) {
+    const sec = d.secondary ? d.secondary : "Secondary helper (optional)";
+    const beats = [
+      // 1–3 same
+      `1) Peaceful intro: ${d.hero} in ${d.setting}.`,
+      `2) Object revealed: ${d.object} is clearly cherished.`,
+      `3) Bond moment: ${d.hero} with ${d.helper} near ${d.object}.`,
+
+      // Merge (4+5) into 4, keep 5 as reaction
+      `4) Use → Incident: ${d.hero} interacts with ${d.object} and it becomes ${d.problemType.toLowerCase()} (cause clearly shown).`,
+      `5) Reaction: ${d.hero} freezes or shows sadness through posture.`,
+
+      // Merge (7+8) into 6, keep comfort as 7
+      `6) Low point: ${d.hero} alone, staring at the ${d.problemType.toLowerCase()} ${d.object}.`,
+      `7) Comfort: ${d.helper} sits close (no fixing yet).`,
+
+      // Mobilize condensed (10–14 into 8–10)
+      `8) Helper role + decision: ${d.helper} is framed as the ${d.role.toLowerCase()} and moves with purpose.`,
+      `9) Prep: ${d.tool} is brought into view / positioned.`,
+      `10) Arrival: ${d.tool} reaches the problem spot.`,
+
+      // Attempts (15–19 into 11–14)
+      `11) Attempt 1: ${d.tool} used (one action).`,
+      `12) Failure: it doesn’t work; pause and look.`,
+      `13) New idea: ${sec} introduces a small alternate tool or angle.`,
+      `14) Adjustment → Success: tool/position is adjusted and ${d.object} is recovered.`,
+
+      // Resolution condensed (20–24 into 15–19)
+      `15) Return: ${d.hero} receives ${d.object}.`,
+      `16) Joy: visible relief and happiness.`,
+      `17) Social restore: group together calmly.`,
+      `18) Quiet pride: ${d.helper} steps back, watches.`,
+      `19) Closing echo: peaceful shot mirroring the opening.`
+    ];
+    return "STORY TRAM (19-SCENE MODE)\n" + beats.map(b => "- " + b).join("\n");
+  }
+
+  function renderOutput(text) {
+    el("output").textContent = text;
+  }
+
+  // ---------- Actions ----------
+  function generate(mode) {
+    const data = getInputs();
+    const missing = requireFields(data);
+    if (missing.length) {
+      setStatus("Missing: " + missing.join(", "));
+      return;
+    }
+    setStatus("Generated");
+    const core = buildStoryCore(data);
+    const tram = mode === 19 ? buildTram19(data) : buildTram24(data);
+    const sop = [
+      "SOP CHECK (embedded)",
+      "- No dialogue, no text, no subtitles",
+      "- One physical action per scene",
+      "- Visible cause → effect in every beat",
+      "- No villains; accidents only",
+      "- Realistic physics, weight, and scale",
+      "- Calm ending echoing opening"
+    ].join("\n");
+    renderOutput([core, "", tram, "", sop].join("\n"));
+  }
+
+  function randomizeInputs() {
+    el("hero").value = rand(POOLS.heroes);
+    el("helper").value = rand(POOLS.helpers);
+    el("object").value = rand(POOLS.objects);
+    el("secondary").value = rand(POOLS.secondary);
+    el("problemType").value = rand(POOLS.problemTypes);
+    el("role").value = rand(POOLS.roles);
+    el("tool").value = rand(POOLS.tools);
+    el("setting").value = rand(POOLS.settings);
+    el("notes").value = "";
+    setStatus("Randomized");
+  }
+
+  function swapSkin() {
+    // Keeps problem type + role structure, swaps characters/props to create new "skin"
+    const data = getInputs();
+    el("hero").value = data.hero ? rand(POOLS.heroes) : rand(POOLS.heroes);
+    el("helper").value = data.helper ? rand(POOLS.helpers) : rand(POOLS.helpers);
+    el("object").value = data.object ? rand(POOLS.objects) : rand(POOLS.objects);
+    el("secondary").value = rand(POOLS.secondary);
+    el("tool").value = rand(POOLS.tools);
+    el("setting").value = rand(POOLS.settings);
+    setStatus("Skin swapped");
+  }
+
+  async function copyOutput() {
+    const text = el("output").textContent;
+    if (!text || text.includes("appear here")) { setStatus("Nothing to copy"); return; }
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus("Copied");
+    } catch {
+      setStatus("Copy failed");
+    }
+  }
+
+  function downloadJSON() {
+    const data = getInputs();
+    const missing = requireFields(data);
+    if (missing.length) { setStatus("Missing: " + missing.join(", ")); return; }
+
+    const payload = {
+      generated_at: new Date().toISOString(),
+      inputs: data,
+      tram24: buildTram24(data),
+      tram19: buildTram19(data)
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "silent-cinematic-story.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setStatus("Downloaded JSON");
+  }
+
+  // ---------- Bind ----------
+  el("generateBtn").addEventListener("click", () => generate(24));
+  el("generate19Btn").addEventListener("click", () => generate(19));
+  el("randomBtn").addEventListener("click", randomizeInputs);
+  el("swapSkinBtn").addEventListener("click", swapSkin);
+  el("copyBtn").addEventListener("click", copyOutput);
+  el("downloadBtn").addEventListener("click", downloadJSON);
+
+  // Start with a helpful default
+  randomizeInputs();
+  generate(24);
+</script>
+</body>
+</html>
