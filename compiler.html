@@ -25,8 +25,8 @@
       width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.35);color:#eef2ff;outline:none;box-sizing:border-box
     }
-    textarea{min-height:220px;resize:vertical}
-    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    textarea{min-height:260px;resize:vertical}
+    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
     button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eef2ff;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800}
     button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
     button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
@@ -48,10 +48,10 @@
 
 <body>
 <header>
-  <h1>Prompt Compiler — Continuity Lock</h1>
+  <h1>Prompt Compiler — Continuity Lock (v2)</h1>
   <p>
-    Paste a <span class="k">Story Frame</span> (Story Core + Story Tram). This tool injects Master Style + exact DNA into every scene prompt.
-    <span class="muted">No dialogue. No text. No logos. Photoreal animals.</span>
+    Paste output from <span class="k">Story Generator</span> (STORY TITLE / STORY SETTINGS / SCENES)
+    <span class="muted">or</span> canonical format (STORY CORE / STORY TRAM). This tool injects Master Style + exact DNA into every scene.
     <br><a href="./index.html">← Back to Story Generator</a>
   </p>
 </header>
@@ -60,23 +60,8 @@
 
   <section class="card">
     <h2>1) Input — Story Frame</h2>
-    <label>Paste Story Frame (must contain STORY CORE and STORY TRAM)</label>
-    <textarea id="input" placeholder="Example:
-
-STORY CORE
-- Hero: Willy (Baby Golden Retriever)
-- Helper (animal-only): orange tabby cat wearing a tiny firefighter helmet (no text)
-- Primary helper role: Firefighter
-- Problem: Plush stuck in a tree
-- Object of affection: tiny plush bear with a bowtie
-- Location: Neutral backyard garden path — weathered stone path, flowers, soft afternoon sunlight
-- Weather/Time: Crisp autumn afternoon, falling leaves
-
-STORY TRAM
-Scene 1: Calm opening in the garden. Willy sits near the plush.
-Scene 2: The plush slips and gets stuck in a tree branch.
-Scene 3: The firefighter cat arrives and looks up at the plush.
-"></textarea>
+    <label>Paste Story Generator output or canonical Story Frame</label>
+    <textarea id="input" placeholder="Paste here..."></textarea>
 
     <div class="btnbar">
       <button class="primary" id="compileBtn">Compile Prompts</button>
@@ -88,13 +73,15 @@ Scene 3: The firefighter cat arrives and looks up at the plush.
     <div class="hr"></div>
 
     <div class="small muted">
-      <b>How it works:</b> For every beat, the compiler repeats the same Master Style header + exact DNA blocks for any mentioned character.
-      It also enforces: gaze targets (never camera), prop continuity, and biological body language cues.
+      <b>Accepted formats:</b>
+      <br>• Story Generator: <span class="k">STORY TITLE</span>, <span class="k">STORY SETTINGS</span>, <span class="k">SCENES (15/20/25)</span>, <span class="k">SOP CHECK</span>
+      <br>• Canonical: <span class="k">STORY CORE</span>, <span class="k">STORY TRAM</span>
     </div>
   </section>
 
   <section class="card">
     <h2>2) Output — Compiled Scene Prompts</h2>
+    <div class="small muted" id="storyTitleLine" style="margin:0 0 10px;"></div>
     <div class="stack" id="outputStack"></div>
     <div class="small muted" style="margin-top:10px;">
       Tip: Each card is a single “final prompt” for a video generator. Copy per scene or copy all.
@@ -110,7 +97,7 @@ Scene 3: The firefighter cat arrives and looks up at the plush.
 const MASTER_STYLE_HEADER =
 `10-second cinematic scene. Soft, natural realism with gentle warmth. No dialogue, no text, no subtitles, no logos. Simple, readable action with lively, purposeful movement. Camera: Static or very slow tracking shot. Photorealistic animal anatomy. Natural fur texture and sunlight. NO 3D animation style. NO "Disney" eyes. Physical interactions grounded in physics (objects have weight). NO human limbs.`;
 
-/* DNA Library — verbatim anchors (copy-paste exact text each time) */
+/* DNA Library — verbatim anchors */
 const DNA = {
   WILLY: `WILLY: (Baby Golden Retriever puppy, light-golden velvet-soft fluffy fur, short legs, small floppy ears. Simple RED COLLAR. SIGNATURE: A tiny pink "blep" tip of tongue always peeking out of his mouth).`,
   PANBY: `PANBY: (Baby Giant Panda, chubby and round, jet-black fur on limbs/eyes, snow-white fur on head/belly. Small bright YELLOW fabric bowtie).`,
@@ -119,15 +106,13 @@ const DNA = {
 
 const CHARACTER_KEYWORDS = [
   { key: "Willy", code: "WILLY" },
-  { key: "PANBY", code: "PANBY" },
+  { key: "WILLY", code: "WILLY" },
   { key: "Panby", code: "PANBY" },
-  { key: "QUOK", code: "QUOK" },
+  { key: "PANBY", code: "PANBY" },
   { key: "Quok", code: "QUOK" },
+  { key: "QUOK", code: "QUOK" },
 ];
 
-/* =========================
-   PARSING HELPERS
-========================= */
 const el = (id) => document.getElementById(id);
 function setStatus(t){ el("statusPill").textContent = t; }
 
@@ -138,25 +123,83 @@ function normalizeLines(text){
     .split("\n");
 }
 
-function findSection(lines, title){
-  // returns [startIndex, endIndexExclusive] or null
-  const idx = lines.findIndex(l => l.trim().toUpperCase() === title);
+function isStoryGeneratorFormat(lines){
+  const hasSettings = lines.some(l => l.trim().toUpperCase() === "STORY SETTINGS");
+  const hasScenes = lines.some(l => l.trim().toUpperCase().startsWith("SCENES"));
+  return hasSettings && hasScenes;
+}
+
+function getStoryTitle(lines){
+  // If Story Generator format: title is the first non-empty line after "STORY TITLE"
+  const idx = lines.findIndex(l => l.trim().toUpperCase() === "STORY TITLE");
+  if (idx === -1) return "";
+  for (let i=idx+1;i<lines.length;i++){
+    const t = lines[i].trim();
+    if (t) return t;
+  }
+  return "";
+}
+
+/* Converts Story Generator format into canonical STORY CORE + STORY TRAM lines */
+function convertGeneratorToCanonical(lines){
+  const out = [];
+  out.push("STORY CORE");
+
+  let mode = "none"; // settings|scenes|none
+  for (let i=0;i<lines.length;i++){
+    const raw = lines[i];
+    const l = raw.trim();
+    const up = l.toUpperCase();
+
+    if (!l) continue;
+
+    if (up === "STORY SETTINGS"){ mode = "settings"; continue; }
+    if (up.startsWith("SCENES")){ mode = "scenes"; out.push(""); out.push("STORY TRAM"); continue; }
+    if (up === "SOP CHECK"){ mode = "none"; continue; }
+    if (up === "STORY TITLE"){ mode = "none"; continue; }
+
+    if (mode === "settings"){
+      // copy "- Key: value" lines as "Key: value"
+      if (l.startsWith("-")){
+        out.push(l.replace(/^-+\s*/,""));
+      }
+      continue;
+    }
+
+    if (mode === "scenes"){
+      // Scene N: text  ->  N) text
+      const m = l.match(/^Scene\s*(\d+)\s*:\s*(.+)$/i);
+      if (m){
+        out.push(`${m[1]}) ${m[2].trim()}`);
+      }
+      continue;
+    }
+  }
+  return out;
+}
+
+/* =========================
+   Canonical Parser
+========================= */
+function findSection(lines, titles){
+  const wanted = (titles || []).map(t => String(t).trim().toUpperCase());
+  const idx = lines.findIndex(l => wanted.includes(l.trim().toUpperCase()));
   if (idx === -1) return null;
+
   let end = lines.length;
   for (let i=idx+1;i<lines.length;i++){
     const t = lines[i].trim().toUpperCase();
-    if (t === "STORY CORE" || t === "STORY TRAM") { if (i !== idx) end = i; break; }
+    if (t === "STORY CORE" || t === "STORY TRAM") { end = i; break; }
   }
   return [idx+1, end];
 }
 
 function parseCore(lines){
-  const sec = findSection(lines, "STORY CORE");
+  const sec = findSection(lines, ["STORY CORE"]);
   if (!sec) return null;
   const [a,b] = sec;
   const coreLines = lines.slice(a,b).map(x=>x.trim()).filter(Boolean);
 
-  // very light key parsing: "- Key: value"
   const core = {};
   coreLines.forEach(line=>{
     const m = line.match(/^-?\s*([^:]+)\s*:\s*(.+)\s*$/);
@@ -170,13 +213,11 @@ function parseCore(lines){
 }
 
 function parseTram(lines){
-  const sec = findSection(lines, "STORY TRAM");
+  const sec = findSection(lines, ["STORY TRAM"]);
   if (!sec) return null;
   const [a,b] = sec;
   const tramLines = lines.slice(a,b).map(x=>x.trim()).filter(Boolean);
 
-  // Accept formats:
-  // "Scene 1: ..." OR "1) ..." OR "- 1) ..." OR "- Scene 1: ..."
   const beats = [];
   tramLines.forEach(line=>{
     let m = line.match(/^(-\s*)?(scene\s*)?(\d+)\s*[:\)\-]\s*(.+)$/i);
@@ -185,15 +226,11 @@ function parseTram(lines){
       const n = parseInt(m[3] || m[2], 10);
       const text = (m[4] || m[3]).trim();
       beats.push({ n, text });
-    } else {
-      // If it's just text without numbering, still add sequentially
-      beats.push({ n: beats.length+1, text: line });
     }
   });
 
-  // Sort by number if present
   beats.sort((x,y)=>x.n-y.n);
-  return beats;
+  return beats.length ? beats : null;
 }
 
 function detectCharacters(text){
@@ -205,29 +242,43 @@ function detectCharacters(text){
 }
 
 /* =========================
-   PROMPT COMPILER (DETERMINISTIC)
+   PROMPT COMPILER
 ========================= */
 function compileScenePrompt(sceneNum, beatText, core){
   const charsMentioned = detectCharacters(beatText);
 
-  // If tram doesn't explicitly name the hero but core has one, we can include it
-  const coreHero = core["hero"] || "";
-  if (coreHero.toLowerCase().includes("willy")) charsMentioned.includes("WILLY") || charsMentioned.push("WILLY");
-  if (coreHero.toLowerCase().includes("panby")) charsMentioned.includes("PANBY") || charsMentioned.push("PANBY");
-  if (coreHero.toLowerCase().includes("quok"))  charsMentioned.includes("QUOK")  || charsMentioned.push("QUOK");
+  // If hero in core but not mentioned in beat, include hero DNA when possible
+  const hero = (core["hero"] || "").toLowerCase();
+  if (hero.includes("willy") && !charsMentioned.includes("WILLY")) charsMentioned.push("WILLY");
+  if (hero.includes("panby") && !charsMentioned.includes("PANBY")) charsMentioned.push("PANBY");
+  if (hero.includes("quok")  && !charsMentioned.includes("QUOK"))  charsMentioned.push("QUOK");
 
-  // Build Character States block (verbatim anchors)
   const charStates = charsMentioned.length
     ? charsMentioned.map(code => DNA[code]).join("\n")
-    : "(No core character names detected. Add 'Willy'/'Panby'/'Quok' to the beat for DNA injection.)";
+    : "(No core character names detected. Add Willy/Panby/Quok in the beat or set Hero in STORY SETTINGS.)";
 
-  // Props / physics from core
   const object = core["object of affection"] || core["object"] || "";
   const problem = core["problem"] || "";
   const helper = core["helper (animal-only)"] || core["helper"] || "";
   const role = core["primary helper role"] || core["role"] || "";
   const location = core["location"] || "";
   const weather = core["weather/time"] || core["weather"] || "";
+  const type = core["type"] || core["story type"] || "";
+
+  const description =
+`DESCRIPTION (Blind-Viewer Protocol):
+In ${location || "a consistent outdoor setting"}, under ${weather || "soft natural light"}, the camera is static or slowly tracking. ${beatText.trim()}
+Only one clear movement happens in this scene. Everything else stays still or slow for clarity.`;
+
+  const helperLine = (helper || role) ? `
+HELPER CONTINUITY:
+- Helper present (animal-only): ${helper || "(not specified)"}.
+- Helper role: ${role || "(not specified)"}.
+` : "";
+
+  const gaze =
+`GAZE TARGET (Interaction Rule):
+- Characters look at each other or at the object/problem. NEVER look at the camera.`;
 
   const propsPhysics =
 `PROPS & PHYSICS:
@@ -237,30 +288,14 @@ function compileScenePrompt(sceneNum, beatText, core){
 - Problem reference (if relevant): ${problem || "(none specified)"}.
 - Location continuity: ${location || "(not specified)"}.
 - Weather continuity: ${weather || "(not specified)"}.
+- Story tone/type: ${type || "(not specified)"}.
 - No logos, no readable text on props.`;
-
-  const gaze =
-`GAZE TARGET (Interaction Rule):
-- Characters look at each other or at the object/problem. NEVER look at the camera.`;
 
   const body =
 `BIOLOGICAL BODY LANGUAGE:
 - Emotions shown via physical cues only (ears, tail, whiskers, posture, paw movement, breathing).
 - No abstract words like “thinks/realizes/decides” in the description.`;
 
-  // Deterministic “Description” scaffolding:
-  // Keep the beat, but force literal visuals and 1-action emphasis.
-  const description =
-`DESCRIPTION (Blind-Viewer Protocol):
-In ${location || "a consistent outdoor setting"}, under ${weather || "soft natural light"}, the camera is static or slowly tracking. ${beatText.trim()}
-Only one clear movement happens in this scene. Everything else stays still or slow for clarity.`;
-
-  // Include helper details if present
-  const helperLine = helper || role
-    ? `\nHELPER CONTINUITY:\n- Helper present (animal-only): ${helper || "(not specified)"}.\n- Helper role: ${role || "(not specified)"}.\n`
-    : "";
-
-  // Final prompt with injections
   return [
     `SCENE ${sceneNum}`,
     ``,
@@ -271,7 +306,8 @@ Only one clear movement happens in this scene. Everything else stays still or sl
     ``,
     `CHARACTER STATES (Verbatim Anchor):`,
     charStates,
-    helperLine ? helperLine.trimEnd() : "",
+    helperLine.trim() ? helperLine.trimEnd() : "",
+    ``,
     gaze,
     ``,
     propsPhysics,
@@ -290,6 +326,7 @@ Only one clear movement happens in this scene. Everything else stays still or sl
 ========================= */
 function clearOutput(){
   el("outputStack").innerHTML = "";
+  el("storyTitleLine").textContent = "";
 }
 
 function addSceneCard(sceneNum, promptText){
@@ -334,7 +371,7 @@ function addSceneCard(sceneNum, promptText){
 async function copyAll(){
   const cards = Array.from(document.querySelectorAll(".sceneCard .out"));
   if (!cards.length) { setStatus("Nothing to copy"); return; }
-  const all = cards.map((c,i)=>c.textContent).join("\n\n" + "=".repeat(60) + "\n\n");
+  const all = cards.map((c)=>c.textContent).join("\n\n" + "=".repeat(60) + "\n\n");
   try{
     await navigator.clipboard.writeText(all);
     setStatus("Copied ALL scenes");
@@ -348,24 +385,33 @@ async function copyAll(){
 ========================= */
 function compile(){
   clearOutput();
-  const text = el("input").value || "";
-  const lines = normalizeLines(text);
+  const inputText = el("input").value || "";
+  let lines = normalizeLines(inputText);
+
+  // Detect + convert Story Generator format
+  const title = getStoryTitle(lines);
+  if (title){
+    el("storyTitleLine").innerHTML = `<b class="k">Story Title:</b> ${title}`;
+  }
+
+  if (isStoryGeneratorFormat(lines)){
+    lines = convertGeneratorToCanonical(lines);
+  }
 
   const core = parseCore(lines);
   const tram = parseTram(lines);
 
   if (!core){
-    setStatus("Missing STORY CORE");
-    el("outputStack").innerHTML = `<div class="out"><span class="warn">ERROR:</span> Could not find a line that equals "STORY CORE". Add it exactly.</div>`;
+    setStatus("Missing core");
+    el("outputStack").innerHTML = `<div class="out"><span class="warn">ERROR:</span> Could not find "STORY CORE" or "STORY SETTINGS". Paste generator output or add STORY CORE.</div>`;
     return;
   }
   if (!tram || !tram.length){
-    setStatus("Missing STORY TRAM");
-    el("outputStack").innerHTML = `<div class="out"><span class="warn">ERROR:</span> Could not parse STORY TRAM beats. Add lines like "Scene 1: ..."</div>`;
+    setStatus("Missing scenes");
+    el("outputStack").innerHTML = `<div class="out"><span class="warn">ERROR:</span> Could not find "SCENES" or "STORY TRAM". Paste generator output that includes SCENES (15/20/25).</div>`;
     return;
   }
 
-  // Deterministic compilation order: use tram order
   tram.forEach((b, idx)=>{
     const sceneNum = b.n || (idx+1);
     const prompt = compileScenePrompt(sceneNum, b.text, core);
@@ -380,21 +426,44 @@ function compile(){
 ========================= */
 function loadExample(){
   el("input").value =
-`STORY CORE
-- Hero: Willy (Baby Golden Retriever)
-- Helper (animal-only): orange tabby cat wearing a tiny firefighter helmet (no text)
-- Primary helper role: Firefighter
-- Problem: Plush stuck in a tree
-- Object of affection: tiny plush bear with a bowtie
-- Location: Neutral backyard garden path — weathered stone path, flowers, soft afternoon sunlight
-- Weather/Time: Crisp autumn afternoon, falling leaves
+`STORY TITLE
+Willy and the Heartfelt Object is out of reach on a ledge
 
-STORY TRAM
-Scene 1: Calm opening. Willy sits near the tiny plush bear on the stone path.
-Scene 2: The plush slips from Willy’s paws and lands on a low branch in the tree.
-Scene 3: The firefighter cat arrives, stops, and looks up at the plush.
-Scene 4: The cat places a toy ladder against the tree trunk.
-Scene 5: The cat climbs one step, the ladder wobbles, and the cat pauses.`;
+STORY SETTINGS
+- Type: Emotional
+- Hero: Willy (Baby Golden Retriever)
+- Friends (optional): Panby
+- Location: Mountain meadow — rocky ground, distant hills, crisp light
+- Weather/Time: Cold winter morning, pale sun
+- Helper (animal-only): duck delivery helper
+- Primary helper role: Ice Cream Maker
+- Problem: Object is out of reach on a ledge
+- Object of affection: little cape
+
+SCENES (15)
+Scene 1: Calm opening in Mountain meadow — rocky ground, distant hills, crisp light. Willy (Baby Golden Retriever) is still, looking around.
+Scene 2: Willy (Baby Golden Retriever) is shown near the cherished focus. The environment matches: Cold winter morning, pale sun.
+Scene 3: Cause begins: Willy (Baby Golden Retriever) interacts with the situation in one clear motion.
+Scene 4: Effect: the problem becomes obvious — Object is out of reach on a ledge.
+Scene 5: Willy (Baby Golden Retriever) sits or stands still, quietly focused on the problem.
+Scene 6: duck delivery helper stays close without fixing anything yet.
+Scene 7: duck delivery helper is framed as the ice cream maker and turns with purpose.
+Scene 8: duck delivery helper prepares a cute, role-fitting tool or vehicle (one action).
+Scene 9: Movement shot: the helper approaches the problem spot; camera stays static/slow.
+Scene 10: Attempt 1: the helper tries a simple solution (one action) — it fails visibly.
+Scene 11: Reaction: the helper pauses, looks, repositions (still/slow).
+Scene 12: Attempt 2: a small adjustment is added (wedge/net/rope/angle).
+Scene 13: Cause→effect: the adjustment changes the outcome but not enough yet.
+Scene 14: Success: the solution works — the problem is resolved safely.
+Scene 15: Willy (Baby Golden Retriever) receives the outcome with visible joy and relief.
+
+SOP CHECK
+- No dialogue, no text, no subtitles, no logos
+- One action per scene (still/slow for detailed interaction)
+- Visible cause → effect in every scene
+- Physics: weight, gravity, scale are believable
+- Animals only (photoreal anatomy, natural fur, no human limbs)
+- Calm closing echo of opening`;
   setStatus("Example loaded");
 }
 
@@ -404,8 +473,6 @@ Scene 5: The cat climbs one step, the ladder wobbles, and the cat pauses.`;
 el("compileBtn").addEventListener("click", compile);
 el("loadExampleBtn").addEventListener("click", loadExample);
 el("copyAllBtn").addEventListener("click", copyAll);
-
-// Auto-load example first time for convenience
 loadExample();
 </script>
 </body>
