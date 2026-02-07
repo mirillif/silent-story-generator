@@ -3,119 +3,254 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Silent Story Generator — Master Edition</title>
+  <title>Silent Cinematic Cute Story Generator v3</title>
   <style>
-    :root { --pad: 14px; --bg:#0b0d12; --fg:#eef2ff; --bd:rgba(255,255,255,.12); }
-    body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.4}
-    header{padding:22px;border-bottom:1px solid var(--bd);background:linear-gradient(135deg, rgba(99,102,241,.15), rgba(16,185,129,.1));}
-    main{max-width:1200px;margin:0 auto;padding:20px;display:grid;gap:20px;grid-template-columns:1fr}
-    @media (min-width:980px){ .grid{grid-template-columns:480px 1fr} }
-    .card{background:rgba(255,255,255,0.04);border:1px solid var(--bd);border-radius:14px;padding:20px}
-    label{font-size:11px;font-weight:bold;text-transform:uppercase;opacity:0.7;display:block;margin:12px 0 4px}
-    select, input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,0.35);color:#fff;box-sizing:border-box}
-    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-    button{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:800;transition:0.2s}
-    .primary{background:#6366f1;color:#fff}
-    .secondary{background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4)}
-    .out{white-space:pre-wrap;background:rgba(0,0,0,0.5);border-radius:12px;padding:20px;font-size:13px;font-family:monospace;min-height:500px}
+    :root { --pad: 14px; --r: 14px; --bg:#0b0d12; --fg:#eef2ff; --mut:rgba(255,255,255,.75); --bd:rgba(255,255,255,.12); }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.35}
+    header{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,.22), transparent 60%),
+        radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,.18), transparent 55%);
+    }
+    header h1{margin:0 0 6px;font-size:22px}
+    header p{margin:0;opacity:.85;max-width:980px}
+    a{color:#a5b4fc;text-decoration:none}
+    a:hover{text-decoration:underline}
+    main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media (min-width:980px){ .grid{grid-template-columns:520px 1fr} }
+    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .card h2{margin:0 0 10px;font-size:15px;opacity:.95}
+    label{font-size:12px;opacity:.85;display:block;margin:10px 0 6px}
+    input,select,textarea{
+      width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.35);color:var(--fg);outline:none;box-sizing:border-box
+    }
+    textarea{min-height:92px;resize:vertical;white-space:pre-wrap}
+    .row{display:grid;gap:10px;grid-template-columns:1fr}
+    @media(min-width:700px){ .row.two{grid-template-columns:1fr 1fr} .row.three{grid-template-columns:1fr 1fr 1fr} }
+    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
+    button{
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--fg);
+      padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800
+    }
+    button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
+    button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
+    button.special{background:rgba(165,180,252,0.2);color:#a5b4fc;border:1px solid #a5b4fc}
+    button:hover{filter:brightness(1.08)}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)}
+    .muted{opacity:.78}
+    .small{font-size:12px;opacity:.80}
+    .k{color:#a5b4fc;font-weight:800}
+    .out{white-space:pre-wrap;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px;font-size:13px;overflow:auto}
+    .toggle{display:flex;gap:10px;align-items:center;user-select:none;margin-top:8px}
+    .toggle input{width:auto}
+    .warn{color:#fbbf24}
+    .ok{color:#34d399}
+    .err{color:#fb7185}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
   </style>
 </head>
+
 <body>
-  <header><h1>🐾 Willy's Silent Story Generator</h1></header>
+  <header>
+    <h1>Silent Cinematic Cute Story Generator</h1>
+    <p>
+      Brand-locked to <span class="k">Willy</span> (+ friends Panby/Quok optional). 
+      <br>
+      <a href="./compiler.html">Open Prompt Compiler →</a>
+    </p>
+  </header>
+
   <main class="grid">
     <section class="card">
-      <h2>1) Configuration</h2>
-      <label>Seed (Auto-Increments)</label><input id="seed" value="willy-001" />
-      <label>Location</label><select id="loc"></select>
-      <label>Weather</label><select id="weather"></select>
-      <label>Problem</label><select id="prob"></select>
-      <label>Helper Role</label><select id="role"></select>
-      <div class="btnbar">
-        <button class="primary" id="genBtn">Create Story</button>
-        <button class="secondary" id="compBtn">🚀 Send to Compiler →</button>
+      <h2>1) Controls</h2>
+      <div class="row two">
+        <div>
+          <label>Story Type (tone)</label>
+          <select id="storyType"></select>
+        </div>
+        <div>
+          <label>Seed (Auto-increment)</label>
+          <input id="seed" value="willy-001" />
+        </div>
+      </div>
+
+      <div class="row two">
+        <div>
+          <label>Friends (optional)</label>
+          <select id="friends"></select>
+        </div>
+        <div>
+          <label>Scenes</label>
+          <div class="btnbar">
+            <button class="primary" id="btn15">15 scenes</button>
+            <button class="primary" id="btn20">20 scenes</button>
+            <button class="primary" id="btn25">25 scenes</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="toggle">
+        <input type="checkbox" id="manualOverride" />
+        <label for="manualOverride" style="margin:0">Manual override (advanced).</label>
+      </div>
+
+      <div id="manualPanel" style="display:none;margin-top:10px">
+        <div class="row two">
+          <div><label>Problem</label><select id="problem"></select></div>
+          <div><label>Helper Role</label><select id="helperRole"></select></div>
+        </div>
+        <div class="row two">
+          <div><label>Helper Animal</label><select id="helperAnimal"></select></div>
+          <div><label>Weather</label><select id="weather"></select></div>
+        </div>
+        <div class="row">
+          <label>Location</label><select id="location"></select>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="row two">
+        <div>
+          <label>Object of affection</label>
+          <select id="objectAffection"></select>
+        </div>
+        <div class="toggle" style="margin-top:32px">
+          <input type="checkbox" id="useObject" checked />
+          <label for="useObject" style="margin:0">Include object</label>
+        </div>
+      </div>
+
+      <div class="pill">
+        <span>Status:</span>
+        <span id="status" class="muted">Ready</span>
       </div>
     </section>
+
     <section class="card">
-      <h2>2) Story Output</h2>
-      <div id="out" class="out">Click "Create Story" to begin...</div>
+      <h2>2) Output — Story Frame</h2>
+      <div class="btnbar">
+        <button id="copyStory" class="good">Copy Story</button>
+        <button id="btnGoToCompiler" class="special">🚀 Send to Compiler →</button>
+      </div>
+      <div id="out" class="out" style="margin-top:12px">Click “15 scenes” to generate...</div>
     </section>
   </main>
 
 <script>
-/* RNG ENGINE */
-const xmur3=s=>{let h=1779033703^s.length;for(let i=0;i<s.length;i++)h=Math.imul(h^s.charCodeAt(i),3432918353),h=h<<13|h>>>19;return()=>(h=Math.imul(h^h>>>16,2246822507),h=Math.imul(h^h>>>13,3266489909),(h^h>>>16)>>>0)};
-const mul32=a=>()=>(let t=a+=0x6D2B79F5,t=Math.imul(t^t>>>15,t|1),t^=t+Math.imul(t^t>>>7,t|61),(t^t>>>14)>>>0)/4294967296;
+/* --- CORE RNG & DATA LIBRARIES (Your Original Core) --- */
+function xmur3(str){for(var i=0,h=1779033703^str.length;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return (h^h>>>16)>>>0;}}
+function mulberry32(a){return function(){var t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;}}
+function pick(rng, arr){ return arr[Math.floor(rng()*arr.length)] }
+function chance(rng, p){ return rng() < p }
 
-/* MASTER LIBRARIES */
-const LOCS = ["Sunny Meadow", "Riverside Stones", "Autumn Forest Trail", "Snowy Garden", "Cozy Workshop", "Indoor Playroom"];
-const WEATHERS = ["Golden Hour Sunlight", "Morning Mist", "Soft Rain", "Pale Winter Dawn", "Cozy Indoor Lamp-light"];
-const PROBLEMS = [
-  "A toy boat is stuck in reeds", "A wheel fell off a wagon", "A branch blocks the path", 
-  "A kite is tangled in a tree", "A bridge plank is missing", "A plush toy is stuck high up",
-  "A wagon is stuck in deep mud", "A lantern tipped over", "A paper boat is folding wrong"
-];
-const ROLES = {
-  "Mechanic": { animal: "Red Panda", tool: "Silver Wrench", vehicle: "Mini Tool Cart", action: "tightens the bolt" },
-  "Carpenter": { animal: "Beaver", tool: "Wooden Mallet", vehicle: "Plank Carrier", action: "taps the wood flush" },
-  "Lifeguard": { animal: "Otter", tool: "Rescue Hook", vehicle: "Small Floating Dock", action: "pulls it to shore" },
-  "Ranger": { animal: "Fox", tool: "Hemp Rope", vehicle: "Gear Sled", action: "loops the knot securely" }
+const STORY_TYPES = ["Adventure (gentle quest)", "Funny safe mishap", "Emotional (caregiving)", "Brave (scary-but-safe)", "Friendship"];
+const FRIENDS_OPTIONS = ["Auto (story decides)", "None", "Panby only", "Quok only", "Panby + Quok"];
+const BASE_PROBLEMS = ["A toy plane propeller is bent", "A wagon is stuck in mud", "A kite string is tangled in a bush", "A bridge plank is loose"];
+const BASE_ROLES = ["Carpenter", "Mechanic", "Toy Maker", "Medic", "Lifeguard", "Bridge Builder"];
+const HELPER_ANIMALS_BASE = ["beaver builder helper", "bunny medic helper", "red panda mechanic helper", "otter lifeguard helper"];
+const WEATHER = ["Golden hour evening", "Spring morning, soft sunlight", "Light rain, puddles", "Snowy day, soft snowfall"];
+const LOCATIONS = ["Park meadow", "Riverside path", "Cozy workshop", "Snowy forest clearing"];
+const OBJECTS_BASE = ["tiny plush buddy", "mini paint palette", "small wooden boat", "tiny lantern"];
+
+/* --- SMART NARRATIVE INJECTION (The "Smarter" Part) --- */
+const ROLE_ACTIONS = {
+  "Mechanic": { approach: "inspects the moving parts", action: "tightens the bolt", icon: "🔧" },
+  "Carpenter": { approach: "aligns the wood grain", action: "taps the mallet", icon: "🔨" },
+  "Medic": { approach: "checks the surface for scratches", action: "applies a soft patch", icon: "🩹" },
+  "Lifeguard": { approach: "scans the water safety", action: "tosses the rescue line", icon: "🛟" },
+  "Bridge Builder": { approach: "tests the support tension", action: "secures the rope", icon: "🌉" }
 };
 
-function init() {
-  const f=(id,arr)=>arr.forEach(v=>{let o=document.createElement("option");o.text=v;document.getElementById(id).add(o)});
-  f("loc", LOCS); f("weather", WEATHERS); f("prob", PROBLEMS);
-  Object.keys(ROLES).forEach(r=>{let o=document.createElement("option");o.text=r;document.getElementById("role").add(o)});
+const EMOTIONAL_BEATS = {
+  "worried": ["ears droop slightly", "tail stills", "tiny blep disappears", "shoulders slump"],
+  "hopeful": ["ears perk up", "head tilts", "tail gives one small wag", "eyes widen"],
+  "joyous": ["rapid tail wag", "happy hop", "tiny pink blep returns", "soft eyes"]
+};
+
+function buildSceneArc(state, n, rng){
+  const hero = "Willy (Baby Golden Retriever)";
+  const helper = state.helperAnimal;
+  const roleData = ROLE_ACTIONS[state.helperRole] || { approach: "looks closely", action: "helps out" };
+  const obj = state.useObject ? state.object : "the situation";
+  
+  const beats = [];
+  
+  // 1-5: Setup & Conflict
+  beats.push(`Scene 1: ${state.location}. ${hero} sits under ${state.weather}. He looks content.`);
+  beats.push(`Scene 2: ${hero} spots ${obj}. He trots forward with a happy tail wag.`);
+  beats.push(`Scene 3: The conflict appears: ${state.problem}. ${hero} tries to fix it with a paw, but it's stuck.`);
+  beats.push(`Scene 4: EMOTION: ${hero} stops. ${pick(rng, EMOTIONAL_BEATS.worried)}. He looks around for help.`);
+  beats.push(`Scene 5: ${helper} (${state.helperRole}) enters the frame, moving with purpose.`);
+
+  // 6-10: Helper & Interaction
+  beats.push(`Scene 6: ${helper} stops beside ${hero}. They share a silent look of understanding.`);
+  beats.push(`Scene 7: ${helper} walks to the ${obj} and ${roleData.approach}.`);
+  beats.push(`Scene 8: ${helper} brings over the ${state.vehicleDNA}. It rolls with realistic weight.`);
+  beats.push(`Scene 9: ${helper} produces the ${state.toolDNA}. It glints in the ${state.weather}.`);
+  beats.push(`Scene 10: Willy watches, ${pick(rng, EMOTIONAL_BEATS.hopeful)}. He sits back to give the helper space.`);
+
+  // 11-15: Climax & Resolution
+  beats.push(`Scene 11: Attempt 1: ${helper} uses the tool to ${roleData.action}. It budges but isn't fixed yet.`);
+  beats.push(`Scene 12: Pivot: ${helper} shifts his weight and tries again with more precision.`);
+  beats.push(`Scene 13: Success! The ${state.problem} is resolved. The physics of the object settle into place.`);
+  beats.push(`Scene 14: CELEBRATION: ${hero} reacts with ${pick(rng, EMOTIONAL_BEATS.joyous)}. He nudges the helper's shoulder.`);
+  beats.push(`Scene 15: Calm closing. ${hero} and ${helper} stay together in the ${state.location}. A job well done.`);
+
+  const out = beats.map((b, i) => `Scene ${i+1}: ${b}`);
+  return out;
 }
 
-document.getElementById("genBtn").onclick = () => {
-  const seedEl = document.getElementById("seed");
-  const rng = mul32(xmur3(seedEl.value)())();
-  const loc = document.getElementById("loc").value;
-  const weather = document.getElementById("weather").value;
-  const prob = document.getElementById("prob").value;
-  const roleKey = document.getElementById("role").value;
-  const r = ROLES[roleKey];
+/* --- UI WIRING & BRIDGE --- */
+function initUI(){
+  const fill = (id, arr) => {
+    const el = document.getElementById(id);
+    arr.forEach(a => { let o = document.createElement("option"); o.text = a; el.add(o); });
+  };
+  fill("storyType", STORY_TYPES);
+  fill("friends", FRIENDS_OPTIONS);
+  fill("problem", BASE_PROBLEMS);
+  fill("helperRole", Object.keys(ROLE_ACTIONS));
+  fill("helperAnimal", HELPER_ANIMALS_BASE);
+  fill("weather", WEATHER);
+  fill("location", LOCATIONS);
+  fill("objectAffection", OBJECTS_BASE);
 
-  const story = `[VISUAL DNA]
-WILLY: Golden Retriever puppy, red collar, pink blep tongue.
-HELPER: ${r.animal}, realistic fur, no clothes.
-TOOL DNA: ${r.tool} (toy-scale, matte).
-VEHICLE DNA: ${r.vehicle} (realistic rolling physics).
+  document.getElementById("btn15").onclick = () => createStory(15);
+  
+  document.getElementById("btnGoToCompiler").onclick = () => {
+    const story = document.getElementById("out").textContent;
+    localStorage.setItem("pendingStory", story);
+    window.location.href = "compiler.html";
+  };
+}
 
-[STORY SETTINGS]
-Location: ${loc}
-Weather: ${weather}
-Problem: ${prob}
+function createStory(n){
+  const seedIn = document.getElementById("seed");
+  const rng = mulberry32(xmur3(seedIn.value)());
+  
+  const state = {
+    location: document.getElementById("location").value,
+    weather: document.getElementById("weather").value,
+    problem: document.getElementById("problem").value,
+    helperRole: document.getElementById("helperRole").value,
+    helperAnimal: document.getElementById("helperAnimal").value,
+    object: document.getElementById("objectAffection").value,
+    useObject: document.getElementById("useObject").checked,
+    toolDNA: "mini professional tool",
+    vehicleDNA: "heavy-duty helper wagon"
+  };
 
-[SCENES]
-Scene 1: ${loc} under ${weather}. Willy sits calmly, tiny blep visible.
-Scene 2: Willy spots the ${prob.toLowerCase()}. He trots over.
-Scene 3: Willy tries to help, but the ${prob.toLowerCase()} is too much for him.
-Scene 4: Willy's ears droop. He looks worried. (Emotional beat).
-Scene 5: ${r.animal} (the ${roleKey}) arrives, pushing the ${r.vehicle}.
-Scene 6: Close-up: ${r.animal} gives Willy a slow, reassuring nod.
-Scene 7: ${r.animal} opens the ${r.vehicle} and takes out the ${r.tool}.
-Scene 8: ${r.animal} inspects the ${prob.toLowerCase()} with professional focus.
-Scene 9: Attempt 1: ${r.animal} tries to ${r.action}. It moves slightly.
-Scene 10: Willy watches with hopeful eyes, one ear twitching.
-Scene 11: The Adjustment: ${r.animal} shifts stance for better leverage.
-Scene 12: Success! With a final motion, the ${r.animal} ${r.action}.
-Scene 13: Willy lets out a happy tail wag and nudges the ${r.animal}.
-Scene 14: The two friends stand together, problem solved.
-Scene 15: Peaceful closing echo. Willy is happy in the ${loc}.`;
+  const scenes = buildSceneArc(state, n, rng);
+  document.getElementById("out").textContent = `STORY DNA\n---\n${scenes.join("\n")}`;
+  seedIn.value = "willy-" + Math.floor(rng() * 1000);
+}
 
-  document.getElementById("out").textContent = story;
-  seedEl.value = "willy-" + Math.floor(Math.random()*999);
-};
-
-document.getElementById("compBtn").onclick = () => {
-  const s = document.getElementById("out").textContent;
-  if(s.includes("Click")) return alert("Generate a story first!");
-  localStorage.setItem("pendingStory", s);
-  window.location.href = "compiler.html";
-};
-
-init();
+initUI();
 </script>
 </body>
 </html>
