@@ -25,610 +25,228 @@ export const STORY_TYPES = {
   Adventure:  { min: 18, max: 25, template: "adventure",  allowsFriends: true  }
 };
 
-/* =========================
-   BEAT TEMPLATES
-   - Short base templates expanded to target scene count
-   - Expansion duplicates only “middle” beats
-========================= */
+/* ======================
+   BEAT TEMPLATES — CINEMATIC PHASED TRAM (15–25)
+   This replaces the old “generic beats” logic.
+====================== */
 
-export const BEAT_TEMPLATES = {
-  // Emotional “dad-cat” style (positive)
-  emotional: [
-    "opening",
-    "object_focus",
-    "problem_reveal",
-    "emotional_pause",
-    "helper_arrival",
-    "comfort",
-    "prep_station",
-    "build_step",
-    "build_step",
-    "build_step",
-    "test",
-    "reveal",
-    "reaction",
-    "close"
-  ],
-
-  // Emotional bittersweet (no full fix, but comfort + acceptance)
-  emotional_bittersweet: [
-    "opening",
-    "object_focus",
-    "problem_reveal",
-    "emotional_pause",
-    "helper_arrival",
-    "comfort",
-    "prep_station",
-    "try_gently",
-    "try_gently",
-    "accept",
-    "comfort_gift",
-    "soft_reframe",
-    "reaction",
-    "close"
-  ],
-
-  // Funny mishap (safe physical comedy)
-  funny: [
-    "opening",
-    "cause",
-    "escalation",
-    "freeze",
-    "helper_arrival",
-    "prep_station",
-    "attempt_fail",
-    "pause",
-    "attempt_success",
-    "celebrate",
-    "close"
-  ],
-
-  // Brave (safe fear → step-by-step)
-  brave: [
-    "opening",
-    "scary_reveal",
-    "hesitation",
-    "helper_arrival",
-    "comfort",
-    "prep_station",
-    "try_step",
-    "try_step",
-    "success",
-    "reaction",
-    "close"
-  ],
-
-  // Brave bittersweet (rare): comfort + plan to return
-  brave_bittersweet: [
-    "opening",
-    "scary_reveal",
-    "hesitation",
-    "helper_arrival",
-    "comfort",
-    "prep_station",
-    "try_step",
-    "try_step",
-    "accept",
-    "plan_for_later",
-    "proud_anyway",
-    "close"
-  ],
-
-  // Friendship sharing/fairness
-  friendship: [
-    "opening",
-    "social_tension",
-    "problem_reveal",
-    "emotional_pause",
-    "helper_arrival",
-    "prep_station",
-    "attempt_fail",
-    "pause",
-    "attempt_success",
-    "swap_turns",
-    "celebrate",
-    "close"
-  ],
-
-  // Adventure journey: mission + travel + 2–3 obstacles
-  adventure: [
-    "opening",
-    "mission",
-    "prep_station",
-    "travel",
-    "obstacle",
-    "adjust",
-    "travel",
-    "obstacle",
-    "adjust",
-    "travel",
-    "arrival",
-    "success",
-    "celebrate",
-    "close"
-  ]
-};
-
-/* =========================
-   MASTER CHARACTERS (names)
-   - DNA text is handled by your Prompt Compiler page
-========================= */
-
-const HERO = "Willy (Baby Golden Retriever)";
-const FRIENDS_POOL = [
-  "Panby (Baby Giant Panda)",
-  "Quok (Baby Quokka)"
+// A “beat” is a scene-intent token, not prose.
+// Renderer converts beats -> your Scene 1..N text lines.
+const PHASES = [
+  "OPENING",
+  "GOAL_FOCUS",
+  "CAUSE_START",
+  "EFFECT_PROBLEM",
+  "REACTION_LOW",
+  "HELPER_ARRIVAL",
+  "HELPER_INTENT",
+  "TOOLS_ENTER",
+  "ATTEMPT_1",
+  "REACTION_PAUSE",
+  "ATTEMPT_2",
+  "SUCCESS",
+  "JOY",
+  "CALM_ECHO",
 ];
 
-/* =========================
-   UTILITIES
-========================= */
+function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
 
-function randIntInclusive(min, max, rng) {
-  const a = Math.ceil(min);
-  const b = Math.floor(max);
-  return Math.floor(rng() * (b - a + 1)) + a;
-}
+// Only these “filler” beats may be duplicated when sceneCount > base.
+// They are cinematic and preserve logic.
+const EXPANDABLE_BEATS = [
+  "TRAVEL",
+  "PROGRESS",
+  "OBSTACLE_SMALL",
+  "ADJUSTMENT_MICRO",
+  "SHOW_WORK",
+];
 
-function pick(rng, arr) {
-  return arr[Math.floor(rng() * arr.length)];
-}
+// Base tram (15 scenes). For 20/25 we expand with safe filler.
+const BASE_TRAM_15 = [
+  "OPENING",
+  "GOAL_FOCUS",
+  "CAUSE_START",
+  "EFFECT_PROBLEM",
+  "REACTION_LOW",
+  "HELPER_ARRIVAL",
+  "HELPER_INTENT",
+  "TOOLS_ENTER",
+  "ATTEMPT_1",
+  "REACTION_PAUSE",
+  "ATTEMPT_2",
+  "SUCCESS",
+  "JOY",
+  "CALM_ECHO",
+  "EXTRA_CUTE",
+];
 
-function maybe(rng, p) {
-  return rng() < p;
-}
+// For 20/25 we insert extra beats *between* TOOLS_ENTER and SUCCESS
+// so story stays coherent (more “work” and “progress”).
+function expandTram(base, targetCount, rng) {
+  const beats = [...base];
+  const baseCount = beats.length;
+  if (targetCount <= baseCount) return beats.slice(0, targetCount);
 
-function clamp(n, a, b) {
-  return Math.max(a, Math.min(b, n));
-}
+  const extraNeeded = targetCount - baseCount;
 
-function safeLower(s) {
-  return String(s || "").toLowerCase();
-}
+  // Insert extras after TOOLS_ENTER and before ATTEMPT_1 / ATTEMPT_2.
+  const insertZoneStart = beats.indexOf("TOOLS_ENTER") + 1;
+  const insertZoneEnd = beats.indexOf("ATTEMPT_1"); // insert before Attempt 1
 
-/* =========================
-   ENDING MODE
-========================= */
-
-export function decideEndingMode(storyType, rng) {
-  if (!ENDING_POLICY.allowBittersweet) return "positive";
-  if (!ENDING_POLICY.allowedTypes.includes(storyType)) return "positive";
-  return (rng() < ENDING_POLICY.bittersweetChance) ? "bittersweet" : "positive";
-}
-
-/* =========================
-   TRIAD PICKER
-   - Must match storyType
-========================= */
-
-export function pickTriad(storyType, triads, rng) {
-  const allowed = triads.filter(t => (t.storyTypes || []).includes(storyType));
-  if (!allowed.length) {
-    throw new Error(`No TRIADS found for storyType="${storyType}". Add triads.storyTypes accordingly.`);
-  }
-  return pick(rng, allowed);
-}
-
-/* =========================
-   FRIENDS PICKER
-   - Only if allowed by story type
-   - Deterministic but non-chaotic
-========================= */
-
-export function pickFriends(storyType, rng) {
-  const cfg = STORY_TYPES[storyType];
-  if (!cfg || !cfg.allowsFriends) return [];
-
-  // Friendship usually wants at least one friend
-  if (storyType === "Friendship") {
-    return maybe(rng, 0.5) ? [...FRIENDS_POOL] : [pick(rng, FRIENDS_POOL)];
+  for (let k = 0; k < extraNeeded; k++) {
+    const b = pick(rng, EXPANDABLE_BEATS);
+    const pos = clamp(
+      insertZoneStart + Math.floor(rng() * Math.max(1, (insertZoneEnd - insertZoneStart))),
+      insertZoneStart,
+      insertZoneEnd
+    );
+    beats.splice(pos, 0, b);
   }
 
-  // Adventure/Funny can have 0–2 friends
-  const roll = rng();
-  if (roll < 0.35) return [];
-  if (roll < 0.75) return [pick(rng, FRIENDS_POOL)];
-  return [...FRIENDS_POOL];
+  return beats;
 }
 
-/* =========================
-   TEMPLATE CHOICE + EXPANSION
-   - Expands safely to target count by duplicating middle beats
-========================= */
+function buildCinematicTram(storyType, sceneCount, rng) {
+  // storyType affects how many “work/progress” beats appear later
+  const target = clamp(sceneCount || 15, 15, 25);
 
-function chooseTemplateKey(storyType, endingMode) {
-  const base = STORY_TYPES[storyType]?.template;
-  if (!base) throw new Error(`Unknown storyType "${storyType}".`);
+  // Start with 15-base then expand
+  const beats = expandTram(BASE_TRAM_15, target, rng);
 
-  if (endingMode === "bittersweet") {
-    if (storyType === "Emotional") return "emotional_bittersweet";
-    if (storyType === "Brave") return "brave_bittersweet";
-  }
-  return base;
+  // Ensure required beats exist in correct order
+  enforceOrder(beats, "EFFECT_PROBLEM", "REACTION_LOW");
+  enforceOrder(beats, "REACTION_LOW", "HELPER_ARRIVAL");
+  enforceOrder(beats, "HELPER_ARRIVAL", "ATTEMPT_1");
+  enforceOrder(beats, "ATTEMPT_1", "ATTEMPT_2");
+  enforceOrder(beats, "ATTEMPT_2", "SUCCESS");
+  enforceOrder(beats, "SUCCESS", "JOY");
+  enforceOrder(beats, "JOY", "CALM_ECHO");
+
+  return beats;
 }
 
-function expandBeatsToCount(beats, targetCount, storyType, rng) {
-  // No expansion needed
-  if (beats.length >= targetCount) return beats.slice(0, targetCount);
+function enforceOrder(arr, a, b) {
+  const ia = arr.indexOf(a);
+  const ib = arr.indexOf(b);
+  if (ia === -1 || ib === -1) return;
+  if (ia < ib) return;
 
-  const expanded = [...beats];
-
-  // Define safe expansion slots by template type
-  // Insert extra beats in the “middle” (prep/build/travel/obstacle) zone.
-  const midInsertionIndex = (() => {
-    // find first build/travel/obstacle/prep to insert around it
-    const idx = expanded.findIndex(b => ["prep_station","build_step","travel","obstacle","adjust","try_gently","try_step"].includes(b));
-    return idx === -1 ? Math.floor(expanded.length / 2) : idx;
-  })();
-
-  while (expanded.length < targetCount) {
-    if (storyType === "Adventure") {
-      // Prefer adding travel/obstacle/adjust variety
-      const add = pick(rng, ["travel", "obstacle", "adjust", "travel"]);
-      expanded.splice(midInsertionIndex + 1, 0, add);
-    } else if (storyType === "Funny") {
-      // Add micro-variation: pause / attempt_fail / attempt_success (but keep readable)
-      const add = pick(rng, ["pause", "attempt_fail", "pause", "attempt_success"]);
-      expanded.splice(midInsertionIndex + 1, 0, add);
-    } else if (storyType === "Brave") {
-      // Add more step-by-step tries (safe)
-      const add = pick(rng, ["try_step", "hesitation", "comfort"]);
-      expanded.splice(midInsertionIndex + 1, 0, add);
-    } else if (storyType === "Friendship") {
-      // Add turn-taking or fairness reinforcement
-      const add = pick(rng, ["pause", "swap_turns", "attempt_success"]);
-      expanded.splice(midInsertionIndex + 1, 0, add);
-    } else {
-      // Emotional: expand build montage or gentle tries
-      const add = pick(rng, ["build_step", "build_step", "test", "comfort"]);
-      expanded.splice(midInsertionIndex + 1, 0, add);
-    }
-  }
-
-  return expanded.slice(0, targetCount);
+  // If wrong order, swap the first occurrence positions
+  const tmp = arr[ia];
+  arr[ia] = arr[ib];
+  arr[ib] = tmp;
 }
 
-/* =========================
-   LOCATION/WEATHER SANITY
-   - Keep this simple in the engine; your UI can supply richer catalogs
-   - If you pass location/weather in options, they’ll be validated
-========================= */
-
-function isIndoorLocation(locationText) {
-  const t = safeLower(locationText);
-  return t.includes("indoor") || t.includes("playroom") || t.includes("workshop") || t.includes("reading nook") || t.includes("home");
+// Helper: map storyType -> tone hints (used by renderer)
+function toneHints(storyType) {
+  switch ((storyType || "").toLowerCase()) {
+    case "emotional": return { endingMode: "soft", tempo: "slow", friends: false };
+    case "brave": return { endingMode: "positive", tempo: "steady", friends: false };
+    case "funny": return { endingMode: "positive", tempo: "playful", friends: true };
+    case "friendship": return { endingMode: "soft", tempo: "steady", friends: true };
+    case "adventure": return { endingMode: "positive", tempo: "cinematic", friends: true };
+    default: return { endingMode: "positive", tempo: "steady", friends: true };
+  }
 }
 
-function sanitizeWeatherForLocation(location, weather, rng) {
-  // If indoor, convert to indoor-lighting weather
-  if (isIndoorLocation(location)) {
-    const indoorLighting = [
-      "Indoor: warm window light, cozy shadows",
-      "Indoor: rainy-day window glow, soft grey light",
-      "Indoor: early sunbeam stripes, gentle dust motes",
-      "Indoor: soft afternoon light, gentle warmth"
-    ];
-    return pick(rng, indoorLighting);
-  }
+/* ======================
+   RENDERER — BEAT → SCENE LINE
+   These lines are the “Story Tram” output, not prompts.
+====================== */
 
-  // Outdoor constraints: avoid snow on beach/tropical
-  const loc = safeLower(location);
-  const w = safeLower(weather);
+function renderBeat(beat, ctx, rng, idx) {
+  const H = ctx.hero;
+  const F = (ctx.friends && ctx.friends.length) ? ctx.friends : [];
+  const helper = ctx.helperAnimal;
+  const role = ctx.helperRole;
+  const loc = ctx.location;
+  const w = ctx.weather;
+  const obj = ctx.objectOfAffection || "the small goal item";
+  const prob = ctx.problem;
 
-  if ((loc.includes("beach") || loc.includes("tropical")) && (w.includes("snow") || w.includes("frost") || w.includes("winter"))) {
-    return "Warm summer afternoon, bright sun, clear sky";
-  }
+  // One-action verbs to keep scenes readable
+  const oneMove = [
+    "takes one small step forward (one motion)",
+    "turns its head once (one motion)",
+    "leans closer once (one motion)",
+    "backs up slightly (one motion)",
+    "pads forward slowly (one motion)",
+  ];
 
-  // Avoid "hot" on snowy clearing
-  if ((loc.includes("snow") || loc.includes("frost")) && (w.includes("hot") || w.includes("summer"))) {
-    return "Cold winter morning, pale sun, frosty air";
-  }
+  // Work verbs: physical, grounded
+  const workMoves = [
+    "places the tool down carefully (one action)",
+    "aligns the object once (one action)",
+    "tests the fit gently (one action)",
+    "adjusts the angle once (one action)",
+    "tightens or secures one point (one action)",
+  ];
 
-  return weather;
-}
-
-/* =========================
-   PROP / TOOL TRACK SANITY
-   - Triad defines props; engine derives Prop DNA strings consistently
-========================= */
-
-function buildPropDNA(triad) {
-  const obj = triad?.props?.object || "none";
-  const tools = triad?.props?.tools || [];
-  const vehicle = triad?.props?.vehicle || "none";
-
-  const objectDNA = obj === "none"
-    ? "OBJECT DNA: (None)"
-    : `OBJECT DNA: (${obj}; toy-scale; material: soft fabric or matte plastic depending on item; exact name must be repeated verbatim.)`;
-
-  const toolDNA = (tools.length && tools[0] !== "none")
-    ? `TOOL DNA: (${tools.join(", ")}; toy-scale; no text; realistic weight; used only in still/slow interactions.)`
-    : "TOOL DNA: (None)";
-
-  const vehicleDNA = (vehicle && vehicle !== "none")
-    ? `VEHICLE DNA: (${vehicle}; 28cm; matte plastic; no text; toy-scale; realistic rolling/weight.)`
-    : "VEHICLE DNA: (None)";
-
-  return { objectDNA, toolDNA, vehicleDNA };
-}
-
-/* =========================
-   RENDER: Beat → Scene sentence
-   - Concrete, physical, no abstract verbs
-   - One readable action per scene
-   - Uses triad props only
-========================= */
-
-function roleActionHint(helperRole, tools, rng) {
-  // Keep actions grounded and role-specific
-  const role = safeLower(helperRole);
-  const toolName = tools?.length ? tools[0] : "a small tool";
-
-  if (role.includes("medic") || role.includes("caregiver")) {
-    return pick(rng, [
-      "places a comfort item down once",
-      "leans closer and holds still beside Willy",
-      "gently covers the spot with a soft blanket once",
-      "nudges a calming gesture once"
-    ]);
-  }
-  if (role.includes("builder") || role.includes("carpenter") || role.includes("bridge")) {
-    return pick(rng, [
-      `sets a small support piece in place once`,
-      `presses a plank down once so it lies flat`,
-      `tightens a rope line once and stops`,
-      `taps the structure once to test stability`
-    ]);
-  }
-  if (role.includes("mechanic") || role.includes("model plane")) {
-    return pick(rng, [
-      `uses ${toolName} for one careful adjustment`,
-      `aligns a small part once and holds still`,
-      `tightens a tiny piece once with careful weight`,
-      `tests the moving part once with a gentle spin`
-    ]);
-  }
-  if (role.includes("delivery")) {
-    return pick(rng, [
-      "pulls the wagon forward once and stops",
-      "repositions the package once so it sits stable",
-      "points a safe route with one wing gesture",
-      "parks the wagon neatly once"
-    ]);
-  }
-  if (role.includes("friendship") || role.includes("mediator") || role.includes("play")) {
-    return pick(rng, [
-      "places a clear turn-taking token down once",
-      "creates two equal spots side-by-side once",
-      "moves the shared toy to the middle once",
-      "signals a simple ‘swap’ gesture once"
-    ]);
-  }
-  // Generic fallback
-  return pick(rng, [
-    `places ${toolName} down once with realistic weight`,
-    "stops, looks, then makes one careful adjustment",
-    "repositions a small item once and holds still"
-  ]);
-}
-
-export function renderBeat(beat, ctx, rng) {
-  const {
-    storyType,
-    hero,
-    friends,
-    helperAnimal,
-    helperRole,
-    problem,
-    props,
-    location,
-    weather,
-    endingMode
-  } = ctx;
-
-  const obj = props?.object || "none";
-  const tools = props?.tools || [];
-  const vehicle = props?.vehicle || "none";
-
-  // Helper phrases (keep consistent)
-  const heroRef = hero;
-  const helperRef = helperAnimal;
-
-  // Friends mention helper
-  const friendLine = friends?.length ? ` ${friends.join(" and ")} is nearby.` : "";
+  // Small obstacles: safe + cute
+  const smallObstacles = [
+    "a tiny wobble makes the setup drift (safe)",
+    "the surface is slightly slippery (safe)",
+    "a gust/breeze nudges it off-line (safe)",
+    "a small gap is just a bit too wide (safe)",
+    "the strap/bridge is a little too short (safe)",
+  ];
 
   switch (beat) {
-    case "opening":
-      return `Calm opening in ${location} under ${weather}. ${heroRef} is present and still, tiny blep visible.${friendLine}`;
-
-    case "object_focus":
-      if (obj !== "none") return `${heroRef} approaches ${obj} slowly and stops with nose close (still/slow).`;
-      return `${heroRef} looks around the space once, then becomes still (no words).`;
-
-    case "mission":
-      return `${heroRef} looks toward the route ahead, then back to the goal item once, showing a clear mission without words.`;
-
-    case "cause":
-      return `${heroRef} performs one playful action that starts the mishap (one motion, safe).`;
-
-    case "escalation":
-      return `Effect: the situation becomes a little sillier but stays safe, with believable physics.`;
-
-    case "freeze":
-      return `${heroRef} freezes in a funny posture; ears sit unevenly and paws stay planted (still).`;
-
-    case "social_tension":
-      if (friends?.length) return `${heroRef} and a friend reach toward the same item at once, then both stop (still).`;
-      return `${heroRef} hesitates near the shared spot; posture shows uncertainty (still).`;
-
-    case "problem_reveal":
-      return `The problem becomes clearly visible: ${problem}.`;
-
-    case "scary_reveal":
-      return `A safe but scary-looking obstacle is revealed: ${problem}.`;
-
-    case "hesitation":
-      return `${heroRef} leans back slightly; tail lowers and paws pause at the edge (still).`;
-
-    case "helper_arrival":
-      return `${helperRef} arrives and stops near ${heroRef}, looking at ${heroRef} then the situation (never the camera).`;
-
-    case "comfort":
-      return `${helperRef} moves closer and performs one calming gesture, then holds still beside ${heroRef} (still/slow).`;
-
-    case "prep_station":
-      if (vehicle !== "none") {
-        return `${helperRef} rolls ${vehicle} into frame and parks it neatly (one action, realistic rolling).`;
-      }
-      return `${helperRef} turns toward a small work area and makes one purposeful gesture (one action).`;
-
-    case "build_step":
-      return `${helperRef} ${roleActionHint(helperRole, tools, rng)} (one action, still/slow).`;
-
-    case "test":
-      return `${helperRef} tests the result gently once; the change is visible and believable (one action).`;
-
-    case "attempt_fail":
-      return `Attempt 1: ${helperRef} tries a simple solution once — it fails visibly but safely.`;
-
-    case "pause":
-      return `Reaction: everyone pauses and stares at the result (still/slow), showing confusion through posture.`;
-
-    case "attempt_success":
-      return `Attempt 2: ${helperRef} changes one thing (angle/traction/strap) once and the solution works clearly.`;
-
-    case "adjust":
-      return `${helperRef} adjusts the approach once (route/angle/traction) and stops to check stability (still/slow).`;
-
-    case "travel":
-      return `Travel beat: ${heroRef} and ${helperRef} move forward carefully; camera stays static/slow; environment stays consistent.`;
-
-    case "obstacle":
-      return `A new small obstacle appears (safe): terrain/wind/water creates one clear challenge (one action revealed).`;
-
-    case "try_step":
-      return `${heroRef} takes one careful step toward the obstacle, then stops to check footing (one action).`;
-
-    case "success":
-      return `Success: the solution works and ${problem.toLowerCase()} is resolved safely with one clear cause → effect.`;
-
-    case "arrival":
-      return `The destination comes into view; ${helperRef} slows and stops at the target spot (one action).`;
-
-    case "swap_turns":
-      return `Everyone performs one clear swap of turns: the shared item moves once from one side to the other (one action).`;
-
-    case "celebrate":
-      return `A tiny celebration: ${heroRef} does one small happy bounce while ${helperRef} makes a cute “done” motion (one action).`;
-
-    case "reveal":
-      if (obj !== "none") return `${helperRef} presents ${obj} back to ${heroRef} slowly, holding still so the exchange is readable.`;
-      return `${helperRef} reveals the finished result by stepping aside once so it can be seen clearly (one action).`;
-
-    case "reaction":
-      if (endingMode === "bittersweet") {
-        return `${heroRef} settles closer to ${helperRef}; tail lifts slightly in a calm, comforted way (still/slow).`;
-      }
-      return `${heroRef} shows joy through tail wag and soft posture, then steps closer slowly (one motion).`;
-
-    // Bittersweet-specific beats
-    case "try_gently":
-      return `${helperRef} attempts one careful step toward fixing the issue (one action), but the situation does not fully change yet (safe).`;
-
-    case "accept":
-      return `${helperRef} stops and shifts closer to ${heroRef}; both become still, showing acceptance through posture (still).`;
-
-    case "comfort_gift":
-      return `${helperRef} places a small comfort item beside ${heroRef} once, then waits still (one action).`;
-
-    case "soft_reframe":
-      return `${heroRef} touches the comfort item once and relaxes beside ${helperRef}, calm even without a complete fix (still/slow).`;
-
-    case "plan_for_later":
-      return `${helperRef} points toward a safe route back with one gesture, suggesting they will return later; both turn together (one action).`;
-
-    case "proud_anyway":
-      return `${heroRef} takes one small brave step, then pauses; tail lifts slightly in quiet pride (still).`;
-
-    case "close":
-      return `Calm closing echo in ${location} under ${weather}. ${heroRef} stays near ${helperRef}, both relaxed.`;
-
+    case "OPENING":
+      return `Calm opening in ${loc} under ${w}. ${H} is present near ${obj}, tiny blep visible.`;
+    case "GOAL_FOCUS":
+      return `${H} looks from the surroundings back to ${obj}, showing a clear mission without words (still/slow).`;
+    case "CAUSE_START":
+      return `Cause: ${H} starts moving with purpose toward the goal area (one clear motion).`;
+    case "EFFECT_PROBLEM":
+      return `Effect: ${prob} becomes clearly visible with believable physics (safe).`;
+    case "REACTION_LOW":
+      return `${H} pauses; ears and tail show worry while staring at ${obj} (one still beat).`;
+    case "HELPER_ARRIVAL":
+      return `${helper} arrives and stops at a respectful distance, looking at ${H} then the problem (never the camera).`;
+    case "HELPER_INTENT":
+      return `${helper} shows the vibe of ${role} by turning toward a small work area and making one purposeful gesture (one action).`;
+    case "TOOLS_ENTER":
+      // Use your prop DNA builder — you already output TOOL DNA + VEHICLE DNA.
+      // Here we just reference them generically so it stays consistent.
+      return `${helper} brings the toy helper cart into frame and parks it neatly (one action, realistic rolling).`;
+    case "TRAVEL":
+      return `Movement shot: ${helper} leads the route and ${H} follows slower; camera static or slow tracking (one motion total).`;
+    case "SHOW_WORK":
+      return `Close work beat: ${helper} ${pick(rng, workMoves)} with realistic weight and friction (still/slow).`;
+    case "PROGRESS":
+      return `Progress beat: the fix looks closer to working; ${H} watches closely, tail giving one tiny wag (still/slow).`;
+    case "OBSTACLE_SMALL":
+      return `Small complication: ${pick(rng, smallObstacles)}; everyone freezes for readability (still).`;
+    case "ATTEMPT_1":
+      return `Attempt 1: ${helper} tries a simple fix (one action) — it fails visibly but safely.`;
+    case "REACTION_PAUSE":
+      return `Reaction pause: both characters stare at the result (still/slow), body language shows “hmm.”`;
+    case "ADJUSTMENT_MICRO":
+      return `Micro-adjustment: ${helper} changes one small thing (angle/traction/support) (one action).`;
+    case "ATTEMPT_2":
+      return `Attempt 2: ${helper} changes one key variable (angle/route/strap/bridge plank) (one action).`;
+    case "SUCCESS":
+      return `Success: the adjustment works — ${prob} is resolved cleanly and safely (one readable action).`;
+    case "JOY":
+      return `${H} reacts with visible joy (tail wag, soft eyes, tiny blep) and steps closer slowly (one motion).`;
+    case "CALM_ECHO":
+      return `Calm closing echo in ${loc} under ${w}. ${H} stays near ${helper}, both relaxed.`;
+    case "EXTRA_CUTE":
+      return `Extra cute beat: ${H} gently taps ${obj} once as if saying “thank you,” then settles (one motion).`;
     default:
-      return `${heroRef} performs one small readable action, then becomes still (one action).`;
+      // fallback: safe beat
+      return `${H} does ${pick(rng, oneMove)} while staying focused on the mission (one motion).`;
   }
 }
 
-/* =========================
-   VALIDATOR
-   - Hard gate: story must be coherent & usable without edits
-========================= */
+/* ======================
+   BUILD SCENES — uses cinematic tram
+====================== */
 
-function includesAny(text, regexList) {
-  return regexList.some(r => r.test(text));
-}
-
-export function validateStory(scenes, ctx) {
-  const lc = scenes.map(s => safeLower(s));
-  const prob = safeLower(ctx.problem || "");
-
-  // 1) Problem must appear by early scenes
-  const earlySlice = lc.slice(0, 6).join(" ");
-  if (!earlySlice.includes(prob.split(" ").slice(0, 4).join(" "))) {
-    // fallback: any partial
-    if (!earlySlice.includes(prob.slice(0, Math.min(18, prob.length)))) return false;
-  }
-
-  // 2) Ending check depends on endingMode
-  const tail = lc.slice(-5).join(" ");
-  if (ctx.endingMode === "positive") {
-    if (!includesAny(tail, [/success/i, /resolved/i, /works/i, /completed/i, /fixed/i, /delivered/i, /safe/i])) return false;
-  } else {
-    if (!includesAny(tail, [/comfort/i, /accept/i, /calm/i, /relax/i, /beside/i, /close/i])) return false;
-  }
-
-  // 3) Helper role-specific actions must appear at least twice
-  const helper = safeLower(ctx.helperAnimal || "");
-  const helperMentions = lc.filter(s => s.includes(helper)).length;
-  if (helperMentions < Math.floor(ctx.sceneCount * 0.35)) {
-    // helper should be present in a good portion of scenes
-    return false;
-  }
-
-  // 4) One action per scene heuristic: avoid “and and and”
-  // This is a soft heuristic; keep it permissive.
-  const tooManyAnd = scenes.some(s => (s.match(/\sand\s/gi) || []).length >= 3);
-  if (tooManyAnd) return false;
-
-     // =========================
-  // STEP 4 — STORY QUALITY GATE
-  // =========================
-
-  // Scene count guard
-  if (scenes.length < ctx.minScenes || scenes.length > ctx.maxScenes) {
-    return false;
-  }
-
-  // Cause → Effect density
-  const causeEffectRegex = /(cause|attempt|approach|try|effect|fails?|works?|improves?|success|reveals?)/i;
-  const ceCount = scenes.filter(s => causeEffectRegex.test(s)).length;
-  if (ceCount / scenes.length < 0.7) {
-    return false;
-  }
-
-  // Attempt → failure → adjustment
-  const hasAttempt = scenes.some(s => /attempt|try|approach/i.test(s));
-  const hasFailure = scenes.some(s => /fail|slip|wobble|blocked|too short/i.test(s));
-  const hasAdjust = scenes.some(s => /adjust|second attempt|changes angle|improves/i.test(s));
-  if (!(hasAttempt && hasFailure && hasAdjust)) {
-    return false;
-  }
-
-  // Calm ending echo
-  const ending = scenes.slice(-2).join(" ").toLowerCase();
-  if (!ending.includes(ctx.helperAnimal.toLowerCase())) return false;
-
-
-  return true;
+function buildScenesCinematic(ctx, storyType, sceneCount, rng) {
+const scenes = buildScenesCinematic(ctx, storyType, sceneCount, rng);
+  return scenes;
 }
 
 /* =========================
