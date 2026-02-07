@@ -599,6 +599,35 @@ export function validateStory(scenes, ctx) {
   const tooManyAnd = scenes.some(s => (s.match(/\sand\s/gi) || []).length >= 3);
   if (tooManyAnd) return false;
 
+     // =========================
+  // STEP 4 — STORY QUALITY GATE
+  // =========================
+
+  // Scene count guard
+  if (scenes.length < ctx.minScenes || scenes.length > ctx.maxScenes) {
+    return false;
+  }
+
+  // Cause → Effect density
+  const causeEffectRegex = /(cause|attempt|approach|try|effect|fails?|works?|improves?|success|reveals?)/i;
+  const ceCount = scenes.filter(s => causeEffectRegex.test(s)).length;
+  if (ceCount / scenes.length < 0.7) {
+    return false;
+  }
+
+  // Attempt → failure → adjustment
+  const hasAttempt = scenes.some(s => /attempt|try|approach/i.test(s));
+  const hasFailure = scenes.some(s => /fail|slip|wobble|blocked|too short/i.test(s));
+  const hasAdjust = scenes.some(s => /adjust|second attempt|changes angle|improves/i.test(s));
+  if (!(hasAttempt && hasFailure && hasAdjust)) {
+    return false;
+  }
+
+  // Calm ending echo
+  const ending = scenes.slice(-2).join(" ").toLowerCase();
+  if (!ending.includes(ctx.helperAnimal.toLowerCase())) return false;
+
+
   return true;
 }
 
