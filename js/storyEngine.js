@@ -245,9 +245,13 @@ function renderBeat(beat, ctx, rng, idx) {
 ====================== */
 
 function buildScenesCinematic(ctx, storyType, sceneCount, rng) {
-const scenes = buildScenesCinematic(ctx, storyType, sceneCount, rng);
+  const beats = buildCinematicTram(storyType, sceneCount, rng);
+  const scenes = beats.map((beat, i) =>
+    `Scene ${i + 1}: ${renderBeat(beat, ctx, rng, i)}`
+  );
   return scenes;
 }
+
 
 /* =========================
    STORY FRAME OUTPUT BUILDER
