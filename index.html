@@ -3,189 +3,117 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Silent Story Engine v3 - Professional Edition</title>
+  <title>Silent Story Generator — Master Edition</title>
   <style>
-    :root { --pad: 14px; --r: 14px; --bg:#0b0d12; --fg:#eef2ff; --mut:rgba(255,255,255,.75); --bd:rgba(255,255,255,.12); }
+    :root { --pad: 14px; --bg:#0b0d12; --fg:#eef2ff; --bd:rgba(255,255,255,.12); }
     body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.4}
-    header{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg, rgba(99,102,241,.15), rgba(16,185,129,.1));}
-    header h1{margin:0 0 6px;font-size:22px}
-    header p{margin:0;opacity:.85;font-size: 14px}
-    main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
-    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    header{padding:22px;border-bottom:1px solid var(--bd);background:linear-gradient(135deg, rgba(99,102,241,.15), rgba(16,185,129,.1));}
+    main{max-width:1200px;margin:0 auto;padding:20px;display:grid;gap:20px;grid-template-columns:1fr}
     @media (min-width:980px){ .grid{grid-template-columns:480px 1fr} }
-    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px}
-    .card h2{margin:0 0 10px;font-size:15px;text-transform:uppercase;letter-spacing:1px;color:#a5b4fc}
-    label{font-size:11px;font-weight:bold;text-transform:uppercase;opacity:.7;display:block;margin:12px 0 4px}
-    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);color:var(--fg);outline:none;box-sizing:border-box}
-    .btnbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--fg);padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:700;transition:0.2s}
-    button.primary{background:rgba(99,102,241,.3);border-color:rgba(99,102,241,.5)}
-    button:hover{background:rgba(255,255,255,.12)}
-    .out{white-space:pre-wrap;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;font-size:13px;min-height:500px;font-family: 'Courier New', Courier, monospace}
-    .hr{height:1px;background:rgba(255,255,255,.10);margin:16px 0}
+    .card{background:rgba(255,255,255,0.04);border:1px solid var(--bd);border-radius:14px;padding:20px}
+    label{font-size:11px;font-weight:bold;text-transform:uppercase;opacity:0.7;display:block;margin:12px 0 4px}
+    select, input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--bd);background:rgba(0,0,0,0.35);color:#fff;box-sizing:border-box}
+    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+    button{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:800;transition:0.2s}
+    .primary{background:#6366f1;color:#fff}
+    .secondary{background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4)}
+    .out{white-space:pre-wrap;background:rgba(0,0,0,0.5);border-radius:12px;padding:20px;font-size:13px;font-family:monospace;min-height:500px}
   </style>
 </head>
-
 <body>
-  <header>
-    <h1>Silent Story Engine v3</h1>
-    <p>Expanded Library: 25+ Roles, 50+ Problems, and Dynamic Visual Logic.</p>
-  </header>
-
+  <header><h1>🐾 Willy's Silent Story Generator</h1></header>
   <main class="grid">
     <section class="card">
-      <h2>1) World Building</h2>
-      <label>Seed (Auto-Increments)</label>
-      <input id="seed" value="willy-001" />
-
-      <label>Location Theme</label>
-      <select id="location"></select>
-
-      <label>Weather & Time</label>
-      <select id="weather"></select>
-
-      <div class="hr"></div>
-      <h2>2) Story Core</h2>
-      
-      <label>The Problem</label>
-      <select id="problem"></select>
-
-      <label>The Helper Role</label>
-      <select id="helperRole"></select>
-
+      <h2>1) Configuration</h2>
+      <label>Seed (Auto-Increments)</label><input id="seed" value="willy-001" />
+      <label>Location</label><select id="loc"></select>
+      <label>Weather</label><select id="weather"></select>
+      <label>Problem</label><select id="prob"></select>
+      <label>Helper Role</label><select id="role"></select>
       <div class="btnbar">
-        <button class="primary" id="btnGenerate">Generate Cinematic Arc</button>
+        <button class="primary" id="genBtn">Create Story</button>
+        <button class="secondary" id="compBtn">🚀 Send to Compiler →</button>
       </div>
     </section>
-
     <section class="card">
-      <h2>3) Story Output</h2>
-      <div class="btnbar" style="margin-bottom: 10px;">
-        <button id="copyStory">Copy Text for AI</button>
-      </div>
-      <div id="out" class="out">Configure your settings and click generate.</div>
+      <h2>2) Story Output</h2>
+      <div id="out" class="out">Click "Create Story" to begin...</div>
     </section>
   </main>
 
 <script>
-/* --- CORE UTILITIES --- */
-function xmur3(str){for(var i=0,h=1779033703^str.length;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353); h=h<<13|h>>>19;}return function(){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return (h^h>>>16)>>>0;}}
-function mulberry32(a){return function(){var t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;}}
-function pick(rng, arr){ return arr[Math.floor(rng()*arr.length)] }
+/* RNG ENGINE */
+const xmur3=s=>{let h=1779033703^s.length;for(let i=0;i<s.length;i++)h=Math.imul(h^s.charCodeAt(i),3432918353),h=h<<13|h>>>19;return()=>(h=Math.imul(h^h>>>16,2246822507),h=Math.imul(h^h>>>13,3266489909),(h^h>>>16)>>>0)};
+const mul32=a=>()=>(let t=a+=0x6D2B79F5,t=Math.imul(t^t>>>15,t|1),t^=t+Math.imul(t^t>>>7,t|61),(t^t>>>14)>>>0)/4294967296;
 
-/* --- MASSIVE DATA LIBRARIES --- */
-const LOCATIONS = [
-  "Park Meadow (Tall grass, yellow buttercups)",
-  "River Path (Grey pebbles, rushing clear water)",
-  "Autumn Woods (Crunchy orange leaves, mossy logs)",
-  "Snowy Garden (White powder, frozen birdbath)",
-  "Cozy Playroom (Soft rug, wooden toy blocks)",
-  "Beach Edge (Wet sand, piece of driftwood)",
-  "Mountain Trail (Rocky ground, distant blue peaks)"
-];
-
-const WEATHER = [
-  "Golden Hour (Warm, long orange shadows)",
-  "Light Morning Mist (Soft, hazy blue light)",
-  "Overcast Glow (Flat, realistic grey tones)",
-  "Soft Rain (Glistening surfaces, tiny puddles)",
-  "Winter Dawn (Pale pink sky, frosty air)"
-];
-
+/* MASTER LIBRARIES */
+const LOCS = ["Sunny Meadow", "Riverside Stones", "Autumn Forest Trail", "Snowy Garden", "Cozy Workshop", "Indoor Playroom"];
+const WEATHERS = ["Golden Hour Sunlight", "Morning Mist", "Soft Rain", "Pale Winter Dawn", "Cozy Indoor Lamp-light"];
 const PROBLEMS = [
-  "A tiny toy sailboat is caught in thick reeds",
-  "A wheel has wobbled off a red toy wagon",
-  "A heavy pinecone blocks a miniature path",
-  "A colorful kite string is tangled in a low branch",
-  "A bridge made of sticks has a missing center plank",
-  "A small plush friend is stuck behind a large stone",
-  "A toy plane's propeller is jammed with a leaf",
-  "A trail is too muddy for a small puppy to cross",
-  "A garden gate is latched too tight for a paw",
-  "A lantern has tipped over in the grass"
+  "A toy boat is stuck in reeds", "A wheel fell off a wagon", "A branch blocks the path", 
+  "A kite is tangled in a tree", "A bridge plank is missing", "A plush toy is stuck high up",
+  "A wagon is stuck in deep mud", "A lantern tipped over", "A paper boat is folding wrong"
 ];
-
 const ROLES = {
-  "Mechanic": { animal: "Red Panda", tool: "Silver mini-wrench", action: "tightens the bolt", approach: "inspects the wheels", icon: "🔧" },
-  "Carpenter": { animal: "Beaver", tool: "Small wooden mallet", action: "taps the plank flush", approach: "aligns the wood", icon: "🔨" },
-  "Lifeguard": { animal: "Otter", tool: "Orange rescue hook", action: "pulls the item to safety", approach: "scans the water", icon: "🛟" },
-  "Ranger": { animal: "Fox", tool: "Coiled hemp rope", action: "ties a sturdy knot", approach: "scouts the obstacle", icon: "🌲" },
-  "Medic": { animal: "Bunny", tool: "Fabric adhesive patch", action: "smooths the patch down", approach: "checks for scratches", icon: "🩹" },
-  "Engineer": { animal: "Raccoon", tool: "Miniature lever tool", action: "pries the object loose", approach: "calculates the weight", icon: "⚙️" },
-  "Gardener": { animal: "Hedgehog", tool: "Small trowel", action: "clears away the debris", approach: "digs a small path", icon: "🌱" }
+  "Mechanic": { animal: "Red Panda", tool: "Silver Wrench", vehicle: "Mini Tool Cart", action: "tightens the bolt" },
+  "Carpenter": { animal: "Beaver", tool: "Wooden Mallet", vehicle: "Plank Carrier", action: "taps the wood flush" },
+  "Lifeguard": { animal: "Otter", tool: "Rescue Hook", vehicle: "Small Floating Dock", action: "pulls it to shore" },
+  "Ranger": { animal: "Fox", tool: "Hemp Rope", vehicle: "Gear Sled", action: "loops the knot securely" }
 };
 
-/* --- NARRATIVE ENGINE V3 --- */
-function generateStory() {
-  const seedEl = document.getElementById("seed");
-  const hash = xmur3(seedEl.value)();
-  const rng = mulberry32(hash);
-
-  const loc = document.getElementById("location").value;
-  const weather = document.getElementById("weather").value;
-  const problem = document.getElementById("problem").value;
-  const roleKey = document.getElementById("helperRole").value;
-  const role = ROLES[roleKey];
-
-  // Logic: Ensure the animal feels heavy and realistic
-  const dnaStr = `WILLY DNA: Baby Golden Retriever, red collar, pink blep tongue. 
-HELPER DNA: ${role.animal}, realistic fur, no clothes except a small tool belt. 
-PROP DNA: ${role.tool} (matte finish, toy-scale).`;
-
-  const arc = [
-    `Scene 1: Establishing shot of ${loc} during ${weather}. Willy sits in the center, looking curious.`,
-    `Scene 2: Willy trots forward but stops abruptly. He sees the trouble ahead.`,
-    `Scene 3: Detail shot: ${problem}. The physics show it is truly stuck/broken.`,
-    `Scene 4: Willy nudges it with his nose. It doesn't move. He looks at the camera with a small "blep" and drooping ears.`,
-    `Scene 5: ${role.animal} (the ${roleKey}) appears from behind a ${loc.split(' ')[0]}. He carries the ${role.tool}.`,
-    `Scene 6: Close-up on the ${role.animal}'s face. He gives a confident, slow nod to Willy.`,
-    `Scene 7: ${role.animal} walks to the problem. He ${role.approach} with professional focus.`,
-    `Scene 8: ${role.animal} lifts the ${role.tool}. It has realistic weight and texture.`,
-    `Scene 9: Attempt 1: He tries to ${role.action}. The object creaks but holds fast. Willy watches, tail still.`,
-    `Scene 10: Pause. Both animals look at each other. ${role.animal} wipes his brow (animal-style paw swipe).`,
-    `Scene 11: The Solution: ${role.animal} shifts his stance and applies the ${role.tool} to a different spot.`,
-    `Scene 12: Success! ${role.action} works perfectly. The ${problem.split('is')[0]} is now free/fixed.`,
-    `Scene 13: Willy lets out a joyous tail wag. He does a tiny "happy hop" in place.`,
-    `Scene 14: ${role.animal} puts the ${role.tool} back. Willy nudges him with a wet nose in thanks.`,
-    `Scene 15: Wide shot. The two friends sitting together in ${loc}. The mission is complete. Peaceful fade.`
-  ];
-
-  let output = `[STORY CORE]\nTitle: Willy and the ${role.animal}'s ${roleKey} Mission\n`;
-  output += `Location: ${loc}\nWeather: ${weather}\n`;
-  output += `-------------------------------------------\n`;
-  output += `[VISUAL DNA]\n${dnaStr}\n`;
-  output += `-------------------------------------------\n\n`;
-  output += arc.map((s, i) => s).join("\n\n");
-
-  document.getElementById("out").textContent = output;
-  
-  // Increment Seed for "Thousands of stories" flow
-  const currentNum = parseInt(seedEl.value.split('-')[1]);
-  seedEl.value = `willy-${String(currentNum + 1).padStart(3, '0')}`;
-}
-
-/* --- UI INIT --- */
 function init() {
-  const setup = (id, arr) => {
-    const s = document.getElementById(id);
-    arr.forEach(item => { let o = document.createElement("option"); o.text = item; s.add(o); });
-  };
-
-  setup("location", LOCATIONS);
-  setup("weather", WEATHER);
-  setup("problem", PROBLEMS);
-  
-  const roleS = document.getElementById("helperRole");
-  Object.keys(ROLES).forEach(k => {
-    let o = document.createElement("option"); o.text = k; roleS.add(o);
-  });
-
-  document.getElementById("btnGenerate").onclick = generateStory;
-  document.getElementById("copyStory").onclick = () => {
-    navigator.clipboard.writeText(document.getElementById("out").textContent);
-    alert("Story DNA Copied!");
-  };
+  const f=(id,arr)=>arr.forEach(v=>{let o=document.createElement("option");o.text=v;document.getElementById(id).add(o)});
+  f("loc", LOCS); f("weather", WEATHERS); f("prob", PROBLEMS);
+  Object.keys(ROLES).forEach(r=>{let o=document.createElement("option");o.text=r;document.getElementById("role").add(o)});
 }
+
+document.getElementById("genBtn").onclick = () => {
+  const seedEl = document.getElementById("seed");
+  const rng = mul32(xmur3(seedEl.value)())();
+  const loc = document.getElementById("loc").value;
+  const weather = document.getElementById("weather").value;
+  const prob = document.getElementById("prob").value;
+  const roleKey = document.getElementById("role").value;
+  const r = ROLES[roleKey];
+
+  const story = `[VISUAL DNA]
+WILLY: Golden Retriever puppy, red collar, pink blep tongue.
+HELPER: ${r.animal}, realistic fur, no clothes.
+TOOL DNA: ${r.tool} (toy-scale, matte).
+VEHICLE DNA: ${r.vehicle} (realistic rolling physics).
+
+[STORY SETTINGS]
+Location: ${loc}
+Weather: ${weather}
+Problem: ${prob}
+
+[SCENES]
+Scene 1: ${loc} under ${weather}. Willy sits calmly, tiny blep visible.
+Scene 2: Willy spots the ${prob.toLowerCase()}. He trots over.
+Scene 3: Willy tries to help, but the ${prob.toLowerCase()} is too much for him.
+Scene 4: Willy's ears droop. He looks worried. (Emotional beat).
+Scene 5: ${r.animal} (the ${roleKey}) arrives, pushing the ${r.vehicle}.
+Scene 6: Close-up: ${r.animal} gives Willy a slow, reassuring nod.
+Scene 7: ${r.animal} opens the ${r.vehicle} and takes out the ${r.tool}.
+Scene 8: ${r.animal} inspects the ${prob.toLowerCase()} with professional focus.
+Scene 9: Attempt 1: ${r.animal} tries to ${r.action}. It moves slightly.
+Scene 10: Willy watches with hopeful eyes, one ear twitching.
+Scene 11: The Adjustment: ${r.animal} shifts stance for better leverage.
+Scene 12: Success! With a final motion, the ${r.animal} ${r.action}.
+Scene 13: Willy lets out a happy tail wag and nudges the ${r.animal}.
+Scene 14: The two friends stand together, problem solved.
+Scene 15: Peaceful closing echo. Willy is happy in the ${loc}.`;
+
+  document.getElementById("out").textContent = story;
+  seedEl.value = "willy-" + Math.floor(Math.random()*999);
+};
+
+document.getElementById("compBtn").onclick = () => {
+  const s = document.getElementById("out").textContent;
+  if(s.includes("Click")) return alert("Generate a story first!");
+  localStorage.setItem("pendingStory", s);
+  window.location.href = "compiler.html";
+};
 
 init();
 </script>
