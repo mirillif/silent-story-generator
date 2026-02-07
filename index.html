@@ -128,7 +128,10 @@ function renderStory(brain, state, scenes) {
 /* ==========================
    BUTTON HOOKS
 ========================== */
-document.getElementById("btn15").onclick = () => generateStory(15);
-document.getElementById("btn20").onclick = () => generateStory(20);
-document.getElementById("btn25").onclick = () => generateStory(25);
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("btn15").onclick = () => generateStory(15);
+  document.getElementById("btn20").onclick = () => generateStory(20);
+  document.getElementById("btn25").onclick = () => generateStory(25);
+});
+
 </script>
