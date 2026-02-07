@@ -2,116 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prompt Compiler — Cinematic Continuity Lock</title>
+  <title>Prompt Compiler — Master Lock</title>
   <style>
-    :root { --r:14px; --bg:#0b0d12; --fg:#eef2ff; }
-    body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.35}
-    header{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg, rgba(99,102,241,.22), rgba(16,185,129,.18));}
-    header h1{margin:0 0 6px;font-size:22px}
-    header p{margin:0;opacity:.85;font-size:14px}
-    main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
-    .grid{display:grid;gap:16px;grid-template-columns:1fr}
-    @media(min-width:980px){ .grid{grid-template-columns:480px 1fr} }
-    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px}
-    label{font-size:11px;font-weight:bold;text-transform:uppercase;opacity:.7;display:block;margin:12px 0 4px}
-    textarea{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);color:var(--fg);min-height:300px;font-family:monospace;font-size:12px}
-    .btnbar{display:flex;gap:10px;margin-top:12px}
-    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--fg);padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:700}
-    button.primary{background:rgba(99,102,241,.3);border-color:rgba(99,102,241,.5)}
-    .sceneCard{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:12px}
-    .mono{font-family:monospace;font-size:12px;white-space:pre-wrap;color:#cbd5e1;background:black;padding:10px;border-radius:8px;margin:10px 0}
+    :root { --bg:#0b0d12; --fg:#eef2ff; --bd:rgba(255,255,255,.1); }
+    body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.4}
+    header{padding:20px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+    main{max-width:1100px;margin:0 auto;padding:20px}
+    textarea{width:100%;height:180px;background:#000;color:#6366f1;border:1px solid var(--bd);padding:15px;border-radius:12px;font-family:monospace}
+    .sceneCard{background:rgba(255,255,255,0.03);border:1px solid var(--bd);padding:20px;border-radius:12px;margin-bottom:15px}
+    .promptBox{background:#000;padding:12px;border-radius:8px;font-size:12.5px;color:#34d399;margin-top:10px;white-space:pre-wrap}
+    button{padding:10px 15px;border-radius:8px;border:none;cursor:pointer;background:#6366f1;color:#fff;font-weight:bold}
+    .copyBtn{background:rgba(255,255,255,0.1);font-size:11px;margin-top:10px}
   </style>
 </head>
-
 <body>
-<header>
-  <h1>Prompt Compiler — Cinematic Lock</h1>
-  <p>Translates Story Engine output into high-fidelity AI Video Prompts.</p>
-</header>
-
-<main class="grid">
-  <section class="card">
-    <h2>1) Input Story DNA</h2>
-    <label>Paste the full output from Story Generator v3</label>
-    <textarea id="in" placeholder="Paste full story here..."></textarea>
-    <div class="btnbar">
-      <button class="primary" id="compile">Compile Scenes</button>
-      <button id="copyAll">Copy All for AI</button>
+  <header><h1>🛠️ AI Prompt Compiler</h1><a href="index.html" style="color:#fff;opacity:0.6">🏠 Back to Generator</a></header>
+  <main>
+    <div class="sceneCard">
+      <h3>Incoming Story DNA</h3>
+      <textarea id="in"></textarea>
+      <button id="runBtn" style="margin-top:10px">Compile Prompts</button>
+      <button id="copyAll" style="background:#10b981">Copy All Prompts</button>
     </div>
-    <div id="status" style="margin-top:10px; font-size:12px; color:#a5b4fc">Status: Ready</div>
-  </section>
-
-  <section class="card">
-    <h2>2) Compiled AI Video Prompts</h2>
     <div id="out"></div>
-  </section>
-</main>
+  </main>
 
 <script>
-const STYLE_BASE = `10-second cinematic scene. Photorealistic. 4K. Soft natural lighting. Natural fur textures. No 3D-cartoon style. Static camera. No text.`;
+const STYLE = "10-second cinematic scene. Soft natural realism. No dialogue, no text. Static camera. Photorealistic animal anatomy.";
 
 function compile() {
   const raw = document.getElementById("in").value;
-  const outArea = document.getElementById("out");
-  const status = document.getElementById("status");
-  outArea.innerHTML = "";
+  const out = document.getElementById("out");
+  out.innerHTML = "";
 
-  if(!raw) return;
-
-  // 1. Extract Visual Anchors
-  const dnaMatch = raw.match(/\[VISUAL DNA\]\n([\s\S]*?)\n---/);
-  const visualDNA = dnaMatch ? dnaMatch[1].trim() : "Willy: Baby Golden Retriever puppy.";
+  const dnaMatch = raw.match(/\[VISUAL DNA\]([\s\S]*?)\[STORY SETTINGS\]/);
+  const dna = dnaMatch ? dnaMatch[1].trim() : "";
+  const settingsMatch = raw.match(/\[STORY SETTINGS\]([\s\S]*?)\[SCENES\]/);
+  const settings = settingsMatch ? settingsMatch[1].trim() : "";
   
-  const locationMatch = raw.match(/Location: (.*)/);
-  const loc = locationMatch ? locationMatch[1] : "Natural setting";
+  const scenes = raw.split("Scene ").slice(1);
+  let allText = "";
 
-  const weatherMatch = raw.match(/Weather: (.*)/);
-  const weather = weatherMatch ? weatherMatch[1] : "Natural light";
-
-  // 2. Extract Scenes
-  const scenes = raw.split(/Scene \d+:/).slice(1);
-
-  if(scenes.length === 0) {
-    status.innerText = "Error: No scenes found. Make sure to paste the full output.";
-    return;
-  }
-
-  const compiledPrompts = scenes.map((desc, i) => {
-    const sceneNum = i + 1;
-    const prompt = `
-[STYLE]: ${STYLE_BASE}
-[SETTING]: ${loc} | ${weather}
-[ACTION]: ${desc.trim()}
-[CONSISTENCY ANCHORS]:
-${visualDNA}
-[PHYSICS]: Realistic weight and gravity. No human hands. Animal anatomy only. Characters look at the task, never the lens.
-    `.trim();
-
-    // Create UI Card
-    const card = document.createElement("div");
-    card.className = "sceneCard";
-    card.innerHTML = `<h3>Scene ${sceneNum}</h3><div class="mono">${prompt}</div><button onclick="copyThis(this)">Copy Scene ${sceneNum}</button>`;
-    outArea.appendChild(card);
+  scenes.forEach((s, i) => {
+    const p = `${STYLE}\n\n[DESCRIPTION]: ${s.trim()}\n\n[DNA & SETTINGS]:\n${dna}\n${settings}\n\n[PHYSICS]: Realistic weight, no human hands.`;
+    allText += `--- SCENE ${i+1} ---\n${p}\n\n`;
     
-    return prompt;
+    const div = document.createElement("div");
+    div.className = "sceneCard";
+    div.innerHTML = `<strong>Scene ${i+1}</strong><div class="promptBox">${p}</div><button class="copyBtn" onclick="navigator.clipboard.writeText(this.previousSibling.innerText)">Copy Scene</button>`;
+    out.appendChild(div);
   });
-
-  window.__LAST_COMPILED = compiledPrompts.join("\n\n---\n\n");
-  status.innerText = `Successfully compiled ${scenes.length} scenes.`;
+  window.__ALL = allText;
 }
 
-function copyThis(btn) {
-  const text = btn.previousSibling.innerText;
-  navigator.clipboard.writeText(text);
-  btn.innerText = "Saved!";
-  setTimeout(() => btn.innerText = "Copy Scene", 1000);
-}
+document.getElementById("runBtn").onclick = compile;
+document.getElementById("copyAll").onclick = () => { navigator.clipboard.writeText(window.__ALL); alert("All prompts copied!"); };
 
-document.getElementById("compile").onclick = compile;
-document.getElementById("copyAll").onclick = () => {
-  navigator.clipboard.writeText(window.__LAST_COMPILED);
-  alert("All prompts copied to clipboard!");
+window.onload = () => {
+  const saved = localStorage.getItem("pendingStory");
+  if(saved) {
+    document.getElementById("in").value = saved;
+    compile();
+    localStorage.removeItem("pendingStory");
+  }
 };
 </script>
 </body>
