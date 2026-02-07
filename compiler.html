@@ -3,270 +3,116 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prompt Compiler — Continuity Lock</title>
+  <title>Prompt Compiler — Cinematic Continuity Lock</title>
   <style>
     :root { --r:14px; --bg:#0b0d12; --fg:#eef2ff; }
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.35}
-    header{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,.22), transparent 60%),
-        radial-gradient(800px 400px at 80% 0%, rgba(16,185,129,.18), transparent 55%);
-    }
+    body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:var(--bg);color:var(--fg);line-height:1.35}
+    header{padding:22px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg, rgba(99,102,241,.22), rgba(16,185,129,.18));}
     header h1{margin:0 0 6px;font-size:22px}
-    header p{margin:0;opacity:.85}
-    a{color:#a5b4fc;text-decoration:none}
-    a:hover{text-decoration:underline}
+    header p{margin:0;opacity:.85;font-size:14px}
     main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:16px}
     .grid{display:grid;gap:16px;grid-template-columns:1fr}
-    @media(min-width:980px){ .grid{grid-template-columns:520px 1fr} }
-    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    .card h2{margin:0 0 10px;font-size:15px;opacity:.95}
-    label{font-size:12px;opacity:.85;display:block;margin:10px 0 6px}
-    textarea,input{
-      width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.35);color:var(--fg);outline:none;box-sizing:border-box
-    }
-    textarea{min-height:260px;resize:vertical;white-space:pre-wrap}
-    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
-    button{
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--fg);
-      padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800
-    }
-    button.primary{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45)}
-    button.good{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.40)}
-    .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)}
-    .muted{opacity:.78}
-    .err{color:#fb7185}
-    .ok{color:#34d399}
-    .cards{display:grid;gap:12px}
-    .sceneCard{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px}
-    .sceneCard h3{margin:0 0 8px;font-size:13px}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12.5px;white-space:pre-wrap}
-    .small{font-size:12px;opacity:.80}
+    @media(min-width:980px){ .grid{grid-template-columns:480px 1fr} }
+    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:16px}
+    label{font-size:11px;font-weight:bold;text-transform:uppercase;opacity:.7;display:block;margin:12px 0 4px}
+    textarea{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);color:var(--fg);min-height:300px;font-family:monospace;font-size:12px}
+    .btnbar{display:flex;gap:10px;margin-top:12px}
+    button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:var(--fg);padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:700}
+    button.primary{background:rgba(99,102,241,.3);border-color:rgba(99,102,241,.5)}
+    .sceneCard{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:12px}
+    .mono{font-family:monospace;font-size:12px;white-space:pre-wrap;color:#cbd5e1;background:black;padding:10px;border-radius:8px;margin:10px 0}
   </style>
 </head>
 
 <body>
 <header>
-  <h1>Prompt Compiler — Continuity Lock</h1>
-  <p>
-    Paste a Story Frame. Accepts <b>STORY CORE / STORY TRAM</b> OR your <b>STORY TITLE / STORY SETTINGS / SCENES</b> output.
-    <br><a href="./index.html">← Back to Story Generator</a>
-  </p>
+  <h1>Prompt Compiler — Cinematic Lock</h1>
+  <p>Translates Story Engine output into high-fidelity AI Video Prompts.</p>
 </header>
 
 <main class="grid">
   <section class="card">
-    <h2>1) Input — Story Frame</h2>
-    <label>Paste here</label>
-    <textarea id="in" placeholder="Paste story here…"></textarea>
-
+    <h2>1) Input Story DNA</h2>
+    <label>Paste the full output from Story Generator v3</label>
+    <textarea id="in" placeholder="Paste full story here..."></textarea>
     <div class="btnbar">
-      <button class="primary" id="compile">Compile</button>
-      <button class="good" id="copyAll">Copy All Prompts</button>
+      <button class="primary" id="compile">Compile Scenes</button>
+      <button id="copyAll">Copy All for AI</button>
     </div>
-
-    <div class="pill" style="margin-top:12px">
-      <span>Status:</span>
-      <span id="status" class="muted">Ready</span>
-    </div>
-
-    <div class="small muted" style="margin-top:10px">
-      Tip: This compiler repeats DNA + prop names in every prompt to prevent “AI amnesia”.
-    </div>
+    <div id="status" style="margin-top:10px; font-size:12px; color:#a5b4fc">Status: Ready</div>
   </section>
 
   <section class="card">
-    <h2>2) Output — Compiled Scene Prompts</h2>
-    <div id="out" class="cards"></div>
+    <h2>2) Compiled AI Video Prompts</h2>
+    <div id="out"></div>
   </section>
 </main>
 
 <script>
-/* ==========================
-   MASTER STYLE HEADER + DNA
-========================== */
-const MASTER_STYLE =
-`10-second cinematic scene. Soft, natural realism with gentle warmth. No dialogue, no text, no subtitles, no logos. Simple, readable action with lively, purposeful movement. Camera: Static or very slow tracking shot. Photorealistic animal anatomy. Natural fur texture and sunlight. NO 3D animation style. NO "Disney" eyes. Physical interactions grounded in physics. NO human limbs.`;
+const STYLE_BASE = `10-second cinematic scene. Photorealistic. 4K. Soft natural lighting. Natural fur textures. No 3D-cartoon style. Static camera. No text.`;
 
-const DNA = {
-  WILLY: `WILLY: (Baby Golden Retriever puppy. Light-golden velvet-soft fluffy fur, short legs, small floppy ears. Simple RED COLLAR. SIGNATURE: A tiny pink "blep" tip of tongue always peeking out of his mouth).`,
-  PANBY: `PANBY: (Baby Giant Panda, chubby and round, jet-black fur on limbs/eyes, snow-white fur on head/belly. Small bright YELLOW fabric bowtie).`,
-  QUOK: `QUOK: (Baby Quokka, short brown-grey fur, small rounded ears, permanent "smiling" expression).`
-};
+function compile() {
+  const raw = document.getElementById("in").value;
+  const outArea = document.getElementById("out");
+  const status = document.getElementById("status");
+  outArea.innerHTML = "";
 
-function el(id){ return document.getElementById(id); }
-function setStatus(t, cls="muted"){ el("status").className=cls; el("status").textContent=t; }
-function normLines(t){ return (t||"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n"); }
+  if(!raw) return;
 
-/* ==========================
-   PARSERS
-   A) STORY CORE/TRAM
-   B) STORY TITLE/SETTINGS/SCENES (generator output)
-========================== */
-function findLineIndex(lines, starts){
-  const up = starts.toUpperCase();
-  return lines.findIndex(l => l.trim().toUpperCase() === up);
-}
+  // 1. Extract Visual Anchors
+  const dnaMatch = raw.match(/\[VISUAL DNA\]\n([\s\S]*?)\n---/);
+  const visualDNA = dnaMatch ? dnaMatch[1].trim() : "Willy: Baby Golden Retriever puppy.";
+  
+  const locationMatch = raw.match(/Location: (.*)/);
+  const loc = locationMatch ? locationMatch[1] : "Natural setting";
 
-function parseCoreTram(raw){
-  const lines = normLines(raw);
+  const weatherMatch = raw.match(/Weather: (.*)/);
+  const weather = weatherMatch ? weatherMatch[1] : "Natural light";
 
-  const coreIdx = lines.findIndex(l=>l.trim().toUpperCase().startsWith("STORY CORE"));
-  const tramIdx = lines.findIndex(l=>l.trim().toUpperCase().startsWith("STORY TRAM"));
+  // 2. Extract Scenes
+  const scenes = raw.split(/Scene \d+:/).slice(1);
 
-  if (coreIdx === -1 || tramIdx === -1) return null;
-
-  const coreLines = lines.slice(coreIdx+1, tramIdx).map(s=>s.trim()).filter(Boolean);
-  const tramLines = lines.slice(tramIdx+1).map(s=>s.trim()).filter(Boolean);
-
-  const core = coreLines.join("\n");
-  const beats = tramLines.map(l=>{
-    // "1) text" or plain text
-    const m = l.match(/^\s*\d+\)\s*(.+)$/);
-    return (m?m[1]:l).trim();
-  }).filter(Boolean);
-
-  return { core, beats };
-}
-
-function parseGeneratorStory(raw){
-  const lines = normLines(raw);
-
-  const titleIdx = lines.findIndex(l=>l.trim().toUpperCase()==="STORY TITLE");
-  const settingsIdx = lines.findIndex(l=>l.trim().toUpperCase()==="STORY SETTINGS");
-  const scenesIdx = lines.findIndex(l=>l.trim().toUpperCase().startsWith("SCENES ("));
-
-  if (titleIdx === -1 || settingsIdx === -1 || scenesIdx === -1) return null;
-
-  const title = (lines[titleIdx+1]||"").trim();
-
-  // parse key settings lines "- X: Y"
-  const settingsBlock = lines.slice(settingsIdx+1, scenesIdx).map(s=>s.trim()).filter(Boolean);
-  const map = {};
-  settingsBlock.forEach(l=>{
-    const m=l.match(/^-+\s*([^:]+)\s*:\s*(.+)\s*$/);
-    if (m) map[m[1].toLowerCase()] = m[2].trim();
-  });
-
-  const core = [
-    `Title: ${title}`,
-    `Type: ${map["type"]||""}`,
-    `Hero: ${map["hero"]||""}`,
-    `Friends: ${map["friends (optional)"]||""}`,
-    `Location: ${map["location"]||""}`,
-    `Weather/Time: ${map["weather/time"]||""}`,
-    `Helper: ${map["helper (animal-only)"]||""}`,
-    `Primary Helper Role: ${map["primary helper role"]||""}`,
-    `Problem: ${map["problem"]||""}`,
-    `Object of affection: ${map["object of affection"]||""}`
-  ].join("\n");
-
-  // scenes lines: "Scene X: ..."
-  const beats = [];
-  for (let i=scenesIdx+1;i<lines.length;i++){
-    const l=lines[i].trim();
-    if (!l) continue;
-    if (l.toUpperCase()==="SOP CHECK") break;
-    const m = l.match(/^Scene\s*\d+\s*:\s*(.+)$/i);
-    if (m) beats.push(m[1].trim());
-  }
-
-  if (!beats.length) return null;
-  return { core, beats };
-}
-
-function detectCharacters(text){
-  const t=(text||"").toLowerCase();
-  const found=[];
-  if (t.includes("willy")) found.push("WILLY");
-  if (t.includes("panby")) found.push("PANBY");
-  if (t.includes("quok"))  found.push("QUOK");
-  return found;
-}
-
-/* ==========================
-   COMPILER: beat -> prompt
-========================== */
-function compileBeat(coreText, beatText, sceneNum){
-  const chars = detectCharacters(coreText + "\n" + beatText);
-  const states = chars.length ? chars.map(c=>DNA[c]).join("\n") : DNA.WILLY;
-
-  return [
-    MASTER_STYLE,
-    "",
-    `SCENE ${sceneNum} — FINAL PROMPT`,
-    "",
-    `DESCRIPTION (Blind-Viewer Protocol):`,
-    beatText,
-    "",
-    `CHARACTER STATES (Verbatim Anchor):`,
-    states,
-    "",
-    `GAZE TARGET (Interaction Rule): Characters look at each other or the key object/situation, never at the camera.`,
-    `PROPS & PHYSICS: All objects maintain exact color/scale between scenes. Objects have realistic weight; gravity and friction are believable.`,
-    `BIOLOGICAL BODY LANGUAGE: Emotions are shown through ears/tail/whiskers/posture, not abstract words.`,
-    "",
-    `REMEMBER:`,
-    `- Repeat exact character DNA and exact prop names/colors every time they appear.`,
-    `- One readable action per scene. No dialogue. No text. No logos.`
-  ].join("\n");
-}
-
-/* ==========================
-   UI
-========================== */
-function renderCards(prompts){
-  const out = el("out");
-  out.innerHTML = "";
-  prompts.forEach((p,i)=>{
-    const card=document.createElement("div");
-    card.className="sceneCard";
-    const h=document.createElement("h3");
-    h.textContent = `Scene ${i+1}`;
-    const pre=document.createElement("div");
-    pre.className="mono";
-    pre.textContent = p;
-
-    const btn=document.createElement("button");
-    btn.className="good";
-    btn.textContent="Copy";
-    btn.style.marginTop="10px";
-    btn.onclick = async ()=>{ await navigator.clipboard.writeText(p); setStatus(`Copied Scene ${i+1} ✅`,"ok"); };
-
-    card.appendChild(h);
-    card.appendChild(pre);
-    card.appendChild(btn);
-    out.appendChild(card);
-  });
-}
-
-function compile(){
-  const raw = el("in").value || "";
-
-  // accept generator format OR core/tram
-  let parsed = parseCoreTram(raw);
-  if (!parsed) parsed = parseGeneratorStory(raw);
-
-  if (!parsed){
-    setStatus(`ERROR: Could not parse input. Paste either "STORY CORE / STORY TRAM" OR "STORY TITLE / STORY SETTINGS / SCENES".`, "err");
-    el("out").innerHTML = "";
+  if(scenes.length === 0) {
+    status.innerText = "Error: No scenes found. Make sure to paste the full output.";
     return;
   }
 
-  const prompts = parsed.beats.map((b,i)=>compileBeat(parsed.core, b, i+1));
-  renderCards(prompts);
-  window.__ALL_PROMPTS = prompts.join("\n\n" + "-".repeat(36) + "\n\n");
-  setStatus(`Compiled ${prompts.length} scenes ✅`, "ok");
+  const compiledPrompts = scenes.map((desc, i) => {
+    const sceneNum = i + 1;
+    const prompt = `
+[STYLE]: ${STYLE_BASE}
+[SETTING]: ${loc} | ${weather}
+[ACTION]: ${desc.trim()}
+[CONSISTENCY ANCHORS]:
+${visualDNA}
+[PHYSICS]: Realistic weight and gravity. No human hands. Animal anatomy only. Characters look at the task, never the lens.
+    `.trim();
+
+    // Create UI Card
+    const card = document.createElement("div");
+    card.className = "sceneCard";
+    card.innerHTML = `<h3>Scene ${sceneNum}</h3><div class="mono">${prompt}</div><button onclick="copyThis(this)">Copy Scene ${sceneNum}</button>`;
+    outArea.appendChild(card);
+    
+    return prompt;
+  });
+
+  window.__LAST_COMPILED = compiledPrompts.join("\n\n---\n\n");
+  status.innerText = `Successfully compiled ${scenes.length} scenes.`;
 }
 
-el("compile").addEventListener("click", compile);
-el("copyAll").addEventListener("click", async ()=>{
-  const all = window.__ALL_PROMPTS || "";
-  if (!all){ setStatus("Nothing to copy yet.", "muted"); return; }
-  await navigator.clipboard.writeText(all);
-  setStatus("Copied all prompts ✅", "ok");
-});
+function copyThis(btn) {
+  const text = btn.previousSibling.innerText;
+  navigator.clipboard.writeText(text);
+  btn.innerText = "Saved!";
+  setTimeout(() => btn.innerText = "Copy Scene", 1000);
+}
+
+document.getElementById("compile").onclick = compile;
+document.getElementById("copyAll").onclick = () => {
+  navigator.clipboard.writeText(window.__LAST_COMPILED);
+  alert("All prompts copied to clipboard!");
+};
 </script>
 </body>
 </html>
